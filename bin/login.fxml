@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.15" xmlns:fx="http://javafx.com/fxml/1" fx:controller="loginController">
+    
+    <padding><Insets bottom="40" left="40" right="40" top="40" /></padding>
+    
+    <Label styleClass="title-label" text="Restaurant Management System" />
+    
+    <VBox spacing="15" styleClass="login-form">
+        <Label styleClass="subtitle-label" text="Login" />
+        
+        <TextField fx:id="usernameField" promptText="Username" />
+        <PasswordField fx:id="passwordField" promptText="Password" />
+        
+        <HBox alignment="CENTER" spacing="10">
+            <RadioButton fx:id="kitchenRadio" selected="true" text="Kitchen" />
+            <RadioButton fx:id="adminRadio" text="Admin" />
+        </HBox>
+        
+        <Button fx:id="loginButton" onAction="#handleLogin" text="Login" />
+        
+        <Label fx:id="errorLabel" styleClass="error-label" visible="false" />
+    </VBox>
+   <Button fx:id="customerBtn" mnemonicParsing="false" prefHeight="25.0" prefWidth="161.0" style="-fx-background-color: transparent; -fx-underline: true;" text="Continue as a customer" />
+</AnchorPane>

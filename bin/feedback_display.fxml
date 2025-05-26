@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.shape.*?>
+<?import java.lang.String?>
+<StackPane prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml" fx:controller="FeedbackDisplayController"
+           style="-fx-font-family: 'Montserrat'; -fx-font-size: 14px; -fx-background-color: #f5f5f5;"
+           stylesheets="@styles.css">
+    
+    <VBox alignment="CENTER" spacing="30" style="-fx-padding: 40;">
+        <Label text="Customer Reviews"
+               style="-fx-text-fill: #333333; -fx-font-size: 32px; -fx-font-weight: bold;" />
+
+        <HBox alignment="CENTER" spacing="15">
+            <Button id="sortByDate" text="Newest First" onAction="#sortByDate"
+                    style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-background-radius: 10; -fx-padding: 10 20;" />
+            <Button id="sortByRating" text="Highest Rated" onAction="#sortByRating"
+                    style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-background-radius: 10; -fx-padding: 10 20;" />
+        </HBox>
+
+        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;" maxHeight="500">
+            <VBox fx:id="feedbackContainer" spacing="20" style="-fx-padding: 20;">
+                <VBox styleClass="feedback-card">
+                    <Label text="Customer Name" styleClass="name" />
+                    <HBox styleClass="rating">
+                        <children>
+                            <SVGPath styleClass="svg-path" content="M12 2 L15.09 8.26 L22 9.27 L17 14.14 L18.18 21.02 L12 17.77 L5.82 21.02 L7 14.14 L2 9.27 L8.91 8.26 L12 2" />
+                            <SVGPath styleClass="svg-path" content="M12 2 L15.09 8.26 L22 9.27 L17 14.14 L18.18 21.02 L12 17.77 L5.82 21.02 L7 14.14 L2 9.27 L8.91 8.26 L12 2" />
+                            <SVGPath styleClass="svg-path" content="M12 2 L15.09 8.26 L22 9.27 L17 14.14 L18.18 21.02 L12 17.77 L5.82 21.02 L7 14.14 L2 9.27 L8.91 8.26 L12 2" />
+                            <SVGPath styleClass="svg-path" content="M12 2 L15.09 8.26 L22 9.27 L17 14.14 L18.18 21.02 L12 17.77 L5.82 21.02 L7 14.14 L2 9.27 L8.91 8.26 L12 2" />
+                            <SVGPath styleClass="svg-path" content="M12 2 L15.09 8.26 L22 9.27 L17 14.14 L18.18 21.02 L12 17.77 L5.82 21.02 L7 14.14 L2 9.27 L8.91 8.26 L12 2" />
+                        </children>
+                    </HBox>
+                    <Label text="The service was excellent! The food was delicious and the staff was very friendly. I will definitely come back again." 
+                           styleClass="comment" />
+                    <Label text="Posted on: 2024-03-20" styleClass="date" />
+                </VBox>
+            </VBox>
+        </ScrollPane>
+        
+        <Button id="closeButton" text="Close" onAction="#handleClose"
+                style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-background-radius: 10; -fx-padding: 10 20; -fx-font-weight: bold;" />
+    </VBox>
+</StackPane>

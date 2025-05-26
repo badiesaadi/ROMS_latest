@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: #f8f9fa;" xmlns="http://javafx.com/javafx/17.0.15" xmlns:fx="http://javafx.com/fxml/1" fx:controller="AdminDashboardController">
+   <top>
+      <HBox alignment="CENTER_LEFT" prefHeight="60.0" prefWidth="200.0" style="-fx-background-color: #2c3e50;" BorderPane.alignment="CENTER">
+         <children>
+            <Label text="Restaurant Admin Dashboard" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+               <HBox.margin>
+                  <Insets left="20.0" />
+               </HBox.margin>
+            </Label>
+            <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <Button mnemonicParsing="false" onAction="#handleKitchenDashboard" style="-fx-background-color: transparent; -fx-text-fill: white;" text="Kitchen Dashboard">
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin>
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font>
+                  </Button>
+                  <Button mnemonicParsing="false" onAction="#handleBackToCustomerView" style="-fx-background-color: transparent; -fx-text-fill: white;" text="View as Customer">
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin>
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font>
+                  </Button>
+                  <Button mnemonicParsing="false" onAction="#handleLogout" style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-background-radius: 4;" text="Logout">
+                     <HBox.margin>
+                        <Insets right="20.0" />
+                     </HBox.margin>
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font>
+                  </Button>
+               </children>
+            </HBox>
+         </children>
+      </HBox>
+   </top>
+   <center>
+      <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+         <children>
+            <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+               <children>
+                  <VBox prefHeight="600.0" prefWidth="400.0" spacing="10.0" style="-fx-background-color: white; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 2);">
+                     <children>
+                        <Label text="Menu Item Management" textFill="#2c3e50">
+                           <font>
+                              <Font name="System Bold" size="16.0" />
+                           </font>
+                        </Label>
+                        <Label text="Item Name" textFill="#7f8c8d">
+                           <VBox.margin>
+                              <Insets top="10.0" />
+                           </VBox.margin>
+                        </Label>
+                        <TextField fx:id="menuNameField" promptText="Enter item name" />
+                        <Label text="Price" textFill="#7f8c8d">
+                           <VBox.margin>
+                              <Insets top="5.0" />
+                           </VBox.margin>
+                        </Label>
+                        <TextField fx:id="menuPriceField" promptText="Enter price (e.g. 9.95)" />
+                        <Label text="Category" textFill="#7f8c8d">
+                           <VBox.margin>
+                              <Insets top="5.0" />
+                           </VBox.margin>
+                        </Label>
+                        <ComboBox fx:id="categoryComboBox" prefWidth="150.0" promptText="Select category" />
+                        <Label text="Image Path" textFill="#7f8c8d">
+                           <VBox.margin>
+                              <Insets top="5.0" />
+                           </VBox.margin>
+                        </Label>
+                        <HBox spacing="10.0">
+                           <TextField fx:id="imagePathField" promptText="Enter image path (e.g. images/item.png)" HBox.hgrow="ALWAYS" />
+                           <Button fx:id="browseImageButton" text="Browse" />
+                        </HBox>
+                        <Label fx:id="statusLabel" textFill="#2ecc71">
+                           <VBox.margin>
+                              <Insets top="10.0" />
+                           </VBox.margin>
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <HBox alignment="CENTER" prefWidth="200.0" spacing="10.0">
+                           <children>
+                              <Button fx:id="addButton" mnemonicParsing="false" onAction="#handleAddItem" prefHeight="36.0" prefWidth="85.0" style="-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-background-radius: 4;" text="Add">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                              </Button>
+                              <Button fx:id="updateButton" mnemonicParsing="false" onAction="#handleUpdateItem" prefHeight="36.0" prefWidth="85.0" style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-background-radius: 4;" text="Update">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                              </Button>
+                              <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#handleDeleteItem" prefHeight="36.0" prefWidth="85.0" style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-background-radius: 4;" text="Delete">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                              </Button>
+                              <Button fx:id="clearButton" mnemonicParsing="false" onAction="#handleClearForm" prefHeight="36.0" prefWidth="85.0" style="-fx-background-color: #ecf0f1; -fx-text-fill: #7f8c8d; -fx-background-radius: 4;" text="Clear">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                              </Button>
+                           </children>
+                           <VBox.margin>
+                              <Insets top="10.0" />
+                           </VBox.margin>
+                        </HBox>
+                     </children>
+                     <padding>
+                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                     </padding>
+                     <HBox.margin>
+                        <Insets bottom="20.0" left="20.0" right="10.0" top="20.0" />
+                     </HBox.margin>
+                  </VBox>
+                  <VBox prefHeight="600.0" prefWidth="620.0" spacing="10.0" HBox.hgrow="ALWAYS">
+                     <children>
+                        <Label text="Menu Items" textFill="#2c3e50">
+                           <font>
+                              <Font name="System Bold" size="16.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets bottom="10.0" top="20.0" />
+                           </VBox.margin>
+                        </Label>
+                        <TableView fx:id="menuItemsTable" prefHeight="300.0" prefWidth="600.0" style="-fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 2);" VBox.vgrow="ALWAYS">
+                          <columns>
+                            <TableColumn fx:id="idColumn" prefWidth="50.0" text="ID" />
+                            <TableColumn fx:id="nameColumn" prefWidth="150.0" text="Name" />
+                              <TableColumn fx:id="priceColumn" prefWidth="80.0" text="Price" />
+                              <TableColumn fx:id="categoryColumn" prefWidth="100.0" text="Category" />
+                              <TableColumn fx:id="imagePathColumn" prefWidth="220.0" text="Image Path" />
+                          </columns>
+                           <VBox.margin>
+                              <Insets bottom="20.0" />
+                           </VBox.margin>
+                        </TableView>
+                        
+                        <Label text="Customer Feedback" textFill="#2c3e50">
+                           <font>
+                              <Font name="System Bold" size="16.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets bottom="10.0" top="20.0" />
+                           </VBox.margin>
+                        </Label>
+                        <TableView fx:id="feedbackTable" prefHeight="300.0" prefWidth="600.0" style="-fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 2);" VBox.vgrow="ALWAYS">
+                          <columns>
+                            <TableColumn fx:id="feedbackIdColumn" prefWidth="50.0" text="ID" />
+                            <TableColumn fx:id="customerNameColumn" prefWidth="120.0" text="Name" />
+                            <TableColumn fx:id="ratingColumn" prefWidth="80.0" text="Rating" />
+                            <TableColumn fx:id="commentColumn" prefWidth="200.0" text="Comment" />
+                            <TableColumn fx:id="dateColumn" prefWidth="150.0" text="Date" />
+                          </columns>
+                           <VBox.margin>
+                              <Insets bottom="20.0" />
+                           </VBox.margin>
+                           <placeholder>
+                              <Label text="No feedback available" />
+                           </placeholder>
+                        </TableView>
+                        <HBox alignment="CENTER" spacing="10.0">
+                           <children>
+                              <Button fx:id="refreshFeedbackButton" mnemonicParsing="false" onAction="#handleRefreshFeedback" prefHeight="36.0" prefWidth="120.0" style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-background-radius: 4;" text="Refresh">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                              </Button>
+                              <Button fx:id="deleteFeedbackButton" mnemonicParsing="false" onAction="#handleDeleteFeedback" prefHeight="36.0" prefWidth="120.0" style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-background-radius: 4;" text="Delete">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                              </Button>
+                           </children>
+                           <VBox.margin>
+                              <Insets bottom="10.0" />
+                           </VBox.margin>
+                        </HBox>
+                     </children>
+                     <HBox.margin>
+                        <Insets right="20.0" />
+                     </HBox.margin>
+                  </VBox>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </center>
+</BorderPane> 

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.geometry.Pos?>
+
+<VBox alignment="CENTER" spacing="20.0" styleClass="splash-pane" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="SplashController">
+    <!-- شعار المطعم -->
+    <ImageView fx:id="logoImage" fitHeight="150" fitWidth="150" pickOnBounds="true" preserveRatio="true" />
+    
+    <!-- نص تحميل -->
+    <Label text="Loading..." styleClass="loading-text"/>
+    
+    <!-- شريط تحميل -->
+    <ProgressBar prefWidth="200" progress="-1" styleClass="progress-bar"/>
+</VBox>

@@ -1,0 +1,803 @@
+.root {
+  -fx-font-family: "Montserrat", "Segoe UI", Arial, sans-serif;
+  -fx-background-color: #f8f9fa;
+}
+
+/* Color Variables */
+* {
+  -restaurant-primary: #3498db;
+  -restaurant-secondary: #2980b9;
+  -restaurant-accent: #2c3e50;
+  -text-primary: #2c3e50;
+  -text-secondary: #7f8c8d;
+  -background-light: rgba(255, 255, 255, 0.95);
+  -background-dark: rgba(0, 0, 0, 0.7);
+  -divider-color: rgba(0, 0, 0, 0.1);
+  -star-color: #FFD700;
+  -error-color: #e74c3c;
+  -success-color: #2ecc71;
+  -gradient-start: #3498db;
+  -gradient-end: #2980b9;
+}
+
+/* خلفية شاشة السبلاتش */
+.splash-pane {
+  -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, -gradient-start, -gradient-end);
+  -fx-padding: 50;
+}
+
+/* نص التحميل */
+.loading-text {
+  -fx-text-fill: -main-light;
+  -fx-font-size: 22px;
+  -fx-font-weight: bold;
+}
+
+/* شريط التحميل */
+.progress-bar {
+  -fx-accent: -accent-color;
+}
+.welcome-pane {
+  -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, -gradient-start, -gradient-end);
+  -fx-padding: 50;
+}
+
+/* النص الترحيبي */
+.welcome-text {
+  -fx-text-fill: white;
+  -fx-font-size: 36px;
+  -fx-font-weight: normal;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 0);
+  -fx-background-color: rgba(0, 0, 0, 0.2);
+  -fx-padding: 15 30;
+  -fx-background-radius: 20;
+}
+
+/* النص الترحيبي الفرعي */
+.welcome-subtext {
+  -fx-text-fill: white;
+  -fx-font-size: 24px;
+  -fx-font-weight: normal;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 3, 0, 0, 0);
+  -fx-background-color: rgba(0, 0, 0, 0.2);
+  -fx-padding: 10 20;
+  -fx-background-radius: 15;
+}
+
+/* زر البداية */
+.start-button {
+  -fx-background-color: #e67e22;
+  -fx-text-fill: white;
+  -fx-padding: 15 40;
+  -fx-background-radius: 30;
+  -fx-cursor: hand;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 5, 0, 0, 0);
+}
+
+.start-button:hover {
+  -fx-background-color: #d35400;
+  -fx-scale-x: 1.05;
+  -fx-scale-y: 1.05;
+}
+
+.start-button:pressed {
+  -fx-background-color: #a04000;
+  -fx-scale-x: 0.95;
+  -fx-scale-y: 0.95;
+}
+
+.icon-button {
+  -fx-background-color: transparent;
+  -fx-background-radius: 50%;
+  -fx-padding: 5px;
+  -fx-min-width: 35px;
+  -fx-min-height: 35px;
+}
+
+.icon-button:hover {
+  -fx-background-color: -main-light;
+  -fx-cursor: hand;
+}
+
+.cart-badge {
+  -fx-background-color: -accent-color;
+  -fx-background-radius: 50%;
+  -fx-text-fill: white;
+  -fx-padding: 4px 8px;
+  -fx-font-weight: bold;
+  -fx-min-width: 16px;
+  -fx-min-height: 16px;
+  -fx-alignment: center;
+}
+
+/* Category Navigation */
+.category-container {
+  -fx-background-color: white;
+  -fx-padding: 10px 20px;
+  -fx-spacing: 15px;
+  -fx-alignment: center-left;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 4, 0, 0, 2);
+  -fx-border-color: #ecf0f1;
+  -fx-border-width: 0 0 1 0;
+  -fx-wrap-text: true;
+}
+
+.category-btn {
+  -fx-background-color: white;
+  -fx-text-fill: -restaurant-primary;
+  -fx-font-size: 14px;
+  -fx-font-weight: bold;
+  -fx-padding: 8 16;
+  -fx-background-radius: 20;
+  -fx-border-color: -restaurant-primary;
+  -fx-border-width: 1;
+  -fx-border-radius: 20;
+  -fx-cursor: hand;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);
+  -fx-transition: -fx-background-color 0.2s, -fx-effect 0.2s, -fx-translate-y 0.1s;
+  -fx-min-width: 100px;
+  -fx-max-width: 120px;
+}
+
+.category-btn:hover {
+  -fx-background-color: -restaurant-primary;
+  -fx-text-fill: white;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 3);
+  -fx-translate-y: 1;
+}
+
+.category-btn:pressed {
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 3, 0, 0, 1);
+  -fx-translate-y: 2;
+  -fx-scale-x: 0.98;
+  -fx-scale-y: 0.98;
+  -fx-opacity: 0.9;
+}
+
+.category-btn.active {
+  -fx-background-color: -restaurant-primary;
+  -fx-text-fill: white;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 3);
+}
+
+/* Default style for All category button */
+#allCategoryBtn {
+  -fx-text-fill: -gradient-start;
+  -fx-border-color: -gradient-start;
+  -fx-border-width: 0 0 2 0;
+}
+
+.transparent {
+  -fx-background-color: transparent;
+  -fx-padding: 0;
+}
+
+.transparent>.viewport {
+  -fx-background-color: transparent;
+}
+
+/* Menu Cards */
+.menu-card {
+  -fx-background-color: white;
+  -fx-background-radius: 12px;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 2);
+  -fx-alignment: center;
+  -fx-padding: 15px;
+  -fx-spacing: 10px;
+  -fx-transition: all 0.3s ease;
+  -fx-min-width: 250px;
+  -fx-max-width: 250px;
+  -fx-min-height: 340px;
+  -fx-max-height: 340px;
+  -fx-pref-width: 250px;
+  -fx-pref-height: 340px;
+}
+
+.menu-card .food-image {
+  -fx-background-radius: 12px 12px 0 0;
+  -fx-clip: true;
+  -fx-fit-width: 200px;
+  -fx-fit-height: 180px;
+  -fx-min-width: 220px;
+  -fx-min-height: 160px;
+  -fx-max-width: 220px;
+  -fx-max-height: 160px;
+  -fx-pref-width: 220px;
+  -fx-pref-height: 160px;
+  -fx-background-size: cover;
+  -fx-background-position: center;
+  -fx-background-repeat: no-repeat;
+  -fx-background-color: white;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 4, 0, 0, 2);
+}
+
+.menu-card .food-name {
+  -fx-font-size: 16px;
+  -fx-font-weight: bold;
+  -fx-text-fill: -text-primary;
+  -fx-alignment: center;
+  -fx-wrap-text: true;
+  -fx-max-width: 220px;
+  -fx-pref-width: 220px;
+}
+
+.menu-card .food-price {
+  -fx-font-size: 18px;
+  -fx-font-weight: bold;
+  -fx-text-fill: -restaurant-primary;
+  -fx-alignment: center;
+  -fx-max-width: 220px;
+  -fx-pref-width: 220px;
+}
+
+.menu-card .food-description {
+  -fx-font-size: 14px;
+  -fx-text-fill: -text-secondary;
+  -fx-wrap-text: true;
+  -fx-max-width: 220px;
+  -fx-pref-width: 220px;
+  -fx-alignment: center;
+}
+
+.menu-card .quantity-spinner {
+  -fx-background-color: white;
+  -fx-border-color: #ecf0f1;
+  -fx-border-radius: 20px;
+  -fx-background-radius: 20px;
+  -fx-pref-width: 220px;
+  -fx-max-width: 220px;
+  -fx-alignment: center;
+  -fx-font-size: 14px;
+  -fx-padding: 4px;
+  -fx-max-height: 32px;
+}
+
+.menu-card .quantity-spinner .increment-arrow-button,
+.menu-card .quantity-spinner .decrement-arrow-button {
+  -fx-background-color: -restaurant-primary;
+  -fx-background-radius: 20px;
+  -fx-padding: 4px;
+  -fx-cursor: hand;
+  -fx-text-fill: white;
+}
+
+.menu-card .quantity-spinner .increment-arrow-button:hover,
+.menu-card .quantity-spinner .decrement-arrow-button:hover {
+  -fx-background-color: -restaurant-secondary;
+}
+
+.menu-card .quantity-spinner .text-field {
+  -fx-background-color: transparent;
+  -fx-alignment: center;
+  -fx-font-size: 14px;
+  -fx-font-weight: bold;
+  -fx-text-fill: -text-primary;
+}
+
+.menu-card .add-btn {
+  -fx-background-color: -restaurant-primary;
+  -fx-background-radius: 20px;
+  -fx-text-fill: white;
+  -fx-font-weight: bold;
+  -fx-font-size: 14px;
+  -fx-pref-width: 220px;
+  -fx-max-width: 220px;
+  -fx-pref-height: 40px;
+  -fx-cursor: hand;
+  -fx-margin-top: 10px;
+  -fx-transition: all 0.3s ease;
+}
+
+.menu-card .add-btn:hover {
+  -fx-background-color: -restaurant-secondary;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 4, 0, 0, 2);
+}
+
+.menu-card:hover {
+  -fx-effect: dropshadow(gaussian, -shadow-color, 12, 0, 0, 4);
+  -fx-scale-x: 1.02;
+  -fx-scale-y: 1.02;
+}
+
+/* Cart Items */
+.cart-item {
+  -fx-background-color: white;
+  -fx-background-radius: 8px;
+  -fx-effect: dropshadow(gaussian, -shadow-color, 4, 0, 0, 1);
+  -fx-padding: 8px;
+  -fx-spacing: 8px;
+  -fx-margin: 4px;
+}
+
+.cart-item .item-name {
+  -fx-font-size: 14px;
+  -fx-font-weight: bold;
+  -fx-text-fill: -main-dark;
+}
+
+.cart-item .item-size {
+  -fx-font-size: 12px;
+  -fx-text-fill: #7f8c8d;
+}
+
+.cart-item .item-price {
+  -fx-font-size: 14px;
+  -fx-text-fill: -accent-color;
+  -fx-font-weight: bold;
+  -fx-alignment: center-right;
+}
+
+.cart-item .quantity-spinner {
+  -fx-background-color: white;
+  -fx-border-color: #ecf0f1;
+  -fx-border-radius: 6px;
+  -fx-max-width: 80px;
+}
+
+/* Action Buttons */
+.cancel-btn {
+  -fx-background-color: #ecf0f1;
+  -fx-background-radius: 6px;
+  -fx-font-weight: bold;
+  -fx-font-size: 14px;
+  -fx-text-fill: #7f8c8d;
+  -fx-padding: 8px 16px;
+  -fx-cursor: hand;
+}
+
+.cancel-btn:hover {
+  -fx-background-color: #d7dbdd;
+  -fx-effect: dropshadow(gaussian, -shadow-color, 4, 0, 0, 2);
+}
+
+.place-order-btn {
+  -fx-background-color: -gradient-start;
+  -fx-background-radius: 6px;
+  -fx-text-fill: white;
+  -fx-font-size: 14px;
+  -fx-cursor: hand;
+}
+
+.place-order-btn:hover {
+  -fx-background-color: -gradient-end;
+  -fx-effect: dropshadow(gaussian, -shadow-color, 4, 0, 0, 2);
+}
+
+/* Welcome Page Styles */
+.restaurant-name {
+  -fx-text-fill: white;
+  -fx-font-size: 48px;
+  -fx-font-weight: bold;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 0);
+  -fx-letter-spacing: 2px;
+  -fx-background-color: linear-gradient(to right, -gradient-start, -gradient-end);
+  -fx-padding: 20 40;
+  -fx-background-radius: 30;
+}
+
+.action-button {
+  -fx-background-color: -restaurant-primary;
+  -fx-text-fill: white;
+  -fx-padding: 10 20;
+  -fx-background-radius: 20;
+  -fx-cursor: hand;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);
+  -fx-transition: -fx-background-color 0.2s, -fx-effect 0.2s, -fx-translate-y 0.1s;
+}
+
+.action-button:hover {
+  -fx-background-color: -restaurant-secondary;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 3);
+  -fx-translate-y: 1;
+}
+
+.action-button:pressed {
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 3, 0, 0, 1);
+  -fx-translate-y: 2;
+  -fx-scale-x: 0.98;
+  -fx-scale-y: 0.98;
+  -fx-opacity: 0.9;
+}
+
+.contact-info {
+  -fx-text-fill: white;
+  -fx-font-size: 16px;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 3, 0, 0, 0);
+  -fx-background-color: rgba(0, 0, 0, 0.2);
+  -fx-background-radius: 15;
+  -fx-padding: 10 20;
+}
+
+/* Customer Reviews Section */
+.reviews-section {
+  -fx-padding: 30px;
+  -fx-background-color: rgba(0, 0, 0, 0.2);
+  -fx-background-radius: 15px;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 0);
+}
+
+.reviews-title {
+  -fx-text-fill: white;
+  -fx-font-weight: bold;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 5, 0, 0, 0);
+  -fx-padding: 0 0 20 0;
+}
+
+.review-card {
+  -fx-background-color: -review-card-bg;
+  -fx-background-radius: 15px;
+  -fx-padding: 20px;
+  -fx-spacing: 15px;
+  -fx-alignment: center;
+  -fx-min-width: 250px;
+  -fx-max-width: 300px;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 0);
+  -fx-transition: all 0.3s ease;
+}
+
+.review-card:hover {
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 15, 0, 0, 0);
+  -fx-translate-y: -5px;
+}
+
+.review-rating {
+  -fx-font-size: 24px;
+  -fx-text-fill: -restaurant-primary;
+}
+
+.review-stars {
+  -fx-font-size: 18px;
+  -fx-text-fill: #FFD700;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 2, 0, 0, 0);
+}
+
+.review-text {
+  -fx-text-fill: -main-dark;
+  -fx-font-size: 14px;
+  -fx-wrap-text: true;
+  -fx-alignment: center;
+  -fx-line-spacing: 1.5;
+}
+
+.review-author {
+  -fx-text-fill: -restaurant-primary;
+  -fx-font-weight: bold;
+  -fx-font-size: 14px;
+  -fx-padding: 10px 0 0 0;
+}
+
+/* Feedback Form Styles */
+.form-title {
+  -fx-text-fill: white;
+  -fx-font-size: 28px;
+  -fx-font-weight: bold;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 5, 0, 0, 0);
+  -fx-background-color: linear-gradient(to right, -gradient-start, -gradient-end);
+  -fx-padding: 15 30;
+  -fx-background-radius: 20;
+}
+
+.form-container {
+  -fx-background-color: rgba(255, 255, 255, 0.95);
+  -fx-background-radius: 20;
+  -fx-padding: 30;
+  -fx-spacing: 20;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 0);
+}
+
+.form-label {
+  -fx-text-fill: -text-primary;
+  -fx-font-size: 14px;
+  -fx-font-weight: bold;
+  -fx-padding: 0 0 5 0;
+}
+
+.form-field {
+  -fx-background-color: white;
+  -fx-background-radius: 10;
+  -fx-border-color: -restaurant-secondary;
+  -fx-border-radius: 10;
+  -fx-border-width: 2;
+  -fx-padding: 12;
+  -fx-font-size: 14px;
+  -fx-prompt-text-fill: -text-secondary;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 3, 0, 0, 0);
+}
+
+.form-field:focused {
+  -fx-border-color: -restaurant-primary;
+  -fx-effect: dropshadow(gaussian, rgba(52, 152, 219, 0.2), 5, 0, 0, 0);
+}
+
+.form-textarea {
+  -fx-background-color: white;
+  -fx-background-radius: 10;
+  -fx-border-color: -restaurant-secondary;
+  -fx-border-radius: 10;
+  -fx-border-width: 2;
+  -fx-padding: 12;
+  -fx-font-size: 14px;
+  -fx-prompt-text-fill: -text-secondary;
+  -fx-pref-height: 120;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 3, 0, 0, 0);
+}
+
+.form-textarea:focused {
+  -fx-border-color: -restaurant-primary;
+  -fx-effect: dropshadow(gaussian, rgba(52, 152, 219, 0.2), 5, 0, 0, 0);
+}
+
+/* Star Rating Buttons */
+.star-button {
+  -fx-background-color: transparent;
+  -fx-border-color: #ddd;
+  -fx-border-radius: 50%;
+  -fx-background-radius: 50%;
+  -fx-min-width: 40;
+  -fx-min-height: 40;
+  -fx-font-size: 18px;
+  -fx-text-fill: #ddd;
+  -fx-cursor: hand;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 3, 0, 0, 0);
+  -fx-transition: all 0.3s ease;
+}
+
+.star-button:selected {
+  -fx-background-color: transparent;
+  -fx-text-fill: #FFD700;
+  -fx-effect: dropshadow(gaussian, rgba(255, 215, 0, 0.3), 5, 0, 0, 0);
+}
+
+.star-button:hover {
+  -fx-scale-x: 1.1;
+  -fx-scale-y: 1.1;
+  -fx-effect: dropshadow(gaussian, rgba(255, 215, 0, 0.3), 5, 0, 0, 0);
+}
+
+/* Submit Button */
+.submit-button {
+  -fx-background-color: linear-gradient(to right, -gradient-start, -gradient-end);
+  -fx-text-fill: white;
+  -fx-background-radius: 10;
+  -fx-padding: 15 40;
+  -fx-font-size: 16px;
+  -fx-font-weight: bold;
+  -fx-cursor: hand;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 0);
+  -fx-transition: all 0.3s ease;
+}
+
+.submit-button:hover {
+  -fx-background-color: linear-gradient(to right, -gradient-end, -gradient-start);
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 8, 0, 0, 0);
+  -fx-scale-x: 1.02;
+  -fx-scale-y: 1.02;
+}
+
+.submit-button:pressed {
+  -fx-background-color: -restaurant-primary;
+  -fx-scale-x: 0.98;
+  -fx-scale-y: 0.98;
+}
+
+/* Feedback Display Styles */
+.feedback-card {
+  -fx-background-color: white;
+  -fx-background-radius: 15;
+  -fx-padding: 25;
+  -fx-spacing: 15;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 0);
+  -fx-min-width: 600;
+  -fx-max-width: 800;
+  -fx-border-color: -divider-color;
+  -fx-border-width: 0 0 1 0;
+  -fx-background-color: linear-gradient(to bottom, white, rgba(255, 255, 255, 0.9));
+  -fx-margin: 0 0 20 0;
+}
+
+.feedback-card:hover {
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 8, 0, 0, 0);
+  -fx-translate-y: -2;
+  -fx-background-color: linear-gradient(to bottom, white, rgba(255, 255, 255, 0.95));
+}
+
+.feedback-name {
+  -fx-text-fill: #888888;
+  -fx-font-size: 20px;
+  -fx-font-weight: bold;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 2, 0, 0, 0);
+}
+
+.feedback-rating {
+  -fx-text-fill: #FFD700;
+  -fx-font-size: 24px;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 3, 0, 0, 0);
+}
+
+.feedback-comment {
+  -fx-text-fill: #555555;
+  -fx-font-size: 14px;
+  -fx-line-spacing: 1.5;
+  -fx-wrap-text: true;
+  -fx-padding: 10 0;
+}
+
+.feedback-date {
+  -fx-text-fill: #999999;
+  -fx-font-size: 12px;
+  -fx-font-style: italic;
+  -fx-padding: 5 0 0 0;
+}
+
+.close-button {
+  -fx-background-color: transparent;
+  -fx-text-fill: white;
+  -fx-border-color: white;
+  -fx-border-radius: 10;
+  -fx-background-radius: 10;
+  -fx-padding: 10 30;
+  -fx-font-size: 14px;
+  -fx-font-weight: bold;
+  -fx-cursor: hand;
+}
+
+.close-button:hover {
+  -fx-background-color: rgba(255, 255, 255, 0.1);
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 0);
+}
+
+/* ScrollPane Styles */
+.scroll-pane {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
+}
+
+.scroll-pane .viewport {
+  -fx-background-color: transparent;
+}
+
+.scroll-bar:horizontal, .scroll-bar:vertical {
+  -fx-background-color: transparent;
+}
+
+.scroll-bar:horizontal .track, .scroll-bar:vertical .track {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
+}
+
+.scroll-bar:horizontal .thumb, .scroll-bar:vertical .thumb {
+  -fx-background-color: rgba(255, 255, 255, 0.2);
+  -fx-background-radius: 10;
+}
+
+.scroll-bar:horizontal .thumb:hover, .scroll-bar:vertical .thumb:hover {
+  -fx-background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Alert Styles */
+.dialog-pane {
+  -fx-background-color: -background-light;
+  -fx-background-radius: 15;
+}
+
+.dialog-pane .header-panel {
+  -fx-background-color: linear-gradient(to right, -gradient-start, -gradient-end);
+  -fx-background-radius: 15 15 0 0;
+}
+
+.dialog-pane .header-panel .label {
+  -fx-text-fill: white;
+  -fx-font-size: 16px;
+  -fx-font-weight: bold;
+}
+
+.dialog-pane .content {
+  -fx-text-fill: -text-primary;
+  -fx-font-size: 14px;
+}
+
+/* Responsive Layout */
+@media (max-width: 1200px) {
+  .menu-card {
+    -fx-min-width: 220px;
+    -fx-max-width: 220px;
+    -fx-min-height: 320px;
+    -fx-max-height: 320px;
+    -fx-pref-width: 220px;
+    -fx-pref-height: 320px;
+  }
+
+  .menu-card .food-image {
+    -fx-fit-width: 190px;
+    -fx-fit-height: 140px;
+    -fx-min-width: 190px;
+    -fx-min-height: 140px;
+    -fx-max-width: 190px;
+    -fx-max-height: 140px;
+    -fx-pref-width: 190px;
+    -fx-pref-height: 140px;
+  }
+
+  .menu-card .food-name,
+  .menu-card .food-price,
+  .menu-card .food-description,
+  .menu-card .quantity-spinner,
+  .menu-card .add-btn {
+    -fx-max-width: 190px;
+    -fx-pref-width: 190px;
+  }
+}
+
+@media (max-width: 768px) {
+  .menu-card {
+    -fx-min-width: 200px;
+    -fx-max-width: 200px;
+    -fx-min-height: 300px;
+    -fx-max-height: 300px;
+    -fx-pref-width: 200px;
+    -fx-pref-height: 300px;
+  }
+
+  .menu-card .food-image {
+    -fx-fit-width: 170px;
+    -fx-fit-height: 130px;
+    -fx-min-width: 170px;
+    -fx-min-height: 130px;
+    -fx-max-width: 170px;
+    -fx-max-height: 130px;
+    -fx-pref-width: 170px;
+    -fx-pref-height: 130px;
+  }
+
+  .menu-card .food-name,
+  .menu-card .food-price,
+  .menu-card .food-description,
+  .menu-card .quantity-spinner,
+  .menu-card .add-btn {
+    -fx-max-width: 170px;
+    -fx-pref-width: 170px;
+  }
+}
+
+@media (max-width: 480px) {
+  .menu-card {
+    -fx-min-width: 160px;
+    -fx-max-width: 160px;
+    -fx-min-height: 260px;
+    -fx-max-height: 260px;
+    -fx-pref-width: 160px;
+    -fx-pref-height: 260px;
+  }
+
+  .menu-card .food-image {
+    -fx-fit-width: 140px;
+    -fx-fit-height: 110px;
+    -fx-min-width: 140px;
+    -fx-min-height: 110px;
+    -fx-max-width: 140px;
+    -fx-max-height: 110px;
+    -fx-pref-width: 140px;
+    -fx-pref-height: 110px;
+  }
+
+  .menu-card .food-name,
+  .menu-card .food-price,
+  .menu-card .food-description,
+  .menu-card .quantity-spinner,
+  .menu-card .add-btn {
+    -fx-max-width: 140px;
+    -fx-pref-width: 140px;
+  }
+
+  .menu-card .food-name {
+    -fx-font-size: 12px;
+  }
+
+  .menu-card .food-price {
+    -fx-font-size: 14px;
+  }
+
+  .menu-card .food-description {
+    -fx-font-size: 10px;
+  }
+}

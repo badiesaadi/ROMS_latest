@@ -1,0 +1,59 @@
+/* Import the same color variables for consistency */
+* {
+  -main-dark: #2c3e50;
+  -main-medium: #3498db;
+  -main-light: #ecf0f1;
+  -accent-color: #e67e22;
+  -success-color: #2ecc71;
+  -warning-color: #f39c12;
+  -error-color: #e74c3c;
+  -shadow-color: rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-button {
+  -fx-background-color: transparent;
+  -fx-font-size: 14px;
+  -fx-alignment: CENTER-LEFT;
+  -fx-padding: 0 0 0 20px;
+  -fx-text-fill: white;
+  -fx-min-height: 40px;
+}
+
+.sidebar-button:hover {
+  -fx-background-color: rgba(52, 152, 219, 0.2);
+  -fx-cursor: hand;
+}
+
+.sidebar-button:pressed {
+  -fx-background-color: -main-medium;
+}
+
+.sidebar-button.active {
+  -fx-background-color: -main-medium;
+  -fx-border-width: 0 0 0 4px;
+  -fx-border-color: -accent-color;
+}
+
+.sidebar-button .label {
+  -fx-text-fill: white;
+  -fx-font-size: 12px;
+  -fx-min-width: 30px;
+}
+
+VBox.sidebar {
+  -fx-spacing: 5px;
+  -fx-padding: 20px 10px;
+  -fx-background-color: -main-dark;
+}
+
+HBox.sidebar-header {
+  -fx-alignment: center;
+  -fx-spacing: 10px;
+  -fx-padding: 0 0 15 0;
+}
+
+HBox.sidebar-header .label {
+  -fx-text-fill: white;
+  -fx-font-size: 18px;
+  -fx-font-weight: bold;
+}

@@ -1,0 +1,19 @@
+# Exclude shell scripts
+*.sh
+
+# Compiled class files
+*.class
+
+# Log files
+*.log
+
+# IDE specific files
+.idea/
+.vscode/
+*.iml
+
+# macOS specific files
+.DS_Store
+
+# Build directories
+target/ 
