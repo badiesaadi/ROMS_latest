@@ -17,3 +17,6 @@
 
 # Build directories
 target/ 
+
+#bin
+bin/

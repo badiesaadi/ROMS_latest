@@ -1,10 +1,17 @@
 @echo off
 
 rem Set the JavaFX path - update this with your actual JavaFX path
-set JAVAFX_PATH=C:\Program Files\Java\javafx-sdk-21.0.6
+rem feriel
+rem set JAVAFX_PATH=C:\Program Files\Java\javafx-sdk-21.0.6
+rem ilyes
+set JAVAFX_PATH=C:\Java\javafx-sdk-21.0.6
 
 rem Set the MySQL connector path
-set MYSQL_CONNECTOR=C:\mysql-connector-j-9.2.0.jar
+rem feriel
+rem set MYSQL_CONNECTOR=C:\mysql-connector-j-9.2.0.jar
+rem ilyes
+set MYSQL_CONNECTOR=C:\Users\BLEUSMEN\Downloads\mysql-connector-j-9.2.0\mysql-connector-j-9.2.0\mysql-connector-j-9.2.0.jar
+
 
 rem Create bin directory if it doesn't exist
 if not exist ..\bin mkdir ..\bin

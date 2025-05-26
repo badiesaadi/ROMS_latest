@@ -1,7 +1,7 @@
 -- MySQL Schema for Restaurant Management System
 
 -- Create the database
-CREATE DATABASE IF NOT EXISTS restaurant_db;
+CREATE DATABASE restaurant_db;
 USE restaurant_db;
 
 -- Create the Staff table (combines Manager and Kitchen staff)
