@@ -5,29 +5,72 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Spinner?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="menuCardContainer" alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="340.0" prefWidth="250.0" spacing="10.0" styleClass="menu-card" xmlns="http://javafx.com/javafx/17.0.15" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MenuItemController">
+<VBox fx:id="menuCardContainer" alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="322.0" prefWidth="213.0" spacing="8.0" style="-fx-background-color: white; -fx-background-radius: 10px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 3); -fx-border-radius: 10px; -fx-focus-color: transparent; -fx-faint-focus-color: transparent;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MenuItemController">
    <padding>
-      <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+      <Insets bottom="12.0" left="12.0" right="12.0" />
    </padding>
    <children>
-      <ImageView fx:id="menuImage" fitHeight="160.0" fitWidth="220.0" pickOnBounds="true" preserveRatio="false" styleClass="food-image" />
-      <Label fx:id="menuName" prefHeight="40.0" prefWidth="220.0" text="Menu Name" textFill="#2c3e50" wrapText="true" styleClass="food-name">
-         <font>
-            <Font name="System Bold" size="16.0" />
-         </font>
-      </Label>
-      <Label fx:id="menuPrice" prefHeight="30.0" prefWidth="220.0" text="Menu Price" textFill="#e67e22" styleClass="food-price">
-         <font>
-            <Font name="System Bold" size="18.0" />
-         </font>
-      </Label>
-      <Spinner fx:id="addToOrder" prefWidth="220.0" styleClass="quantity-spinner" />
-      <Button fx:id="submitQuantityBtn" mnemonicParsing="false" prefHeight="40.0" prefWidth="220.0" styleClass="add-btn" text="Add to Cart">
+      <ImageView fx:id="menuImage" fitHeight="144.0" fitWidth="215.0" pickOnBounds="true">
          <VBox.margin>
-            <Insets top="10.0" />
+            <Insets bottom="8.0" />
+         </VBox.margin>
+      </ImageView>
+      <Label fx:id="menuName" alignment="TOP_LEFT" prefHeight="38.0" prefWidth="300.0" style="-fx-font-size: 19px; -fx-font-family: 'Roboto';" text="Menu Name" textFill="#2c3e50" wrapText="true">
+         <font>
+            <Font name="Roboto" size="19.0" />
+         </font>
+         <VBox.margin>
+            <Insets bottom="3.0" left="5.0" />
+         </VBox.margin>
+      </Label>
+      <Label prefHeight="19.0" prefWidth="178.0" style="-fx-font-size: 13px;" text="meat, bread salad, tomato" textFill="#828282">
+         <font>
+            <Font size="13.0" />
+         </font>
+         <VBox.margin>
+            <Insets bottom="4.0" top="-12.0" />
+         </VBox.margin>
+      </Label>
+      <HBox alignment="CENTER" prefHeight="20.0" prefWidth="285.0">
+         <children>
+            <Label fx:id="menuPrice" prefHeight="25.0" prefWidth="168.0" style="-fx-font-weight: 600; -fx-font-size: 16px; -fx-text-fill: #FB9400;">
+               <font>
+                  <Font name="Roboto" size="16.0" />
+               </font>
+               <style>
+            -fx-text-fill: #FB9400;
+            -fx-font-size: 12px;
+         </style>
+               <HBox.margin>
+                  <Insets left="5.0" />
+               </HBox.margin>
+            </Label>
+            <Label prefHeight="17.0" prefWidth="128.0" style="-fx-text-fill: #FB9400; -fx-font-size: 12px;">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
+         </children>
+         <VBox.margin>
+            <Insets top="-3.0" />
+         </VBox.margin>
+      </HBox>
+      <HBox alignment="CENTER" prefHeight="18.0" prefWidth="305.0" spacing="50.0">
+         <children>
+            <Spinner fx:id="addToOrder" prefHeight="9.0" prefWidth="147.0" style="-fx-background-color: white; -fx-border-color: none; -fx-focus-color: transparent;">
+               <HBox.margin>
+                  <Insets top="-5.0" />
+               </HBox.margin>
+            </Spinner>
+         </children>
+      </HBox>
+      <Button fx:id="submitQuantityBtn" mnemonicParsing="false" prefHeight="40.0" prefWidth="141.0" style="-fx-background-color: #FB9400; -fx-text-fill: white; -fx-background-radius: 8; -fx-font-weight: 500; -fx-focus-color: transparent;" text="Add to Cart">
+         <VBox.margin>
+            <Insets />
          </VBox.margin>
       </Button>
    </children>
