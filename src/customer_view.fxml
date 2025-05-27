@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="CustomerViewController">
+<BorderPane maxHeight="Infinity" maxWidth="Infinity" minHeight="720.0" minWidth="1080.0" prefHeight="720.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="CustomerViewController">
    <right>
       <VBox prefHeight="720.0" prefWidth="300.0" style="-fx-background-color: #ecf0f1;" BorderPane.alignment="CENTER">
          <children>
@@ -134,11 +134,11 @@
       </VBox>
    </right>
    <center>
-      <VBox prefHeight="720.0" HBox.hgrow="ALWAYS">
+      <VBox prefHeight="720.0" HBox.hgrow="ALWAYS" maxHeight="Infinity" maxWidth="Infinity">
          <children>
-            <HBox alignment="CENTER" prefHeight="81.0" spacing="10.0" style="-fx-background-color: #F9F9FB;">
+            <HBox alignment="CENTER" prefHeight="81.0" spacing="10.0" style="-fx-background-color: #F9F9FB;" maxHeight="81.0" maxWidth="Infinity">
                <children>
-                  <Label prefHeight="35.0" prefWidth="201.0" stylesheets="@menu-style.css" text="The tastiest Food!">
+                  <Label prefHeight="35.0" prefWidth="201.0" stylesheets="@menu-style.css" text="The tastiest Food!" maxHeight="35.0" maxWidth="201.0">
                      <font>
                         <Font size="24.0" />
                      </font>
@@ -170,25 +170,22 @@
                   <Insets left="25.0" right="25.0" top="10.0" />
                </padding>
             </HBox>
-            <VBox style="-fx-background-color: F9F9FB;" VBox.vgrow="ALWAYS">
+            <VBox style="-fx-background-color: F9F9FB;" VBox.vgrow="ALWAYS" maxHeight="Infinity" maxWidth="Infinity">
                <children>
-                  <Label prefHeight="35.0" stylesheets="@menu-style.css" text="Menu Category">
+                  <Label prefHeight="35.0" stylesheets="@menu-style.css" text="Menu Category" maxHeight="35.0" maxWidth="Infinity">
                      <font>
                         <Font size="21.0" />
                      </font>
                      <padding>
                         <Insets left="25.0" />
                      </padding>
-                     <VBox.margin>
-                        <Insets bottom="10.0" />
-                     </VBox.margin>
                   </Label>
-                     <HBox fx:id="menuTypesContainer" maxWidth="400.0" minHeight="68.0" prefWidth="400.0" spacing="10.0" style="-fx-background-color: #F9F9FB;">
+                  <HBox fx:id="menuTypesContainer" maxWidth="400.0" prefWidth="400.0" spacing="10.0" style="-fx-background-color: #F9F9FB;" maxHeight="Infinity">
                      <padding>
-                        <Insets bottom="15.0" left="25.0" right="25.0" top="7.0" />
+                        <Insets bottom="2.0" left="25.0" right="25.0" top="3.0" />
                      </padding>
                   </HBox>
-                  <ScrollPane fitToWidth="true" styleClass="transparent" stylesheets="@menu-style.css" VBox.vgrow="ALWAYS">
+                  <ScrollPane fitToWidth="true" styleClass="transparent" stylesheets="@menu-style.css" VBox.vgrow="ALWAYS" maxHeight="Infinity" maxWidth="Infinity">
                      <content>
                         <FlowPane fx:id="menuItemsContainer" hgap="15.0" style="-fx-background-color: #F9F9FB;" vgap="15.0">
                            <padding>
@@ -196,11 +193,11 @@
                            </padding>
                         </FlowPane>
                      </content>
-                     <VBox.margin>
-                        <Insets top="10.0" />
-                     </VBox.margin>
                   </ScrollPane>
                </children>
+               <padding>
+                  <Insets top="10.0" />
+               </padding>
             </VBox>
          </children>
       </VBox>
