@@ -167,7 +167,7 @@
                   </HBox>
                </children>
                <padding>
-                  <Insets left="25.0" right="25.0" />
+                  <Insets left="25.0" right="25.0" top="10.0" />
                </padding>
             </HBox>
             <VBox style="-fx-background-color: F9F9FB;" VBox.vgrow="ALWAYS">
@@ -183,7 +183,7 @@
                         <Insets bottom="10.0" />
                      </VBox.margin>
                   </Label>
-                  <HBox fx:id="menuTypesContainer" minHeight="68.0" spacing="10.0" style="-fx-background-color: #F9F9FB;">
+                     <HBox fx:id="menuTypesContainer" maxWidth="400.0" minHeight="68.0" prefWidth="400.0" spacing="10.0" style="-fx-background-color: #F9F9FB;">
                      <padding>
                         <Insets bottom="15.0" left="25.0" right="25.0" top="7.0" />
                      </padding>

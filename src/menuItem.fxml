@@ -9,17 +9,17 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="menuCardContainer" alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="339.0" prefWidth="279.0" spacing="8.0" style="-fx-background-color: white; -fx-background-radius: 10px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 3); -fx-border-radius: 10px; -fx-focus-color: transparent; -fx-faint-focus-color: transparent;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MenuItemController">
+<VBox fx:id="menuCardContainer" alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="322.0" prefWidth="213.0" spacing="8.0" style="-fx-background-color: white; -fx-background-radius: 10px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 3); -fx-border-radius: 10px; -fx-focus-color: transparent; -fx-faint-focus-color: transparent;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MenuItemController">
    <padding>
       <Insets bottom="12.0" left="12.0" right="12.0" />
    </padding>
    <children>
-      <ImageView fx:id="menuImage" fitHeight="173.0" fitWidth="280.0" pickOnBounds="true">
+      <ImageView fx:id="menuImage" fitHeight="144.0" fitWidth="215.0" pickOnBounds="true">
          <VBox.margin>
             <Insets bottom="8.0" />
          </VBox.margin>
       </ImageView>
-      <Label fx:id="menuName" alignment="TOP_LEFT" prefHeight="38.0" prefWidth="300.0" text="Menu Name" textFill="#2c3e50" wrapText="true" style="-fx-font-size: 19px; -fx-font-family: 'Roboto';">
+      <Label fx:id="menuName" alignment="TOP_LEFT" prefHeight="38.0" prefWidth="300.0" style="-fx-font-size: 19px; -fx-font-family: 'Roboto';" text="Menu Name" textFill="#2c3e50" wrapText="true">
          <font>
             <Font name="Roboto" size="19.0" />
          </font>
@@ -27,7 +27,7 @@
             <Insets bottom="3.0" left="5.0" />
          </VBox.margin>
       </Label>
-      <Label prefHeight="19.0" prefWidth="247.0" text="meat, bread salad, tomato, sauce, onion" textFill="#828282" style="-fx-font-size: 13px;">
+      <Label prefHeight="19.0" prefWidth="178.0" style="-fx-font-size: 13px;" text="meat, bread salad, tomato" textFill="#828282">
          <font>
             <Font size="13.0" />
          </font>
@@ -49,7 +49,7 @@
                   <Insets left="5.0" />
                </HBox.margin>
             </Label>
-            <Label prefHeight="17.0" prefWidth="221.0" style="-fx-text-fill: #FB9400; -fx-font-size: 12px;">
+            <Label prefHeight="17.0" prefWidth="128.0" style="-fx-text-fill: #FB9400; -fx-font-size: 12px;">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>

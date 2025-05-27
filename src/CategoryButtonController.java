@@ -29,6 +29,9 @@ public class CategoryButtonController {
                 onClickHandler.run();
             }
         });
+
+        // Prevent text from changing weight on focus/unfocus
+        categoryLabel.setStyle("-fx-font-weight: normal;");
     }
     
     public void setCategory(String category, String iconPath) {

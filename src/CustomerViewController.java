@@ -21,6 +21,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.event.ActionEvent;
 import javafx.stage.Stage;
+import javafx.scene.Node; // Import Node class
 
 public class CustomerViewController implements Initializable {
     @FXML
@@ -85,9 +86,20 @@ public class CustomerViewController implements Initializable {
         menuTypesContainer.getChildren().clear();
 
         // Add "All" button
-        Button allButton = createCategoryButton("All");
-        allButton.getStyleClass().add("active"); // Add active class by default
-        menuTypesContainer.getChildren().add(allButton);
+        FXMLLoader allLoader = new FXMLLoader(getClass().getResource("category_button.fxml"));
+        try {
+            VBox allButton = allLoader.load();
+            CategoryButtonController allController = allLoader.getController();
+            allController.setCategory("All", "/images/all-icon.png");
+            allController.setOnAction(() -> {
+                currentCategory = "All";
+                activateCategoryButton(allController);
+                filterAndDisplayMenuItems();
+            });
+            menuTypesContainer.getChildren().add(allButton);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         // Load categories from database
         MenuItemDAO menuItemDAO = new MenuItemDAO();
@@ -95,31 +107,33 @@ public class CustomerViewController implements Initializable {
 
         // Add category buttons
         for (String category : categories) {
-            Button categoryButton = createCategoryButton(category);
-            menuTypesContainer.getChildren().add(categoryButton);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("category_button.fxml"));
+            try {
+                VBox categoryButton = loader.load();
+                CategoryButtonController controller = loader.getController();
+                controller.setCategory(category, "/images/" + category.toLowerCase() + "-icon.png");
+                controller.setOnAction(() -> {
+                    currentCategory = category;
+                    activateCategoryButton(controller);
+                    filterAndDisplayMenuItems();
+                });
+                menuTypesContainer.getChildren().add(categoryButton);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    private Button createCategoryButton(String category) {
-        Button button = new Button(category);
-        button.getStyleClass().add("category-btn");
-        button.setOnAction(e -> {
-            currentCategory = category;
-            filterAndDisplayMenuItems();
-
-            // Update active state
-            menuTypesContainer.getChildren().forEach(node -> {
-                if (node instanceof Button) {
-                    Button btn = (Button) node;
-                    if (btn.getText().equals(currentCategory)) {
-                        btn.getStyleClass().add("active");
-                    } else {
-                        btn.getStyleClass().remove("active");
-                    }
+    private void activateCategoryButton(CategoryButtonController activeController) {
+        for (Node node : menuTypesContainer.getChildren()) {
+            if (node instanceof VBox) {
+                VBox vbox = (VBox) node;
+                CategoryButtonController controller = (CategoryButtonController) vbox.getUserData();
+                if (controller != null) {
+                    controller.setActive(controller == activeController);
                 }
-            });
-        });
-        return button;
+            }
+        }
     }
 
     private void setupDeliveryPartners() {
@@ -156,18 +170,37 @@ public class CustomerViewController implements Initializable {
     private void displayMenuItem(MenuItem item) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("menuItem.fxml"));
-            if (loader.getLocation() == null) {
-                System.err.println("Error: Could not find menuItem.fxml");
-                return;
-            }
-
             VBox menuCard = loader.load();
 
             ImageView imageView = (ImageView) menuCard.lookup("#menuImage");
             Label nameLabel = (Label) menuCard.lookup("#menuName");
             Label priceLabel = (Label) menuCard.lookup("#menuPrice");
-            Spinner<Integer> quantitySpinner = (Spinner<Integer>) menuCard.lookup("#addToOrder");
+            Spinner<?> spinnerNode = (Spinner<?>) menuCard.lookup("#addToOrder");
             Button submitBtn = (Button) menuCard.lookup("#submitQuantityBtn");
+
+            if (spinnerNode instanceof Spinner) {
+                Spinner<Integer> quantitySpinner = (Spinner<Integer>) spinnerNode;
+
+                // Configure spinner with proper bounds and start from 1
+                SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10, 1);
+                quantitySpinner.setValueFactory(valueFactory);
+                quantitySpinner.setEditable(true);
+                menuSpinners.put(item.getId(), quantitySpinner);
+
+                // Restore quantity if item is in cart
+                CartItem cartItem = cartItems.get(item.getId());
+                if (cartItem != null) {
+                    quantitySpinner.getValueFactory().setValue(cartItem.getQuantity());
+                }
+
+                // Add to cart action
+                submitBtn.setOnAction(e -> {
+                    int quantity = quantitySpinner.getValue();
+                    if (quantity > 0) {
+                        addToCart(item, quantity);
+                    }
+                });
+            }
 
             // Try to load the image
             String imagePath = item.getImagePath();
@@ -205,25 +238,6 @@ public class CustomerViewController implements Initializable {
             nameLabel.setText(item.getName());
             priceLabel.setText(String.format("%.2f DA", item.getPrice()));
 
-            // Configure spinner with proper bounds and start from 1
-            SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10, 1);
-            quantitySpinner.setValueFactory(valueFactory);
-            quantitySpinner.setEditable(true);
-            menuSpinners.put(item.getId(), quantitySpinner);
-
-            // Restore quantity if item is in cart
-            CartItem cartItem = cartItems.get(item.getId());
-            if (cartItem != null) {
-                quantitySpinner.getValueFactory().setValue(cartItem.getQuantity());
-            }
-
-            // Add to cart action
-            submitBtn.setOnAction(e -> {
-                int quantity = quantitySpinner.getValue();
-                if (quantity > 0) {
-                    addToCart(item, quantity);
-                }
-            });
 
             menuItemsContainer.getChildren().add(menuCard);
 

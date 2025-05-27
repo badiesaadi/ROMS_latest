@@ -183,7 +183,7 @@
                         <Insets bottom="10.0" />
                      </VBox.margin>
                   </Label>
-                  <HBox fx:id="menuTypesContainer" minHeight="68.0" spacing="10.0" style="-fx-background-color: #F9F9FB;">
+                     <HBox fx:id="menuTypesContainer" minHeight="68.0" spacing="10.0" style="-fx-background-color: #F9F9FB;" prefWidth="400.0" maxWidth="400.0">
                      <padding>
                         <Insets bottom="15.0" left="25.0" right="25.0" top="7.0" />
                      </padding>
