@@ -67,7 +67,8 @@ public class CustomerViewController implements Initializable {
         setupSearch();
         setupCategoryButtons();
         setupDeliveryPartners();
-        displayMenuItems();
+        currentCategory = "All"; // Ensure "All" is selected initially
+        filterAndDisplayMenuItems(); // Sort and display items initially
     }
 
     // Method to access orders from other controllers
@@ -159,11 +160,21 @@ public class CustomerViewController implements Initializable {
         String searchText = searchField.getText().toLowerCase();
         menuItemsContainer.getChildren().clear();
 
+        List<MenuItem> filteredItems = new ArrayList<>();
+
         for (MenuItem item : menuItems) {
             if ((currentCategory.equals("All") || item.getCategory().equals(currentCategory)) &&
                     (searchText.isEmpty() || item.getName().toLowerCase().contains(searchText))) {
-                displayMenuItem(item);
+                filteredItems.add(item);
             }
+        }
+
+        if (currentCategory.equals("All")) {
+            filteredItems.sort((item1, item2) -> item1.getCategory().compareTo(item2.getCategory()));
+        }
+
+        for (MenuItem item : filteredItems) {
+            displayMenuItem(item);
         }
     }
 
@@ -238,6 +249,11 @@ public class CustomerViewController implements Initializable {
             nameLabel.setText(item.getName());
             priceLabel.setText(String.format("%.2f DA", item.getPrice()));
 
+            menuCard.setOnMouseClicked(event -> {
+                currentCategory = item.getCategory();
+                filterAndDisplayMenuItems();
+                setupCategoryButtons(); // Update category buttons to reflect the selection
+            });
 
             menuItemsContainer.getChildren().add(menuCard);
 
