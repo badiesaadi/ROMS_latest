@@ -9,6 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Alert;
 import javafx.stage.Modality;
 import java.io.IOException;
+import javafx.scene.text.Font; // Import Font class
 
 public class WelcomeController {
     @FXML
@@ -19,6 +20,23 @@ public class WelcomeController {
         try {
             Parent nextPage = FXMLLoader.load(getClass().getResource("customer_view.fxml"));
             Scene nextScene = new Scene(nextPage);
+
+            // Load custom font
+            Font customFont = Font.loadFont(
+                getClass().getResourceAsStream("./tommy-mid.otf"), 
+                20
+            );
+
+            if (customFont == null) {
+                System.out.println("Error: Font file not loaded");
+                // Fallback to a default font
+                nextScene.getRoot().setStyle("-fx-font-family: 'Arial';");
+            } else {
+                System.out.println("Font loaded: " + customFont.getFamily());
+                // Apply the custom font globally
+                nextScene.getRoot().setStyle("-fx-font-family: '" + customFont.getFamily() + "';");
+            }
+
             Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             currentStage.setScene(nextScene);
             currentStage.setWidth(1100);

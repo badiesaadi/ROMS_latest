@@ -31,6 +31,10 @@ copy ..\src\*.fxml ..\bin\
 copy ..\src\*.css ..\bin\
 copy ..\src\*.sql ..\bin\
 
+rem Copy the font file to the bin directory
+echo Copying font files...
+copy ..\src\*.otf ..\bin\
+
 if not exist ..\bin\images mkdir ..\bin\images
 if exist ..\src\images xcopy /E /I ..\src\images ..\bin\images
 if exist images xcopy /E /I images ..\bin\images
