@@ -37,7 +37,7 @@
       </Label>
       <HBox alignment="CENTER" prefHeight="20.0" prefWidth="285.0">
          <children>
-            <Label fx:id="menuPrice" prefHeight="20.0" prefWidth="120.0" style="-fx-font-weight: 600; -fx-font-size: 16px; -fx-text-fill: #FB9400;">
+            <Label fx:id="menuPrice" prefHeight="25.0" prefWidth="168.0" style="-fx-font-weight: 600; -fx-font-size: 16px; -fx-text-fill: #FB9400;">
                <font>
                   <Font name="Roboto" size="16.0" />
                </font>
