@@ -2,7 +2,6 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
@@ -18,32 +17,7 @@
    <right>
       <VBox prefHeight="720.0" prefWidth="300.0" style="-fx-background-color: #ecf0f1;" BorderPane.alignment="CENTER">
          <children>
-            <HBox alignment="CENTER" prefHeight="50.0" prefWidth="300.0" style="-fx-background-color: #3498db;">
-               <children>
-                  <Label text="Delivery Options" textFill="WHITE">
-                     <font>
-                        <Font name="System Bold" size="16.0" />
-                     </font>
-                  </Label>
-               </children>
-            </HBox>
-            <VBox alignment="CENTER" prefHeight="80.0" prefWidth="300.0" spacing="5.0" style="-fx-background-color: white;">
-               <children>
-                  <Label text="Select a delivery partner:" textFill="#2c3e50">
-                     <font>
-                        <Font name="System Bold" size="12.0" />
-                     </font>
-                     <VBox.margin>
-                        <Insets bottom="5.0" />
-                     </VBox.margin>
-                  </Label>
-                  <ComboBox fx:id="deliveryPartnerComboBox" prefHeight="35.0" prefWidth="260.0" promptText="Select delivery partner" style="-fx-background-color: white; -fx-border-color: #3498db; -fx-border-radius: 4;" />
-               </children>
-               <padding>
-                  <Insets bottom="5.0" top="5.0" />
-               </padding>
-            </VBox>
-            <ScrollPane prefHeight="450.0" prefWidth="300.0" style="-fx-background-color: white;" styleClass="transparent" stylesheets="@menu-style.css">
+            <ScrollPane prefHeight="613.0" prefWidth="300.0" style="-fx-background-color: white;" styleClass="transparent" stylesheets="@menu-style.css">
                <content>
                   <VBox fx:id="cartItemsContainer" prefWidth="280.0" spacing="10.0">
                      <padding>
@@ -52,7 +26,7 @@
                   </VBox>
                </content>
             </ScrollPane>
-            <VBox prefHeight="160.0" prefWidth="300.0" spacing="10.0">
+            <VBox prefHeight="179.0" prefWidth="300.0" spacing="10.0">
                <children>
 
                   <HBox alignment="CENTER" prefWidth="300.0">

@@ -26,9 +26,6 @@ import javafx.scene.Node; // Import Node class
 public class CustomerViewController implements Initializable {
     @FXML
     private VBox cartItemsContainer;
-    //check this 
-    @FXML
-    private ComboBox<String> deliveryPartnerComboBox;
 
     @FXML
     private FlowPane menuItemsContainer;
@@ -67,7 +64,6 @@ public class CustomerViewController implements Initializable {
         loadMenuItems();
         setupSearch();
         setupCategoryButtons();
-        setupDeliveryPartners();
         //check this (already set it to "All")
         currentCategory = "All"; // Ensure "All" is selected initially
         filterAndDisplayMenuItems(); // Sort and display items initially
@@ -140,19 +136,7 @@ public class CustomerViewController implements Initializable {
         }
     }
 
-    //check this
-    private void setupDeliveryPartners() {
-        List<String> partners = new ArrayList<>();
-        partners.add("Yassir");
-        partners.add("WhatsApp - Ahmed (+213 555 12 34 56)");
-        partners.add("WhatsApp - Karim (+213 555 78 90 12)");
-        partners.add("WhatsApp - Mohamed (+213 555 34 56 78)");
-        partners.add("Self Pickup");
-
-        deliveryPartnerComboBox.getItems().addAll(partners);
-        deliveryPartnerComboBox.setValue(partners.get(0)); // Default to Yassir
-    }
-
+   
     private void displayMenuItems() {
         menuItemsContainer.getChildren().clear();
         for (MenuItem item : menuItems) {
@@ -489,7 +473,8 @@ public class CustomerViewController implements Initializable {
         }
 
         String notes = notesTextArea.getText();
-        Order order = new Order(new ArrayList<>(cartItems.values()), total, deliveryPartnerComboBox.getValue(), notes);
+        //check this you need to delete delivery partner from 
+        Order order = new Order(new ArrayList<>(cartItems.values()), total, "hello", notes);
         OrderDAO orderDAO = new OrderDAO();
         int orderId = orderDAO.createOrder(order);
 
