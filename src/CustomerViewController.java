@@ -40,9 +40,7 @@ public class CustomerViewController implements Initializable {
     private Button cancelBtn;
     @FXML
     private Button placeOrderBtn;
-    //check this 
-    @FXML
-    private TextArea notesTextArea;
+
 
     private List<MenuItem> menuItems = new ArrayList<>();
     private Map<Integer, CartItem> cartItems = new HashMap<>();
@@ -472,9 +470,8 @@ public class CustomerViewController implements Initializable {
             return;
         }
 
-        String notes = notesTextArea.getText();
         //check this you need to delete delivery partner from 
-        Order order = new Order(new ArrayList<>(cartItems.values()), total, "hello", notes);
+        Order order = new Order(new ArrayList<>(cartItems.values()), total, "aa", "zzzz");
         OrderDAO orderDAO = new OrderDAO();
         int orderId = orderDAO.createOrder(order);
 
@@ -484,7 +481,6 @@ public class CustomerViewController implements Initializable {
             menuSpinners.values().forEach(spinner -> spinner.getValueFactory().setValue(0));
             updateCartDisplay();
             updateCartSummary();
-            notesTextArea.clear();
         } else {
             showAlert("Error", "Failed to place order. Please try again.");
         }
