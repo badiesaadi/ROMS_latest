@@ -471,7 +471,7 @@ public class CustomerViewController implements Initializable {
         }
 
         //check this you need to delete delivery partner from 
-        Order order = new Order(new ArrayList<>(cartItems.values()), total, "aa", "zzzz");
+        Order order = new Order(new ArrayList<>(cartItems.values()), total);
         OrderDAO orderDAO = new OrderDAO();
         int orderId = orderDAO.createOrder(order);
 

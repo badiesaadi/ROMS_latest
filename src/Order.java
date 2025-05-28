@@ -32,7 +32,6 @@ public class Order {
     private int customerId;
     private int staffId;
     private List<OrderItem> items;
-    private String notes;
     private int kitchenId;
     private String managerId;
 
@@ -42,9 +41,8 @@ public class Order {
         this.status = OrderStatus.QUEUED;
     }
 
-    public Order(List<CartItem> cartItems, double total, String deliveryPartner, String notes) {
+    public Order(List<CartItem> cartItems, double total) {
         this();
-        this.notes = notes;
         for (CartItem cartItem : cartItems) {
             this.items.add(new OrderItem(cartItem.getMenuItem(), cartItem.getQuantity()));
         }
@@ -98,13 +96,6 @@ public class Order {
         this.items = items;
     }
 
-    public String getNotes() {
-        return notes;
-    }
-
-    public void setNotes(String notes) {
-        this.notes = notes;
-    }
 
     public int getKitchenId() {
         return kitchenId;
