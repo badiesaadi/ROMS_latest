@@ -159,10 +159,10 @@ public class AdminDashboardController implements Initializable {
     }
 
     private void setupTable() {
-        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        idColumn.setCellValueFactory(new PropertyValueFactory<>("itemId"));
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
-        categoryColumn.setCellValueFactory(new PropertyValueFactory<>("category"));
+        categoryColumn.setCellValueFactory(new PropertyValueFactory<>("categoryTitle"));
         imagePathColumn.setCellValueFactory(new PropertyValueFactory<>("imagePath"));
 
         menuItemsTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
@@ -252,9 +252,9 @@ public class AdminDashboardController implements Initializable {
     }
 
     private void populateForm(MenuItem item) {
-        menuNameField.setText(item.getName());
+        menuNameField.setText(item.getTitle());
         menuPriceField.setText(String.valueOf(item.getPrice()));
-        categoryComboBox.setValue(item.getCategory());
+        categoryComboBox.setValue(item.getCategoryTitle());
         imagePathField.setText(item.getImagePath());
 
         addButton.setDisable(true);
@@ -406,16 +406,16 @@ public class AdminDashboardController implements Initializable {
     private void handleAddItem(ActionEvent event) {
         if (validateInputs()) {
             try {
-                String name = menuNameField.getText();
+                String title = menuNameField.getText();
                 double price = Double.parseDouble(menuPriceField.getText());
-                String category = categoryComboBox.getValue();
+                String categoryTitle = categoryComboBox.getValue();
                 String imagePath = imagePathField.getText();
 
                 try {
                     Connection conn = DatabaseConnection.getConnection();
                     String sql = "INSERT IGNORE INTO Category (title) VALUES (?)";
                     try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-                        pstmt.setString(1, category);
+                        pstmt.setString(1, categoryTitle);
                         pstmt.executeUpdate();
                     }
                 } catch (SQLException e) {
@@ -425,16 +425,17 @@ public class AdminDashboardController implements Initializable {
                 }
 
                 MenuItem newItem = new MenuItem();
-                newItem.setName(name);
+                newItem.setTitle(title);
                 newItem.setPrice(price);
-                newItem.setCategory(category);
+                newItem.setCategoryTitle(categoryTitle);
                 newItem.setImagePath(imagePath);
+                newItem.setKitchenId(0); // Default to 0, will be set to NULL if invalid
 
                 MenuItemDAO menuItemDAO = new MenuItemDAO();
                 int newId = menuItemDAO.insertMenuItem(newItem);
 
                 if (newId > 0) {
-                    newItem.setId(newId);
+                    newItem.setItemId(newId);
                     menuItems.add(newItem);
                     menuItemsTable.setItems(FXCollections.observableArrayList(menuItems));
                     statusLabel.setText("Menu item added successfully with ID: " + newId);
@@ -443,13 +444,14 @@ public class AdminDashboardController implements Initializable {
                 } else {
                     statusLabel.setText("Failed to add item to database. Adding to local list only.");
                     statusLabel.setTextFill(Color.ORANGE);
-                    newItem.setId(getNextAvailableId());
+                    newItem.setItemId(getNextAvailableId());
                     menuItems.add(newItem);
                     menuItemsTable.setItems(FXCollections.observableArrayList(menuItems));
                 }
             } catch (Exception e) {
                 statusLabel.setText("Error: " + e.getMessage());
                 statusLabel.setTextFill(Color.RED);
+                e.printStackTrace();
             }
         }
     }
@@ -459,15 +461,33 @@ public class AdminDashboardController implements Initializable {
         MenuItem selectedItem = menuItemsTable.getSelectionModel().getSelectedItem();
         if (selectedItem != null && validateInputs()) {
             try {
-                String name = menuNameField.getText();
+                String title = menuNameField.getText();
                 double price = Double.parseDouble(menuPriceField.getText());
-                String category = categoryComboBox.getValue();
+                String categoryTitle = categoryComboBox.getValue();
                 String imagePath = imagePathField.getText();
 
-                selectedItem.setName(name);
+                // Ensure category exists
+                try {
+                    Connection conn = DatabaseConnection.getConnection();
+                    String sql = "INSERT IGNORE INTO Category (title) VALUES (?)";
+                    try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                        pstmt.setString(1, categoryTitle);
+                        pstmt.executeUpdate();
+                    }
+                } catch (SQLException e) {
+                    statusLabel.setText("Error ensuring category exists: " + e.getMessage());
+                    statusLabel.setTextFill(Color.RED);
+                    return;
+                }
+
+                selectedItem.setTitle(title);
                 selectedItem.setPrice(price);
-                selectedItem.setCategory(category);
+                selectedItem.setCategoryTitle(categoryTitle);
                 selectedItem.setImagePath(imagePath);
+                // Keep existing kitchenId, or set to 0 if not set
+                if (selectedItem.getKitchenId() == 0) {
+                    selectedItem.setKitchenId(0);
+                }
 
                 MenuItemDAO menuItemDAO = new MenuItemDAO();
                 boolean updated = menuItemDAO.updateMenuItem(selectedItem);
@@ -484,8 +504,9 @@ public class AdminDashboardController implements Initializable {
 
                 clearForm();
             } catch (Exception e) {
-                statusLabel.setText("Error: " + e.getMessage());
+                statusLabel.setText("Error updating item: " + e.getMessage());
                 statusLabel.setTextFill(Color.RED);
+                e.printStackTrace();
             }
         } else {
             statusLabel.setText("Please select an item to update and provide valid inputs");
@@ -499,7 +520,7 @@ public class AdminDashboardController implements Initializable {
         if (selectedItem != null) {
             try {
                 MenuItemDAO menuItemDAO = new MenuItemDAO();
-                boolean deleted = menuItemDAO.deleteMenuItem(selectedItem.getId());
+                boolean deleted = menuItemDAO.deleteMenuItem(selectedItem.getItemId());
 
                 if (deleted) {
                     menuItems.remove(selectedItem);
@@ -517,6 +538,7 @@ public class AdminDashboardController implements Initializable {
             } catch (Exception e) {
                 statusLabel.setText("Error: " + e.getMessage());
                 statusLabel.setTextFill(Color.RED);
+                e.printStackTrace();
             }
         } else {
             statusLabel.setText("Please select an item to delete");
@@ -642,7 +664,7 @@ public class AdminDashboardController implements Initializable {
 
     private int getNextAvailableId() {
         return menuItems.stream()
-                .mapToInt(MenuItem::getId)
+                .mapToInt(MenuItem::getItemId)
                 .max()
                 .orElse(0) + 1;
     }
