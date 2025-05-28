@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="staff-login-pane" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/17.0.15" xmlns:fx="http://javafx.com/fxml/1" fx:controller="SignupController">
+   <center>
+      <VBox alignment="CENTER" prefHeight="500.0" prefWidth="400.0" spacing="20.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label text="Sign up to manage your restaurant" styleClass="subtitle-label">
+               <font>
+                  <Font name="MADE Tommy Soft" size="18.0" />
+               </font>
+            </Label>
+            <VBox  prefWidth="350.0" spacing="20.0" styleClass="login-form">
+               <children>
+                  <Label text="Username" styleClass="input-label">
+                     <font>
+                        <Font name="MADE Tommy Soft" size="14.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="usernameField" prefWidth="300.0" promptText="Enter username" styleClass="input-field" />
+                  <Label text="Password" styleClass="input-label">
+                     <font>
+                        <Font name="MADE Tommy Soft" size="14.0" />
+                     </font>
+                  </Label>
+                  <PasswordField fx:id="passwordField" prefWidth="300.0" promptText="Enter password" styleClass="input-field" />
+                    <Label fx:id="statusLabel" textFill="RED" visible="false" />
+                    <Button text="Sign Up" onAction="#handleSignup" >
+                     <font>
+                        <Font name="MADE Tommy Soft" size="16.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets top="20.0" />
+                     </VBox.margin>
+                  </Button>
+               </children>
+            </VBox>
+         </children>
+      </VBox>
+   </center>
+</BorderPane>

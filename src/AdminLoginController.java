@@ -1,4 +1,8 @@
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -20,25 +24,45 @@ public class AdminLoginController {
     @FXML private RadioButton adminRadio;
     @FXML private RadioButton kitchenRadio;
     @FXML private ToggleGroup loginType;
+    @FXML private Button signupButton;
 
     @FXML
     private void handleLogin(ActionEvent event) {
-        String username = usernameField.getText();
-        String password = passwordField.getText();
+        String username = usernameField.getText().trim();
+        String password = passwordField.getText().trim();
 
-        // Simple hardcoded authentication
-        // Admin: username: admin, password: admin
-        // Kitchen: username: kitchen, password: kitchen
-
-        boolean isAdmin = adminRadio.isSelected();
-
-        if (isAdmin && username.equals("admin") && password.equals("admin")) {
-            loadDashboard("admin_dashboard.fxml", "Restaurant Admin Dashboard");
-        } else if (!isAdmin && username.equals("kitchen") && password.equals("kitchen")) {
-            loadDashboard("kitchen_dashboard.fxml", "Kitchen Dashboard");
-        } else {
-            errorLabel.setText("Invalid username or password");
+        if (username.isEmpty() || password.isEmpty()) {
+            errorLabel.setText("Username and password are required.");
             errorLabel.setVisible(true);
+            return;
+        }
+
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            String sql = "SELECT role FROM users WHERE username = ? AND mot_de_pass = ?";
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setString(1, username);
+                pstmt.setString(2, password);
+                ResultSet rs = pstmt.executeQuery();
+
+                if (rs.next()) {
+                    String role = rs.getString("role");
+                    if (role.equals("manager")) {
+                        loadDashboard("admin_dashboard.fxml", "Restaurant Admin Dashboard");
+                    } else if (role.equals("kitchen")) {
+                        loadDashboard("kitchen_dashboard.fxml", "Kitchen Dashboard");
+                    } else {
+                        errorLabel.setText("Invalid role.");
+                        errorLabel.setVisible(true);
+                    }
+                } else {
+                    errorLabel.setText("Invalid username or password.");
+                    errorLabel.setVisible(true);
+                }
+            }
+        } catch (SQLException e) {
+            errorLabel.setText("Database error: " + e.getMessage());
+            errorLabel.setVisible(true);
+            e.printStackTrace();
         }
     }
 
@@ -78,6 +102,43 @@ public class AdminLoginController {
             stage.show();
         } catch (IOException e) {
             errorLabel.setText("Error loading customer view: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleSignup(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("signup.fxml"));
+            Parent root = loader.load();
+
+            Scene scene = new Scene(root);
+            Stage stage = (Stage) signupButton.getScene().getWindow();
+            stage.setScene(scene);
+            stage.setTitle("Sign Up");
+            stage.centerOnScreen();
+            stage.show();
+        } catch (IOException e) {
+            errorLabel.setText("Error loading signup page: " + e.getMessage());
+            errorLabel.setVisible(true);
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void initialize() {
+        try {
+            Connection conn = DatabaseConnection.getConnection();
+            String sql = "SELECT COUNT(*) FROM users";
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                ResultSet rs = pstmt.executeQuery();
+                if (rs.next() && rs.getInt(1) == 0) {
+                    signupButton.setVisible(true);
+                }
+            }
+        } catch (SQLException e) {
+            errorLabel.setText("Database error: " + e.getMessage());
+            errorLabel.setVisible(true);
             e.printStackTrace();
         }
     }

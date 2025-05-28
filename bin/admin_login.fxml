@@ -73,6 +73,7 @@
                         <Insets top="20.0" />
                      </VBox.margin>
                   </Button>
+                  <Button fx:id="signupButton" text="Sign Up" visible="false" onAction="#handleSignup" />
                </children>
                <padding>
                   <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
