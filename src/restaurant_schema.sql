@@ -99,3 +99,10 @@ CREATE TABLE feedback (
     rating INT NOT NULL CHECK (rating BETWEEN 1 AND 5),
     submission_date TIMESTAMP NOT NULL
 );
+
+-- CREATE table users(
+--     user_id INT AUTO_INCREMENT PRIMARY KEY,
+--     username VARCHAR(225) NOT NULL,
+--     role ENUM('manager', 'kitchen') NOT NULL,
+--     mot_de_pass VARCHAR(100) NOT NULL
+-- )
