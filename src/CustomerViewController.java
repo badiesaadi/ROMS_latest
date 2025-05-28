@@ -26,6 +26,7 @@ import javafx.scene.Node; // Import Node class
 public class CustomerViewController implements Initializable {
     @FXML
     private VBox cartItemsContainer;
+    //check this 
     @FXML
     private ComboBox<String> deliveryPartnerComboBox;
     @FXML
@@ -36,8 +37,10 @@ public class CustomerViewController implements Initializable {
     private HBox menuTypesContainer;
     @FXML
     private TextField searchField;
+    //check this 
     @FXML
     private Label subTotalLabel;
+    //check this 
     @FXML
     private Label taxLabel;
     @FXML
@@ -46,6 +49,7 @@ public class CustomerViewController implements Initializable {
     private Button cancelBtn;
     @FXML
     private Button placeOrderBtn;
+    //check this 
     @FXML
     private TextArea notesTextArea;
 
@@ -53,12 +57,15 @@ public class CustomerViewController implements Initializable {
     private Map<Integer, CartItem> cartItems = new HashMap<>();
     private Map<Integer, Spinner<Integer>> menuSpinners = new HashMap<>();
     private String currentCategory = "All";
+    //check these
     private double subTotal = 0.0;
     private double discount = 0.0;
     private double tax = 0.0;
+
     private double total = 0.0;
 
     // Static list to store orders across the application
+    //check this
     private static List<Order> allOrders = new ArrayList<>();
 
     @Override
@@ -67,11 +74,13 @@ public class CustomerViewController implements Initializable {
         setupSearch();
         setupCategoryButtons();
         setupDeliveryPartners();
+        //check this (already set it to "All")
         currentCategory = "All"; // Ensure "All" is selected initially
         filterAndDisplayMenuItems(); // Sort and display items initially
     }
 
     // Method to access orders from other controllers
+    //check this 
     public static List<Order> getAllOrders() {
         return allOrders;
     }
@@ -137,6 +146,7 @@ public class CustomerViewController implements Initializable {
         }
     }
 
+    //check this
     private void setupDeliveryPartners() {
         List<String> partners = new ArrayList<>();
         partners.add("Yassir");
