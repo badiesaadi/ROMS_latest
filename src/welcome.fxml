@@ -47,6 +47,11 @@
                         <Font name="Montserrat Bold" size="16.0" />
                     </font>
                 </Button>
+                <Button text="Admin Login" fx:id="loginBtn" onAction="#handleLogin" styleClass="action-button">
+                    <font>
+                        <Font name="Montserrat Bold" size="16.0" />
+                    </font>
+                </Button>
                 <Button text="Share Your Experience" onAction="#handleFeedback" styleClass="action-button">
                     <font>
                         <Font name="Montserrat Bold" size="16.0" />
