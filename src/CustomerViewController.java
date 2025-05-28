@@ -26,32 +26,21 @@ import javafx.scene.Node; // Import Node class
 public class CustomerViewController implements Initializable {
     @FXML
     private VBox cartItemsContainer;
-    //check this 
-    @FXML
-    private ComboBox<String> deliveryPartnerComboBox;
-    @FXML
-    private Label discountLabel;
+
     @FXML
     private FlowPane menuItemsContainer;
     @FXML
     private HBox menuTypesContainer;
     @FXML
     private TextField searchField;
-    //check this 
-    @FXML
-    private Label subTotalLabel;
-    //check this 
-    @FXML
-    private Label taxLabel;
+
     @FXML
     private Label totalLabel;
     @FXML
     private Button cancelBtn;
     @FXML
     private Button placeOrderBtn;
-    //check this 
-    @FXML
-    private TextArea notesTextArea;
+
 
     private List<MenuItem> menuItems = new ArrayList<>();
     private Map<Integer, CartItem> cartItems = new HashMap<>();
@@ -73,7 +62,6 @@ public class CustomerViewController implements Initializable {
         loadMenuItems();
         setupSearch();
         setupCategoryButtons();
-        setupDeliveryPartners();
         //check this (already set it to "All")
         currentCategory = "All"; // Ensure "All" is selected initially
         filterAndDisplayMenuItems(); // Sort and display items initially
@@ -146,19 +134,7 @@ public class CustomerViewController implements Initializable {
         }
     }
 
-    //check this
-    private void setupDeliveryPartners() {
-        List<String> partners = new ArrayList<>();
-        partners.add("Yassir");
-        partners.add("WhatsApp - Ahmed (+213 555 12 34 56)");
-        partners.add("WhatsApp - Karim (+213 555 78 90 12)");
-        partners.add("WhatsApp - Mohamed (+213 555 34 56 78)");
-        partners.add("Self Pickup");
-
-        deliveryPartnerComboBox.getItems().addAll(partners);
-        deliveryPartnerComboBox.setValue(partners.get(0)); // Default to Yassir
-    }
-
+   
     private void displayMenuItems() {
         menuItemsContainer.getChildren().clear();
         for (MenuItem item : menuItems) {
@@ -205,7 +181,7 @@ public class CustomerViewController implements Initializable {
                 // Configure spinner with proper bounds and start from 1
                 SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10, 1);
                 quantitySpinner.setValueFactory(valueFactory);
-                quantitySpinner.setEditable(true);
+                quantitySpinner.setEditable(false);
                 menuSpinners.put(item.getId(), quantitySpinner);
 
                 // Restore quantity if item is in cart
@@ -272,6 +248,8 @@ public class CustomerViewController implements Initializable {
             e.printStackTrace();
         }
     }
+
+    //check this
 
     // Helper method to create a colored placeholder for missing images
     private void createColoredPlaceholder(ImageView imageView, String category) {
@@ -446,16 +424,11 @@ public class CustomerViewController implements Initializable {
     }
 
     private void updateCartSummary() {
-        subTotal = cartItems.values().stream()
+        total = cartItems.values().stream()
                 .mapToDouble(CartItem::getTotal)
                 .sum();
 
-        tax = subTotal * 0.1;
-        total = subTotal + tax - discount;
 
-        subTotalLabel.setText(String.format("%.2f DA", subTotal));
-        taxLabel.setText(String.format("%.2f DA", tax));
-        discountLabel.setText(String.format("%.2f DA", discount));
         totalLabel.setText(String.format("%.2f DA", total));
     }
 
@@ -497,83 +470,25 @@ public class CustomerViewController implements Initializable {
             return;
         }
 
-        String notes = notesTextArea.getText();
-        Order order = new Order(new ArrayList<>(cartItems.values()), total, deliveryPartnerComboBox.getValue(), notes);
+        //check this you need to delete delivery partner from 
+        Order order = new Order(new ArrayList<>(cartItems.values()), total);
         OrderDAO orderDAO = new OrderDAO();
         int orderId = orderDAO.createOrder(order);
 
+        String orderDetails = new String();
+        orderDetails = orderDetails + ("Your order has been pl aced successfully.\n\n");
+        orderDetails =orderDetails +("Order ID: ") + (orderId) +("\n") ;
+        orderDetails =orderDetails +("Total Items: ")  + (cartItems.size()) +("\n");
+        orderDetails = orderDetails +("Total Amount: ") +(String.format("%.2f", total)) + ("\n\n");
+
         if (orderId > 0) {
-            showAlert("Order Placed", "Your order has been placed successfully. Order ID: " + orderId);
+            showAlert("Order Placed", orderDetails);
             cartItems.clear();
             menuSpinners.values().forEach(spinner -> spinner.getValueFactory().setValue(0));
             updateCartDisplay();
             updateCartSummary();
-            notesTextArea.clear();
         } else {
             showAlert("Error", "Failed to place order. Please try again.");
-        }
-    }
-
-    private void updateCart() {
-        cartItemsContainer.getChildren().clear();
-        for (CartItem cartItem : cartItems.values()) {
-            try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("cart_item.fxml"));
-                VBox cartItemBox = loader.load();
-
-                MenuItem item = cartItem.getMenuItem();
-
-                Label foodNameLabel = (Label) cartItemBox.lookup("#foodNameLabel");
-                Label priceLabel = (Label) cartItemBox.lookup("#priceLabel");
-                Label quantityLabel = (Label) cartItemBox.lookup("#quantityLabel");
-                Button plusBtn = (Button) cartItemBox.lookup("#plusBtn");
-                Button minusBtn = (Button) cartItemBox.lookup("#minusBtn");
-                Button deleteButton = (Button) cartItemBox.lookup("#deleteButton");
-
-                foodNameLabel.setText(item.getName());
-                priceLabel.setText(String.format("%.2f DA", cartItem.getTotal()));
-                quantityLabel.setText(String.valueOf(cartItem.getQuantity()));
-
-                Spinner<Integer> menuSpinner = menuSpinners.get(item.getId());
-
-                plusBtn.setOnAction(e -> {
-                    int newQuantity = cartItem.getQuantity() + 1;
-                    if (newQuantity <= 10) {
-                        cartItem.setQuantity(newQuantity);
-                        if (menuSpinner != null) {
-                            menuSpinner.getValueFactory().setValue(newQuantity);
-                        }
-                        updateCartDisplay();
-                        updateCartSummary();
-                    }
-                });
-
-                minusBtn.setOnAction(e -> {
-                    if (cartItem.getQuantity() > 1) {
-                        int newQuantity = cartItem.getQuantity() - 1;
-                        cartItem.setQuantity(newQuantity);
-                        if (menuSpinner != null) {
-                            menuSpinner.getValueFactory().setValue(newQuantity);
-                        }
-                        updateCartDisplay();
-                        updateCartSummary();
-                    }
-                });
-
-                deleteButton.setOnAction(e -> {
-                    cartItems.remove(item.getId());
-                    if (menuSpinner != null) {
-                        menuSpinner.getValueFactory().setValue(0);
-                    }
-                    updateCartDisplay();
-                    updateCartSummary();
-                });
-
-                cartItemsContainer.getChildren().add(cartItemBox);
-
-            } catch (IOException e) {
-                System.out.println("Error loading cart item: " + e.getMessage());
-            }
         }
     }
 

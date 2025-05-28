@@ -27,7 +27,7 @@
             <Insets bottom="3.0" left="5.0" />
          </VBox.margin>
       </Label>
-      <Label prefHeight="19.0" prefWidth="178.0" style="-fx-font-size: 13px;" text="meat, bread salad, tomato" textFill="#828282">
+      <Label prefHeight="19.0" prefWidth="178.0" style="-fx-font-size: 13px;" textFill="#828282">
          <font>
             <Font size="13.0" />
          </font>

@@ -58,8 +58,8 @@ public class KitchenDashboardController implements Initializable {
     // Order Details
     @FXML
     private Label selectedOrderIdLabel;
-    @FXML
-    private TextArea orderNotesField;
+    // @FXML
+    // private TextArea orderNotesField;
     @FXML
     private ComboBox<Order.OrderStatus> statusComboBox;
     @FXML
@@ -246,8 +246,8 @@ public class KitchenDashboardController implements Initializable {
         items2.add(new CartItem(new MenuItem(4, "Meat burger", 5.95, "Burger", "", 1), 3));
         items2.add(new CartItem(new MenuItem(5, "Fresh melon juice", 3.95, "Drinks", "", 1), 3));
 
-        Order order1 = new Order(items1, 19.85, "Yassir", "");
-        Order order2 = new Order(items2, 29.7, "Self Pickup", "");
+        Order order1 = new Order(items1, 19.85);
+        Order order2 = new Order(items2, 29.7);
 
         // Add sample orders
         orders.add(order1);
@@ -321,7 +321,7 @@ public class KitchenDashboardController implements Initializable {
 
     private void populateOrderDetails(Order order) {
         selectedOrderIdLabel.setText("Order: " + order.getOrderId());
-        orderNotesField.setText(order.getNotes());
+      //  orderNotesField.setText(order.getNotes());
         statusComboBox.setValue(order.getStatus());
         updateOrderButton.setDisable(false);
     }
@@ -397,7 +397,7 @@ public class KitchenDashboardController implements Initializable {
         }
 
         selectedOrder.setStatus(statusComboBox.getValue());
-        selectedOrder.setNotes(orderNotesField.getText());
+      //  selectedOrder.setNotes(orderNotesField.getText());
 
         ordersTable.refresh();
         showAlert(AlertType.INFORMATION, "Success", "Order updated successfully.");

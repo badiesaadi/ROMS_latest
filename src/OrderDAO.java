@@ -30,7 +30,7 @@ public class OrderDAO {
      * @return The generated order ID if successful, -1 otherwise
      */
     public int insertOrder(Order order) {
-        String sql = "INSERT INTO `Order` (Status, Date, customer_ID, kitchen_id, managerID) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO `order` (status, date, customer_id, staff_id) VALUES (?, ?, ?, ?)";
 
         try {
             // Start transaction
@@ -40,20 +40,29 @@ public class OrderDAO {
             try (PreparedStatement pstmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
                 pstmt.setString(1, order.getStatus().toString());
                 pstmt.setDate(2, new Date(System.currentTimeMillis())); // Current date
-                pstmt.setInt(3, order.getCustomerId());
+                //check this I set it to Null because it is not needed to add a customer id 
+               // pstmt.setInt(3, order.getCustomerId());
+                pstmt.setNull(3, java.sql.Types.INTEGER);
+
+
 
                 // Kitchen ID and Manager ID are optional
-                if (order.getKitchenId() > 0) {
-                    pstmt.setInt(4, order.getKitchenId());
-                } else {
-                    pstmt.setNull(4, java.sql.Types.INTEGER);
-                }
+                //check this I set staff_id to null
+                // if (order.getKitchenId() > 0) {
+                //     pstmt.setInt(4, order.getKitchenId());
+                // } else {
+                //     pstmt.setNull(4, java.sql.Types.INTEGER);
+                // }
 
-                if (order.getManagerId() != null && !order.getManagerId().isEmpty()) {
-                    pstmt.setString(5, order.getManagerId());
-                } else {
-                    pstmt.setNull(5, java.sql.Types.VARCHAR);
-                }
+                pstmt.setNull(4, java.sql.Types.INTEGER);
+
+
+                //no manager
+                // if (order.getManagerId() != null && !order.getManagerId().isEmpty()) {
+                //     pstmt.setString(5, order.getManagerId());
+                // } else {
+                //     pstmt.setNull(5, java.sql.Types.VARCHAR);
+                // }
 
                 int affectedRows = pstmt.executeUpdate();
 
@@ -106,7 +115,7 @@ public class OrderDAO {
      * @throws SQLException if a database error occurs
      */
     private boolean insertOrderItems(Connection conn, int orderId, List<Order.OrderItem> items) throws SQLException {
-        String sql = "INSERT INTO Order_MenuItem (OrderID, item_id, quantity) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO order_items (order_id, item_id, quantity) VALUES (?, ?, ?)";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             for (Order.OrderItem item : items) {
@@ -134,7 +143,7 @@ public class OrderDAO {
      * @return true if successful, false otherwise
      */
     public boolean updateOrderStatus(int orderId, Order.OrderStatus status) {
-        String sql = "UPDATE `Order` SET Status = ? WHERE OrderID = ?";
+        String sql = "UPDATE `order` SET status = ? WHERE order_id = ?";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
 
@@ -155,8 +164,10 @@ public class OrderDAO {
      * @param orderId The ID of the order to retrieve
      * @return The order if found, null otherwise
      */
+
+     //check this it has staff manager ans stuff
     public Order getOrderById(int orderId) {
-        String sql = "SELECT * FROM `Order` WHERE order_id = ?";
+        String sql = "SELECT * FROM `order` WHERE order_id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -173,7 +184,7 @@ public class OrderDAO {
                     order.setStaffId(rs.getInt("staff_id"));
                     order.setKitchenId(rs.getInt("kitchen_id"));
                     order.setManagerId(rs.getString("manager_id"));
-                    order.setNotes(rs.getString("notes"));
+                  //  order.setNotes(rs.getString("notes"));
 
                     order.setItems(getOrderItems(conn, orderId));
                     return order;
@@ -195,9 +206,9 @@ public class OrderDAO {
      */
     private List<Order.OrderItem> getOrderItems(Connection conn, int orderId) throws SQLException {
         String sql = "SELECT m.item_id, m.title, m.price, m.category_title, m.image_path, m.kitchen_id, om.quantity " +
-                "FROM Order_MenuItem om " +
-                "JOIN MenuItem m ON om.item_id = m.item_id " +
-                "WHERE om.OrderID = ?";
+                "FROM order_items om " +
+                "JOIN menuitem m ON om.item_id = m.item_id " +
+                "WHERE om.order_id = ?";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, orderId);
@@ -226,28 +237,24 @@ public class OrderDAO {
      */
     public List<Order> getAllOrders() {
         List<Order> orders = new ArrayList<>();
-        String sql = "SELECT * FROM `Order`";
+        String sql = "SELECT * FROM `order`";
 
         try (Statement stmt = connection.createStatement();
                 ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
-                int orderId = rs.getInt("OrderID");
+                int orderId = rs.getInt("order_id");
                 Order order = new Order();
                 order.setOrderId(orderId);
-                order.setStatus(Order.OrderStatus.valueOf(rs.getString("Status")));
-                order.setDate(rs.getDate("Date"));
-                order.setCustomerId(rs.getInt("customer_ID"));
+                order.setStatus(Order.OrderStatus.valueOf(rs.getString("status")));
+                order.setDate(rs.getDate("date"));
+                order.setCustomerId(rs.getInt("customer_id"));
 
                 // Kitchen ID is optional
-                if (rs.getObject("kitchen_id") != null) {
-                    order.setKitchenId(rs.getInt("kitchen_id"));
+                if (rs.getObject("staff_id") != null) {
+                    order.setKitchenId(rs.getInt("staff_id"));
                 }
 
-                // Manager ID is optional
-                if (rs.getObject("managerID") != null) {
-                    order.setManagerId(rs.getString("managerID"));
-                }
 
                 // Get order items
                 order.setItems(getOrderItems(connection, orderId));
@@ -267,7 +274,7 @@ public class OrderDAO {
      */
     public List<Order> getOrdersByStatus(Order.OrderStatus status) {
         List<Order> orders = new ArrayList<>();
-        String query = "SELECT * FROM `Order` WHERE status = ?";
+        String query = "SELECT * FROM `order` WHERE status = ?";
 
         try (PreparedStatement pstmt = connection.prepareStatement(query)) {
             pstmt.setString(1, status.name());
@@ -280,9 +287,9 @@ public class OrderDAO {
                 order.setDate(new java.sql.Date(rs.getTimestamp("date").getTime()));
                 order.setCustomerId(rs.getInt("customer_id"));
                 order.setStaffId(rs.getInt("staff_id"));
-                order.setKitchenId(rs.getInt("kitchen_id"));
-                order.setManagerId(rs.getString("manager_id"));
-                order.setNotes(rs.getString("notes"));
+             //   order.setKitchenId(rs.getInt("kitchen_id"));
+                //order.setManagerId(rs.getString("manager_id"));
+               // order.setNotes(rs.getString("notes"));
                 order.setItems(getOrderItems(connection, order.getOrderId()));
                 orders.add(order);
             }
@@ -293,7 +300,7 @@ public class OrderDAO {
     }
 
     public int createOrder(Order order) {
-        String sql = "INSERT INTO `Order` (status, date, customer_id, staff_id, kitchen_id, manager_id, notes) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO `order` (status, date, customer_id, staff_id) VALUES (?, ?, ?, ?)";
 
         try (Connection conn = DatabaseConnection.getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -302,11 +309,15 @@ public class OrderDAO {
 
             pstmt.setString(1, order.getStatus().name());
             pstmt.setTimestamp(2, new java.sql.Timestamp(order.getDate().getTime()));
-            pstmt.setInt(3, order.getCustomerId());
-            pstmt.setInt(4, order.getStaffId());
-            pstmt.setInt(5, order.getKitchenId());
-            pstmt.setString(6, order.getManagerId());
-            pstmt.setString(7, order.getNotes());
+            pstmt.setNull(3, java.sql.Types.INTEGER);
+
+            //pstmt.setInt(3, order.getCustomerId());
+            pstmt.setNull(4, java.sql.Types.INTEGER);
+
+            //pstmt.setInt(4, order.getStaffId());
+            // pstmt.setInt(5, order.getKitchenId());
+            // pstmt.setString(6, order.getManagerId());
+            // pstmt.setString(7, order.getNotes());
 
             int affectedRows = pstmt.executeUpdate();
             if (affectedRows == 0) {
@@ -339,7 +350,7 @@ public class OrderDAO {
 
     private boolean insertOrderItemsBatch(Connection conn, int orderId, List<Order.OrderItem> items)
             throws SQLException {
-        String sql = "INSERT INTO Order_Items (order_id, item_id, quantity) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO order_items (order_id, item_id, quantity) VALUES (?, ?, ?)";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             for (Order.OrderItem item : items) {
@@ -361,7 +372,7 @@ public class OrderDAO {
 
     public List<Order> getOrdersByCustomer(int customerId) {
         List<Order> orders = new ArrayList<>();
-        String query = "SELECT * FROM `Order` WHERE customer_id = ?";
+        String query = "SELECT * FROM `order` WHERE customer_id = ?";
 
         try (PreparedStatement pstmt = connection.prepareStatement(query)) {
             pstmt.setInt(1, customerId);
@@ -385,7 +396,7 @@ public class OrderDAO {
 
     public List<Order> getOrdersByStaff(String staffId) {
         List<Order> orders = new ArrayList<>();
-        String query = "SELECT * FROM `Order` WHERE staff_id = ?";
+        String query = "SELECT * FROM `order` WHERE staff_id = ?";
 
         try (PreparedStatement pstmt = connection.prepareStatement(query)) {
             pstmt.setString(1, staffId);
