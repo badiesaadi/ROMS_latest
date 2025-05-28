@@ -70,11 +70,6 @@
                   </HBox>
                   <HBox alignment="CENTER" prefWidth="300.0">
                      <children>
-                        <Label text="Item Discount">
-                           <HBox.margin>
-                              <Insets right="20.0" />
-                           </HBox.margin>
-                        </Label>
                         <Label fx:id="discountLabel" text="\$0.00">
                            <HBox.margin>
                               <Insets right="20.0" />
@@ -82,20 +77,7 @@
                         </Label>
                      </children>
                   </HBox>
-                  <HBox alignment="CENTER" prefWidth="300.0">
-                     <children>
-                        <Label text="VAT/Tax">
-                           <HBox.margin>
-                              <Insets right="20.0" />
-                           </HBox.margin>
-                        </Label>
-                        <Label fx:id="taxLabel" text="\$0.00">
-                           <HBox.margin>
-                              <Insets right="20.0" />
-                           </HBox.margin>
-                        </Label>
-                     </children>
-                  </HBox>
+
                   <HBox alignment="CENTER" prefWidth="300.0">
                      <children>
                         <Label text="Total" textFill="#3498db">
