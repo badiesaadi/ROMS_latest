@@ -44,6 +44,14 @@
                         <Insets top="20.0" />
                      </VBox.margin>
                   </Button>
+                  <Button fx:id="loginButton" text="log in" onAction="#handleLogin" >
+                     <font>
+                        <Font name="MADE Tommy Soft" size="16.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets top="20.0" />
+                     </VBox.margin>
+                  </Button>
                </children>
             </VBox>
          </children>

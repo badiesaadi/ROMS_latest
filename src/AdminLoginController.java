@@ -21,9 +21,9 @@ public class AdminLoginController {
     @FXML private PasswordField passwordField;
     @FXML private Button loginButton;
     @FXML private Label errorLabel;
-    @FXML private RadioButton adminRadio;
-    @FXML private RadioButton kitchenRadio;
-    @FXML private ToggleGroup loginType;
+    // @FXML private RadioButton adminRadio;
+    // @FXML private RadioButton kitchenRadio;
+    // @FXML private ToggleGroup loginType;
     @FXML private Button signupButton;
 
     @FXML
