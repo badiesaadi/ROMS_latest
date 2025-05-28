@@ -476,7 +476,7 @@ public class CustomerViewController implements Initializable {
         int orderId = orderDAO.createOrder(order);
 
         String orderDetails = new String();
-        orderDetails = orderDetails + ("Your order has been pl aced successfully.\n\n");
+        orderDetails = orderDetails + ("Your order has been placed successfully.\n\n");
         orderDetails =orderDetails +("Order ID: ") + (orderId) +("\n") ;
         orderDetails =orderDetails +("Total Items: ")  + (cartItems.size()) +("\n");
         orderDetails = orderDetails +("Total Amount: ") +(String.format("%.2f", total)) + ("\n\n");
