@@ -219,6 +219,7 @@ public class AdminDashboardController implements Initializable {
         try {
             MenuItemDAO menuItemDAO = new MenuItemDAO();
             List<String> categories = menuItemDAO.getAllCategories();
+            System.out.println("Loaded categories: " + categories); // Debug
             if (!categories.isEmpty()) {
                 categoryComboBox.getItems().clear();
                 categoryComboBox.getItems().addAll(categories);
@@ -226,8 +227,11 @@ public class AdminDashboardController implements Initializable {
             }
         } catch (Exception e) {
             System.err.println("Error loading categories from database: " + e.getMessage());
+            statusLabel.setText("Error loading categories: " + e.getMessage());
+            statusLabel.setTextFill(Color.RED);
         }
 
+        // Fallback sample data
         categoryComboBox.getItems().clear();
         categoryComboBox.getItems().addAll("Burger", "Coffee", "Drinks", "Italian", "Mexican", "Chinese", "Hotdog", "Snack");
     }
@@ -288,6 +292,7 @@ public class AdminDashboardController implements Initializable {
         } catch (SQLException e) {
             statusLabel.setText("Error adding category: " + e.getMessage());
             statusLabel.setTextFill(Color.RED);
+            e.printStackTrace();
         }
     }
 
@@ -321,31 +326,25 @@ public class AdminDashboardController implements Initializable {
                 pstmt.setString(1, newCategoryName);
                 pstmt.setString(2, selectedCategory);
                 int rowsAffected = pstmt.executeUpdate();
+                System.out.println("Update Category - Rows affected: " + rowsAffected + ", Old: " + selectedCategory + ", New: " + newCategoryName);
 
                 if (rowsAffected > 0) {
                     categoryComboBox.getItems().remove(selectedCategory);
                     categoryComboBox.getItems().add(newCategoryName);
-
-                    String updateMenuItemsSql = "UPDATE MenuItem SET category = ? WHERE category = ?";
-                    try (PreparedStatement menuStmt = conn.prepareStatement(updateMenuItemsSql)) {
-                        menuStmt.setString(1, newCategoryName);
-                        menuStmt.setString(2, selectedCategory);
-                        menuStmt.executeUpdate();
-                    }
-
-                    loadMenuItems();
+                    loadMenuItems(); // Refresh menu items to reflect updated category
                     categoryNameField.clear();
                     categoryComboBox.setValue(null);
                     statusLabel.setText("Category updated successfully");
                     statusLabel.setTextFill(Color.GREEN);
                 } else {
-                    statusLabel.setText("Failed to update category");
+                    statusLabel.setText("Failed to update category: Category not found");
                     statusLabel.setTextFill(Color.RED);
                 }
             }
         } catch (SQLException e) {
             statusLabel.setText("Error updating category: " + e.getMessage());
             statusLabel.setTextFill(Color.RED);
+            e.printStackTrace();
         }
     }
 
@@ -360,7 +359,8 @@ public class AdminDashboardController implements Initializable {
 
         try {
             Connection conn = DatabaseConnection.getConnection();
-            String checkSql = "SELECT COUNT(*) FROM MenuItem WHERE category = ?";
+            // Check if category is in use
+            String checkSql = "SELECT COUNT(*) FROM MenuItem WHERE category_title = ?";
             try (PreparedStatement pstmt = conn.prepareStatement(checkSql)) {
                 pstmt.setString(1, selectedCategory);
                 ResultSet rs = pstmt.executeQuery();
@@ -382,7 +382,7 @@ public class AdminDashboardController implements Initializable {
                 try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
                     pstmt.setString(1, selectedCategory);
                     int rowsAffected = pstmt.executeUpdate();
-
+                    System.out.println("Delete Category - Rows affected: " + rowsAffected + ", Category: " + selectedCategory);
                     if (rowsAffected > 0) {
                         categoryComboBox.getItems().remove(selectedCategory);
                         categoryComboBox.setValue(null);
@@ -390,7 +390,7 @@ public class AdminDashboardController implements Initializable {
                         statusLabel.setText("Category deleted successfully");
                         statusLabel.setTextFill(Color.GREEN);
                     } else {
-                        statusLabel.setText("Failed to delete category");
+                        statusLabel.setText("Failed to delete category: Category not found");
                         statusLabel.setTextFill(Color.RED);
                     }
                 }
@@ -398,6 +398,7 @@ public class AdminDashboardController implements Initializable {
         } catch (SQLException e) {
             statusLabel.setText("Error deleting category: " + e.getMessage());
             statusLabel.setTextFill(Color.RED);
+            e.printStackTrace();
         }
     }
 

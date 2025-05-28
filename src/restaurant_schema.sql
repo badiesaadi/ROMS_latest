@@ -13,10 +13,9 @@ CREATE TABLE Staff (
 );
 
 -- Create Category table
-CCREATE TABLE categories (
-     id INT AUTO_INCREMENT PRIMARY KEY,
-     name VARCHAR(255) NOT NULL
- );
+CREATE TABLE Category (
+    title VARCHAR(50) PRIMARY KEY
+);
 
 -- Create the MenuItem table
 CREATE TABLE MenuItem (
@@ -71,7 +70,7 @@ CREATE TABLE Customer (
 );
 
 -- Create Order table
-CREATE TABLE `Order` (
+CREATE TABLE Order (
     order_id INT PRIMARY KEY AUTO_INCREMENT,
     status VARCHAR(50) NOT NULL,
     date DATE NOT NULL,
@@ -87,7 +86,7 @@ CREATE TABLE Order_Items (
     item_id INT,
     quantity INT DEFAULT 1,
     PRIMARY KEY (order_id, item_id),
-    FOREIGN KEY (order_id) REFERENCES `Order`(order_id),
+    FOREIGN KEY (order_id) REFERENCES Order(order_id),
     FOREIGN KEY (item_id) REFERENCES MenuItem(item_id)
 );
 
@@ -100,21 +99,3 @@ CREATE TABLE feedback (
     rating INT NOT NULL CHECK (rating BETWEEN 1 AND 5),
     submission_date TIMESTAMP NOT NULL
 );
-
--- Create trigger to update ingredient quantities when orders are placed
-DELIMITER //
-CREATE TRIGGER update_ingredients_after_order
-AFTER INSERT ON Order_Items
-FOR EACH ROW
-BEGIN
-    UPDATE Ingredient i
-    JOIN MenuItem mi ON mi.item_id = NEW.item_id
-    SET i.current_quantity = i.current_quantity - (NEW.quantity * mi.quantity),
-        i.last_updated = CURRENT_TIMESTAMP
-    WHERE i.title IN (
-        SELECT ingredient_title 
-        FROM MenuItem_Ingredient 
-        WHERE item_id = NEW.item_id
-    );
-END //
-DELIMITER ;
