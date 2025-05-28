@@ -29,20 +29,14 @@ public class CustomerViewController implements Initializable {
     //check this 
     @FXML
     private ComboBox<String> deliveryPartnerComboBox;
-    @FXML
-    private Label discountLabel;
+
     @FXML
     private FlowPane menuItemsContainer;
     @FXML
     private HBox menuTypesContainer;
     @FXML
     private TextField searchField;
-    //check this 
-    @FXML
-    private Label subTotalLabel;
-    //check this 
-    @FXML
-    private Label taxLabel;
+
     @FXML
     private Label totalLabel;
     @FXML
@@ -448,16 +442,11 @@ public class CustomerViewController implements Initializable {
     }
 
     private void updateCartSummary() {
-        subTotal = cartItems.values().stream()
+        total = cartItems.values().stream()
                 .mapToDouble(CartItem::getTotal)
                 .sum();
 
-        tax = subTotal * 0.1;
-        total = subTotal + tax - discount;
 
-        subTotalLabel.setText(String.format("%.2f DA", subTotal));
-        taxLabel.setText(String.format("%.2f DA", tax));
-        discountLabel.setText(String.format("%.2f DA", discount));
         totalLabel.setText(String.format("%.2f DA", total));
     }
 
