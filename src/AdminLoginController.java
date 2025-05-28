@@ -1,4 +1,3 @@
- 
 import java.io.IOException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -21,18 +20,18 @@ public class AdminLoginController {
     @FXML private RadioButton adminRadio;
     @FXML private RadioButton kitchenRadio;
     @FXML private ToggleGroup loginType;
-    
+
     @FXML
     private void handleLogin(ActionEvent event) {
         String username = usernameField.getText();
         String password = passwordField.getText();
-        
+
         // Simple hardcoded authentication
         // Admin: username: admin, password: admin
         // Kitchen: username: kitchen, password: kitchen
-        
+
         boolean isAdmin = adminRadio.isSelected();
-        
+
         if (isAdmin && username.equals("admin") && password.equals("admin")) {
             loadDashboard("admin_dashboard.fxml", "Restaurant Admin Dashboard");
         } else if (!isAdmin && username.equals("kitchen") && password.equals("kitchen")) {
@@ -42,13 +41,13 @@ public class AdminLoginController {
             errorLabel.setVisible(true);
         }
     }
-    
+
     private void loadDashboard(String fxmlFile, String title) {
         try {
             // Load the dashboard
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
             Parent root = loader.load();
-            
+
             Scene scene = new Scene(root);
             Stage stage = (Stage) loginButton.getScene().getWindow();
             stage.setScene(scene);
@@ -63,14 +62,14 @@ public class AdminLoginController {
             e.printStackTrace();
         }
     }
-    
+
     @FXML
     private void handleBackToCustomerView(ActionEvent event) {
         try {
             // Load the customer view
             FXMLLoader loader = new FXMLLoader(getClass().getResource("customer_view.fxml"));
             Parent root = loader.load();
-            
+
             Scene scene = new Scene(root);
             Stage stage = (Stage) loginButton.getScene().getWindow();
             stage.setScene(scene);
@@ -82,4 +81,4 @@ public class AdminLoginController {
             e.printStackTrace();
         }
     }
-} 
+}

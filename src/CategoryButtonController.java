@@ -13,13 +13,13 @@ import javafx.scene.input.MouseEvent;
 public class CategoryButtonController {
     @FXML
     private VBox categoryButtonContainer;
-    
+
     @FXML
     private ImageView categoryIcon;
-    
+
     @FXML
     private Label categoryLabel;
-    
+
     private Runnable onClickHandler;
     
     @FXML
@@ -33,10 +33,10 @@ public class CategoryButtonController {
         // Prevent text from changing weight on focus/unfocus
         categoryLabel.setStyle("-fx-font-weight: normal;");
     }
-    
+
     public void setCategory(String category, String iconPath) {
         categoryLabel.setText(category);
-        
+
         try {
             Image icon = new Image(getClass().getResourceAsStream(iconPath));
             categoryIcon.setImage(icon);
@@ -44,11 +44,11 @@ public class CategoryButtonController {
             System.out.println("error " + e.getMessage());
         }
     }
-    
+
     public void setOnAction(Runnable handler) {
         this.onClickHandler = handler;
     }
-    
+
     public void setActive(boolean active) {
         if (active) {
             categoryButtonContainer.setStyle("-fx-background-color: #FB9400;-fx-text-fill: white; -fx-background-radius: 8;");
@@ -61,6 +61,6 @@ public class CategoryButtonController {
         // Set user data to track active state
         categoryButtonContainer.setUserData(active);
     }
-    
-    
+
+
 }
