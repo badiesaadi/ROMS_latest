@@ -118,3 +118,35 @@
 .button#closeButton:hover {
     -fx-background-color: #c0392b;
 }
+
+.category-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+
+.category-button:hover {
+    -fx-background-color: #FFF3E0;
+    -fx-border-color: #FB9400;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+}
+
+.category-button:pressed {
+    -fx-background-color: #FFE0B2;
+    -fx-border-color: #E65100;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+}
+
+.category-label {
+    -fx-text-fill: #FB9400;
+}
+
+.category-button:hover .category-label {
+    -fx-text-fill: #E65100;
+}
+
+.category-button:pressed .category-label {
+    -fx-text-fill: #BF360C;
+}
