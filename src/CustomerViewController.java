@@ -181,7 +181,7 @@ public class CustomerViewController implements Initializable {
                 // Configure spinner with proper bounds and start from 1
                 SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10, 1);
                 quantitySpinner.setValueFactory(valueFactory);
-                quantitySpinner.setEditable(true);
+                quantitySpinner.setEditable(false);
                 menuSpinners.put(item.getId(), quantitySpinner);
 
                 // Restore quantity if item is in cart
@@ -475,8 +475,14 @@ public class CustomerViewController implements Initializable {
         OrderDAO orderDAO = new OrderDAO();
         int orderId = orderDAO.createOrder(order);
 
+        String orderDetails = new String();
+        orderDetails = orderDetails + ("Your order has been pl aced successfully.\n\n");
+        orderDetails =orderDetails +("Order ID: ") + (orderId) +("\n") ;
+        orderDetails =orderDetails +("Total Items: ")  + (cartItems.size()) +("\n");
+        orderDetails = orderDetails +("Total Amount: ") +(String.format("%.2f", total)) + ("\n\n");
+
         if (orderId > 0) {
-            showAlert("Order Placed", "Your order has been placed successfully. Order ID: " + orderId);
+            showAlert("Order Placed", orderDetails);
             cartItems.clear();
             menuSpinners.values().forEach(spinner -> spinner.getValueFactory().setValue(0));
             updateCartDisplay();
