@@ -273,6 +273,8 @@ public class CustomerViewController implements Initializable {
         }
     }
 
+    //check this
+
     // Helper method to create a colored placeholder for missing images
     private void createColoredPlaceholder(ImageView imageView, String category) {
         // Use a color based on category
@@ -511,69 +513,6 @@ public class CustomerViewController implements Initializable {
             notesTextArea.clear();
         } else {
             showAlert("Error", "Failed to place order. Please try again.");
-        }
-    }
-
-    private void updateCart() {
-        cartItemsContainer.getChildren().clear();
-        for (CartItem cartItem : cartItems.values()) {
-            try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("cart_item.fxml"));
-                VBox cartItemBox = loader.load();
-
-                MenuItem item = cartItem.getMenuItem();
-
-                Label foodNameLabel = (Label) cartItemBox.lookup("#foodNameLabel");
-                Label priceLabel = (Label) cartItemBox.lookup("#priceLabel");
-                Label quantityLabel = (Label) cartItemBox.lookup("#quantityLabel");
-                Button plusBtn = (Button) cartItemBox.lookup("#plusBtn");
-                Button minusBtn = (Button) cartItemBox.lookup("#minusBtn");
-                Button deleteButton = (Button) cartItemBox.lookup("#deleteButton");
-
-                foodNameLabel.setText(item.getName());
-                priceLabel.setText(String.format("%.2f DA", cartItem.getTotal()));
-                quantityLabel.setText(String.valueOf(cartItem.getQuantity()));
-
-                Spinner<Integer> menuSpinner = menuSpinners.get(item.getId());
-
-                plusBtn.setOnAction(e -> {
-                    int newQuantity = cartItem.getQuantity() + 1;
-                    if (newQuantity <= 10) {
-                        cartItem.setQuantity(newQuantity);
-                        if (menuSpinner != null) {
-                            menuSpinner.getValueFactory().setValue(newQuantity);
-                        }
-                        updateCartDisplay();
-                        updateCartSummary();
-                    }
-                });
-
-                minusBtn.setOnAction(e -> {
-                    if (cartItem.getQuantity() > 1) {
-                        int newQuantity = cartItem.getQuantity() - 1;
-                        cartItem.setQuantity(newQuantity);
-                        if (menuSpinner != null) {
-                            menuSpinner.getValueFactory().setValue(newQuantity);
-                        }
-                        updateCartDisplay();
-                        updateCartSummary();
-                    }
-                });
-
-                deleteButton.setOnAction(e -> {
-                    cartItems.remove(item.getId());
-                    if (menuSpinner != null) {
-                        menuSpinner.getValueFactory().setValue(0);
-                    }
-                    updateCartDisplay();
-                    updateCartSummary();
-                });
-
-                cartItemsContainer.getChildren().add(cartItemBox);
-
-            } catch (IOException e) {
-                System.out.println("Error loading cart item: " + e.getMessage());
-            }
         }
     }
 
