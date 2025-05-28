@@ -13,10 +13,9 @@ CREATE TABLE Staff (
 );
 
 -- Create Category table
-CCREATE TABLE categories (
-     id INT AUTO_INCREMENT PRIMARY KEY,
-     name VARCHAR(255) NOT NULL
- );
+CREATE TABLE Category (
+    title VARCHAR(50) PRIMARY KEY
+);
 
 -- Create the MenuItem table
 CREATE TABLE MenuItem (
