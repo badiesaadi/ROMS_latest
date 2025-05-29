@@ -39,7 +39,7 @@
       </Tab>
 
       <!-- Inventory Tab -->
-      <Tab text="Inventory" closable="false">
+      <Tab text="Inventory"  closable="false">
          <content>
             <VBox spacing="10">
                <children>

@@ -98,20 +98,11 @@
                   </VBox>
                </content>
             </Tab>
-            <Tab text="Orders and Feedback">
+            <Tab text="Feedback">
                <content>
                   <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0">
                      <children>
-                        <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Orders" />
-                        <TableView fx:id="ordersTable" prefHeight="200.0" prefWidth="200.0">
-                           <columns>
-                              <TableColumn fx:id="orderIdColumn" prefWidth="75.0" text="Order ID" />
-                              <TableColumn fx:id="orderTimeColumn" prefWidth="150.0" text="Time" />
-                              <TableColumn fx:id="orderStatusColumn" prefWidth="100.0" text="Status" />
-                              <TableColumn fx:id="orderItemsColumn" prefWidth="200.0" text="Items" />
-                              <TableColumn fx:id="orderTotalColumn" prefWidth="100.0" text="Total" />
-                           </columns>
-                        </TableView>
+                       
                         <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Feedback" />
                         <TableView fx:id="feedbackTable" prefHeight="200.0" prefWidth="200.0">
                            <columns>
@@ -125,7 +116,7 @@
                         <HBox alignment="CENTER" spacing="10.0">
                            <children>
                               <Button fx:id="refreshFeedbackButton" mnemonicParsing="false" onAction="#handleRefreshFeedback" text="Refresh Feedback" />
-                              <Button fx:id="deleteFeedbackButton" mnemonicParsing="false" onAction="#handleDeleteFeedback" text="Delete Feedback" />
+                              <Button fx:id="deleteFeedbackButton" mnemonicParsing="false" visible="false" onAction="#handleDeleteFeedback" text="Delete Feedback" />
                            </children>
                         </HBox>
                      </children>
