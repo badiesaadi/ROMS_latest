@@ -1,56 +1,46 @@
 .root {
-  -fx-font-family: "Montserrat", "Segoe UI", Arial, sans-serif;
+  -fx-font-family: "MADE Tommy Soft", "Segoe UI", Arial, sans-serif;
   -fx-background-color: #f8f9fa;
 }
 
 /* Color Variables */
 * {
-  -restaurant-primary: #3498db;
-  -restaurant-secondary: #2980b9;
-  -restaurant-accent: #2c3e50;
+  -restaurant-primary: #4B5EAA; /* Deep indigo */
+  -restaurant-secondary: #6B7280; /* Neutral gray */
+  -restaurant-accent: #F4A261; /* Warm orange */
   -text-primary: #2c3e50;
   -text-secondary: #7f8c8d;
   -background-light: rgba(255, 255, 255, 0.95);
   -background-dark: rgba(0, 0, 0, 0.7);
   -divider-color: rgba(0, 0, 0, 0.1);
   -star-color: #ffd700;
-  -error-color: #e74c3c;
-  -success-color: #2ecc71;
-  -gradient-start: #3498db;
-  -gradient-end: #2980b9;
+  -error-color: #EF4444;
+  -success-color: #10B981;
+  -gradient-start: #4B5EAA;
+  -gradient-end: #6B7280;
 }
 
-/* خلفية شاشة السبلاتش */
+/* Splash Screen */
 .splash-pane {
-  -fx-background-color: linear-gradient(
-    from 0% 0% to 100% 100%,
-    -gradient-start,
-    -gradient-end
-  );
+  -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, -gradient-start, -gradient-end);
   -fx-padding: 50;
 }
 
-/* نص التحميل */
 .loading-text {
-  -fx-text-fill: -main-light;
+  -fx-text-fill: white;
   -fx-font-size: 22px;
   -fx-font-weight: bold;
 }
 
-/* شريط التحميل */
 .progress-bar {
-  -fx-accent: -accent-color;
+  -fx-accent: -restaurant-accent;
 }
+
 .welcome-pane {
-  -fx-background-color: linear-gradient(
-    from 0% 0% to 100% 100%,
-    -gradient-start,
-    -gradient-end
-  );
+  -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, -gradient-start, -gradient-end);
   -fx-padding: 50;
 }
 
-/* النص الترحيبي */
 .welcome-text {
   -fx-text-fill: white;
   -fx-font-size: 36px;
@@ -61,7 +51,6 @@
   -fx-background-radius: 20;
 }
 
-/* النص الترحيبي الفرعي */
 .welcome-subtext {
   -fx-text-fill: white;
   -fx-font-size: 24px;
@@ -72,9 +61,8 @@
   -fx-background-radius: 15;
 }
 
-/* زر البداية */
 .start-button {
-  -fx-background-color: #e67e22;
+  -fx-background-color: -restaurant-accent;
   -fx-text-fill: white;
   -fx-padding: 15 40;
   -fx-background-radius: 30;
@@ -83,13 +71,13 @@
 }
 
 .start-button:hover {
-  -fx-background-color: #d35400;
+  -fx-background-color: #E76F51; /* Darker orange */
   -fx-scale-x: 1.05;
   -fx-scale-y: 1.05;
 }
 
 .start-button:pressed {
-  -fx-background-color: #a04000;
+  -fx-background-color: #D55D3F;
   -fx-scale-x: 0.95;
   -fx-scale-y: 0.95;
 }
@@ -103,12 +91,12 @@
 }
 
 .icon-button:hover {
-  -fx-background-color: -main-light;
+  -fx-background-color: -background-light;
   -fx-cursor: hand;
 }
 
 .cart-badge {
-  -fx-background-color: -accent-color;
+  -fx-background-color: -restaurant-accent;
   -fx-background-radius: 50%;
   -fx-text-fill: white;
   -fx-padding: 4px 8px;
@@ -142,8 +130,7 @@
   -fx-border-radius: 20;
   -fx-cursor: hand;
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0, 0, 2);
-  -fx-transition: -fx-background-color 0.2s, -fx-effect 0.2s,
-    -fx-translate-y 0.1s;
+  -fx-transition: all 0.3s ease-in-out;
   -fx-min-width: 100px;
   -fx-max-width: 120px;
 }
@@ -166,10 +153,9 @@
 .category-btn.active {
   -fx-background-color: -restaurant-primary;
   -fx-text-fill: white;
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0, 0, 3);
+  -fx-effect: dropshadow(gaussian, rgba(75, 94, 170, 0.5), 8, 0.5, 0, 0);
 }
 
-/* Default style for All category button */
 #allCategoryBtn {
   -fx-text-fill: -gradient-start;
   -fx-border-color: -gradient-start;
@@ -193,13 +179,19 @@
   -fx-alignment: center;
   -fx-padding: 15px;
   -fx-spacing: 10px;
-  -fx-transition: all 0.3s ease;
+  -fx-transition: all 0.3s ease-in-out;
   -fx-min-width: 250px;
   -fx-max-width: 250px;
   -fx-min-height: 340px;
   -fx-max-height: 340px;
   -fx-pref-width: 250px;
   -fx-pref-height: 340px;
+}
+
+.menu-card:hover {
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 15, 0, 0, 5);
+  -fx-scale-x: 1.05;
+  -fx-scale-y: 1.05;
 }
 
 .menu-card .food-image {
@@ -213,7 +205,7 @@
   -fx-max-height: 160px;
   -fx-pref-width: 220px;
   -fx-pref-height: 160px;
-  -fx-background-size: cover;
+  -fx-background-size: contain;
   -fx-background-position: center;
   -fx-background-repeat: no-repeat;
   -fx-background-color: white;
@@ -222,7 +214,7 @@
 
 .menu-card .food-name {
   -fx-font-size: 16px;
-  -fx-font-weight: bold;
+  -fx-font-weight: 500;
   -fx-text-fill: -text-primary;
   -fx-alignment: center;
   -fx-wrap-text: true;
@@ -241,6 +233,7 @@
 
 .menu-card .food-description {
   -fx-font-size: 14px;
+  -fx-font-weight: 300;
   -fx-text-fill: -text-secondary;
   -fx-wrap-text: true;
   -fx-max-width: 220px;
@@ -302,36 +295,35 @@
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 4, 0, 0, 2);
 }
 
-.menu-card:hover {
-  -fx-effect: dropshadow(gaussian, -shadow-color, 12, 0, 0, 4);
-  -fx-scale-x: 1.02;
-  -fx-scale-y: 1.02;
-}
-
 /* Cart Items */
 .cart-item {
   -fx-background-color: white;
   -fx-background-radius: 8px;
-  -fx-effect: dropshadow(gaussian, -shadow-color, 4, 0, 0, 1);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 4, 0, 0, 1);
   -fx-padding: 8px;
   -fx-spacing: 8px;
   -fx-margin: 4px;
+  -fx-transition: all 0.3s ease;
+}
+
+.cart-item-added {
+  -fx-background-color: rgba(16, 185, 129, 0.1);
 }
 
 .cart-item .item-name {
   -fx-font-size: 14px;
   -fx-font-weight: bold;
-  -fx-text-fill: -main-dark;
+  -fx-text-fill: -text-primary;
 }
 
 .cart-item .item-size {
   -fx-font-size: 12px;
-  -fx-text-fill: #7f8c8d;
+  -fx-text-fill: -text-secondary;
 }
 
 .cart-item .item-price {
   -fx-font-size: 14px;
-  -fx-text-fill: -accent-color;
+  -fx-text-fill: -restaurant-accent;
   -fx-font-weight: bold;
   -fx-alignment: center-right;
 }
@@ -346,30 +338,30 @@
 /* Action Buttons */
 .cancel-btn {
   -fx-background-color: #ecf0f1;
-  -fx-background-radius: 6px;
+  -fx-background-radius: 8px;
   -fx-font-weight: bold;
-  -fx-font-size: 14px;
-  -fx-text-fill: #7f8c8d;
-  -fx-padding: 8px 16px;
+  -fx-font-size: 13px;
+  -fx-text-fill: -text-secondary;
   -fx-cursor: hand;
 }
 
 .cancel-btn:hover {
   -fx-background-color: #d7dbdd;
-  -fx-effect: dropshadow(gaussian, -shadow-color, 4, 0, 0, 2);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 4, 0, 0, 2);
 }
 
 .place-order-btn {
-  -fx-background-color: -gradient-start;
-  -fx-background-radius: 6px;
+  -fx-background-color: -restaurant-accent;
+  -fx-background-radius: 8px;
   -fx-text-fill: white;
-  -fx-font-size: 14px;
+  -fx-font-weight: bold;
+  -fx-font-size: 13px;
   -fx-cursor: hand;
 }
 
 .place-order-btn:hover {
-  -fx-background-color: -gradient-end;
-  -fx-effect: dropshadow(gaussian, -shadow-color, 4, 0, 0, 2);
+  -fx-background-color: #E76F51;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 4, 0, 0, 2);
 }
 
 /* Welcome Page Styles */
@@ -379,11 +371,7 @@
   -fx-font-weight: bold;
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 10, 0, 0, 0);
   -fx-letter-spacing: 2px;
-  -fx-background-color: linear-gradient(
-    to right,
-    -gradient-start,
-    -gradient-end
-  );
+  -fx-background-color: linear-gradient(to right, -gradient-start, -gradient-end);
   -fx-padding: 20 40;
   -fx-background-radius: 30;
 }
@@ -395,8 +383,7 @@
   -fx-background-radius: 20;
   -fx-cursor: hand;
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0, 0, 2);
-  -fx-transition: -fx-background-color 0.2s, -fx-effect 0.2s,
-    -fx-translate-y 0.1s;
+  -fx-transition: all 0.3s ease-in-out;
 }
 
 .action-button:hover {
@@ -438,7 +425,7 @@
 }
 
 .review-card {
-  -fx-background-color: -review-card-bg;
+  -fx-background-color: -background-light;
   -fx-background-radius: 15px;
   -fx-padding: 20px;
   -fx-spacing: 15px;
@@ -461,12 +448,12 @@
 
 .review-stars {
   -fx-font-size: 18px;
-  -fx-text-fill: #ffd700;
+  -fx-text-fill: -star-color;
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 2, 0, 0, 0);
 }
 
 .review-text {
-  -fx-text-fill: -main-dark;
+  -fx-text-fill: -text-primary;
   -fx-font-size: 14px;
   -fx-wrap-text: true;
   -fx-alignment: center;
@@ -486,17 +473,13 @@
   -fx-font-size: 28px;
   -fx-font-weight: bold;
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 5, 0, 0, 0);
-  -fx-background-color: linear-gradient(
-    to right,
-    -gradient-start,
-    -gradient-end
-  );
+  -fx-background-color: linear-gradient(to right, -gradient-start, -gradient-end);
   -fx-padding: 15 30;
   -fx-background-radius: 20;
 }
 
 .form-container {
-  -fx-background-color: rgba(255, 255, 255, 0.95);
+  -fx-background-color: -background-light;
   -fx-background-radius: 20;
   -fx-padding: 30;
   -fx-spacing: 20;
@@ -524,7 +507,7 @@
 
 .form-field:focused {
   -fx-border-color: -restaurant-primary;
-  -fx-effect: dropshadow(gaussian, rgba(52, 152, 219, 0.2), 5, 0, 0, 0);
+  -fx-effect: dropshadow(gaussian, rgba(75, 94, 170, 0.2), 5, 0, 0, 0);
 }
 
 .form-textarea {
@@ -542,7 +525,7 @@
 
 .form-textarea:focused {
   -fx-border-color: -restaurant-primary;
-  -fx-effect: dropshadow(gaussian, rgba(52, 152, 219, 0.2), 5, 0, 0, 0);
+  -fx-effect: dropshadow(gaussian, rgba(75, 94, 170, 0.2), 5, 0, 0, 0);
 }
 
 /* Star Rating Buttons */
@@ -562,7 +545,9 @@
 
 .star-button:selected {
   -fx-background-color: transparent;
-  -fx-text-fill: #ffd700;
+  -fx-text-fill: -star-color;
+  -fx-scale-x: 1.2;
+  -fx-scale-y: 1.2;
   -fx-effect: dropshadow(gaussian, rgba(255, 215, 0, 0.3), 5, 0, 0, 0);
 }
 
@@ -574,11 +559,7 @@
 
 /* Submit Button */
 .submit-button {
-  -fx-background-color: linear-gradient(
-    to right,
-    -gradient-start,
-    -gradient-end
-  );
+  -fx-background-color: linear-gradient(to right, -gradient-start, -gradient-end);
   -fx-text-fill: white;
   -fx-background-radius: 10;
   -fx-padding: 15 40;
@@ -590,11 +571,7 @@
 }
 
 .submit-button:hover {
-  -fx-background-color: linear-gradient(
-    to right,
-    -gradient-end,
-    -gradient-start
-  );
+  -fx-background-color: linear-gradient(to right, -gradient-end, -gradient-start);
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 8, 0, 0, 0);
   -fx-scale-x: 1.02;
   -fx-scale-y: 1.02;
@@ -609,30 +586,23 @@
 /* Feedback Display Styles */
 .feedback-card {
   -fx-background-color: white;
-  -fx-background-radius: 15;
+  -fx-background-radius: 20;
   -fx-padding: 25;
   -fx-spacing: 15;
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0, 0, 0);
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 10, 0, 0, 3);
   -fx-min-width: 600;
   -fx-max-width: 800;
   -fx-border-color: -divider-color;
   -fx-border-width: 0 0 1 0;
-  -fx-background-color: linear-gradient(
-    to bottom,
-    white,
-    rgba(255, 255, 255, 0.9)
-  );
+  -fx-background-color: linear-gradient(to bottom, white, rgba(255, 255, 255, 0.9));
   -fx-margin: 0 0 20 0;
+  -fx-transition: all 0.3s ease;
 }
 
 .feedback-card:hover {
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 0, 0, 0);
-  -fx-translate-y: -2;
-  -fx-background-color: linear-gradient(
-    to bottom,
-    white,
-    rgba(255, 255, 255, 0.95)
-  );
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 15, 0, 0, 5);
+  -fx-translate-y: -5;
+  -fx-background-color: linear-gradient(to bottom, white, rgba(255, 255, 255, 0.95));
 }
 
 .feedback-name {
@@ -643,7 +613,7 @@
 }
 
 .feedback-rating {
-  -fx-text-fill: #ffd700;
+  -fx-text-fill: -star-color;
   -fx-font-size: 24px;
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 3, 0, 0, 0);
 }
@@ -719,11 +689,7 @@
 }
 
 .dialog-pane .header-panel {
-  -fx-background-color: linear-gradient(
-    to right,
-    -gradient-start,
-    -gradient-end
-  );
+  -fx-background-color: linear-gradient(to right, -gradient-start, -gradient-end);
   -fx-background-radius: 15 15 0 0;
 }
 
@@ -822,30 +788,29 @@
     -fx-pref-height: 110px;
   }
 
-  .menu-card .food-name,
-  .menu-card .food-price,
-  .menu-card .food-description,
+  .menu-card .food-name {
+    -fx-font-size: 14px;
+    -fx-max-width: 140px;
+    -fx-pref-width: 140px;
+  }
+
+  .menu-card .food-price {
+    -fx-font-size: 16px;
+    -fx-max-width: 140px;
+    -fx-pref-width: 140px;
+  }
+
+  .menu-card .food-description {
+    -fx-font-size: 12px;
+    -fx-max-width: 140px;
+    -fx-pref-width: 140px;
+  }
+
   .menu-card .quantity-spinner,
   .menu-card .add-btn {
     -fx-max-width: 140px;
     -fx-pref-width: 140px;
   }
-
-  .menu-card .food-name {
-    -fx-font-size: 12px;
-  }
-
-  .menu-card .food-price {
-    -fx-font-size: 14px;
-  }
-
-  .menu-card .food-description {
-    -fx-font-size: 10px;
-  }
-}
-
-.root {
-  -fx-background-color: #f8f9fa;
 }
 
 #categoryButtonContainer {
@@ -864,30 +829,20 @@
 }
 
 #categoryButtonContainer:hover {
-  -fx-border-color: #fb9400;
+  -fx-border-color: -restaurant-accent;
 }
 
 #categoryButtonContainer:hover .label {
-  -fx-text-fill: #fb9400 !important;
+  -fx-text-fill: -restaurant-accent !important;
 }
 
 #categoryButtonContainer.active {
-  -fx-border-color: #fb9400;
-  -fx-background-color: #fb9400;
+  -fx-border-color: -restaurant-accent;
+  -fx-background-color: -restaurant-accent;
 }
 
 #categoryButtonContainer.active .label {
   -fx-text-fill: white;
-}
-
-.transparent {
-  -fx-background-color: transparent;
-  -fx-padding: 0;
-}
-
-.transparent > .viewport {
-  /* might be useless */
-  -fx-background-color: transparent;
 }
 
 .cancel-btn {
@@ -895,7 +850,7 @@
   -fx-background-radius: 8px;
   -fx-font-weight: bold;
   -fx-font-size: 13px;
-  -fx-text-fill: #7f8c8d;
+  -fx-text-fill: -text-secondary;
 }
 
 .cancel-btn:hover {
@@ -904,7 +859,7 @@
 }
 
 .place-order-btn {
-  -fx-background-color: #fb9400;
+  -fx-background-color: -restaurant-accent;
   -fx-background-radius: 8px;
   -fx-text-fill: white;
   -fx-font-weight: bold;
@@ -912,18 +867,18 @@
 }
 
 .place-order-btn:hover {
-  -fx-background-color: #fb9400;
+  -fx-background-color: #E76F51;
   -fx-cursor: hand;
 }
 
-/*spinner styles*/
 .spinner .increment-arrow-button .increment-arrow {
-  -fx-background-color: #fb9400;
+  -fx-background-color: -restaurant-primary;
 }
 
 .spinner .decrement-arrow-button .decrement-arrow {
-  -fx-background-color: #fb9400;
+  -fx-background-color: -restaurant-primary;
 }
+
 .spinner .increment-arrow-button,
 .spinner .decrement-arrow-button {
   -fx-body-color: white;
@@ -931,20 +886,20 @@
 
 .spinner .increment-arrow-button:hover,
 .spinner .decrement-arrow-button:hover {
-  -fx-body-color: ladder(#444, yellow 0%, red 100%);
+  -fx-body-color: -restaurant-secondary;
 }
 
 .spinner .increment-arrow-button:hover:pressed,
 .spinner .decrement-arrow-button:hover:pressed,
 .spinner .increment-arrow-button:pressed,
 .spinner .decrement-arrow-button:pressed {
-  -fx-body-color: ladder(#aaa, yellow 0%, red 100%);
+  -fx-body-color: -restaurant-primary;
 }
+
 .spinner {
   -fx-background-radius: 30px;
 }
 
-/*check this*/
 .root {
   -fx-faint-focus-color: transparent;
 }
@@ -952,6 +907,7 @@
 * {
   -fx-font-family: "MADE Tommy Soft", "Segoe UI", Arial, sans-serif !important;
 }
+
 .Label {
   -fx-font-family: "MADE Tommy Soft", "Segoe UI", Arial, sans-serif !important;
 }

@@ -24,6 +24,7 @@ import javafx.event.ActionEvent;
 import javafx.stage.Stage;
 import javafx.scene.Node; // Import Node class
 
+
 public class CustomerViewController implements Initializable {
     @FXML
     private VBox cartItemsContainer;
@@ -69,7 +70,7 @@ public class CustomerViewController implements Initializable {
     }
 
     // Method to access orders from other controllers
-    //check this 
+    //check this
     public static List<Order> getAllOrders() {
         return allOrders;
     }
@@ -135,7 +136,7 @@ public class CustomerViewController implements Initializable {
         }
     }
 
-   
+
     private void displayMenuItems() {
         menuItemsContainer.getChildren().clear();
         for (MenuItem item : menuItems) {
@@ -472,7 +473,7 @@ public class CustomerViewController implements Initializable {
             Parent root = loader.load();
 
             Font customFont = Font.loadFont(
-                getClass().getResourceAsStream("./tommy-mid.otf"), 
+                getClass().getResourceAsStream("./tommy-mid.otf"),
                 20
             );
 
@@ -497,7 +498,7 @@ public class CustomerViewController implements Initializable {
             return;
         }
 
-        //check this you need to delete delivery partner from 
+        //check this you need to delete delivery partner from
         Order order = new Order(new ArrayList<>(cartItems.values()), total);
         OrderDAO orderDAO = new OrderDAO();
         int orderId = orderDAO.createOrder(order);
