@@ -156,7 +156,13 @@ public class KitchenDashboardController implements Initializable {
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
-                setGraphic(empty ? null : actionBtn);
+                if (empty || getTableRow() == null || getTableRow().getItem() == null) {
+                    setGraphic(null);
+                } else {
+                    Order order = getTableRow().getItem();
+                    actionBtn.setDisable(order.getStatus() == Order.OrderStatus.READY); // Disable button if status is READY
+                    setGraphic(actionBtn);
+                }
             }
         });
 
@@ -241,7 +247,8 @@ public class KitchenDashboardController implements Initializable {
     }
 
     private void setupStatusComboBox() {
-        statusComboBox.getItems().addAll(Order.OrderStatus.values());
+        statusComboBox.getItems().clear(); // Clear existing items
+        statusComboBox.getItems().addAll(Order.OrderStatus.QUEUED, Order.OrderStatus.IN_PROGRESS, Order.OrderStatus.READY); // Add only the desired statuses
     }
 
     private void setupIngredientCategoryComboBox() {
@@ -592,6 +599,7 @@ public class KitchenDashboardController implements Initializable {
         try {
             List<Order> orders = orderDAO.getOrdersByStatus(Order.OrderStatus.QUEUED);
             orders.addAll(orderDAO.getOrdersByStatus(Order.OrderStatus.IN_PROGRESS));
+            orders.addAll(orderDAO.getOrdersByStatus(Order.OrderStatus.READY)); // Include READY orders
             this.orders.setAll(orders);
             ordersTable.setItems(this.orders);
         } catch (Exception e) {
@@ -618,6 +626,23 @@ public class KitchenDashboardController implements Initializable {
         } catch (Exception e) {
             showAlert(AlertType.ERROR, "Status Change Error", "Failed to change order status: " + e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleStatusFilter() {
+        Order.OrderStatus selectedStatus = statusComboBox.getValue();
+        if (selectedStatus != null) {
+            try {
+                List<Order> filteredOrders = orderDAO.getOrdersByStatus(selectedStatus);
+                this.orders.setAll(filteredOrders);
+                ordersTable.setItems(this.orders);
+            } catch (Exception e) {
+                showAlert(AlertType.ERROR, "Filter Error", "Failed to filter orders: " + e.getMessage());
+                e.printStackTrace();
+            }
+        } else {
+            refreshOrdersTable(); // Show all orders if no status is selected
         }
     }
 }

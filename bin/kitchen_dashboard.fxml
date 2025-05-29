@@ -24,8 +24,7 @@
                   <HBox spacing="10" alignment="CENTER">
                      <children>
                         <Label fx:id="selectedOrderIdLabel" text="Order: None" />
-                        <ComboBox fx:id="statusComboBox" prefWidth="150" />
-                        <Button fx:id="updateOrderButton" text="Update Order" disable="true" />
+                        <ComboBox fx:id="statusComboBox" prefWidth="150" onAction="#handleStatusFilter" />
                      </children>
                      <padding>
                         <Insets top="10" right="10" bottom="10" left="10" />
