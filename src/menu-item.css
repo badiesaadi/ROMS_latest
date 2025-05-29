@@ -1,0 +1,198 @@
+/* Menu Card Styles */
+.menu-card {
+    -fx-background-color: white;
+    -fx-background-radius: 12px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 8, 0, 0, 2);
+    -fx-alignment: center;
+    -fx-padding: 15px;
+    -fx-spacing: 10px;
+    -fx-transition: all 0.3s ease-in-out;
+    -fx-min-width: 250px;
+    -fx-max-width: 250px;
+    -fx-min-height: 360px;
+    -fx-max-height: 360px;
+    -fx-pref-width: 250px;
+    -fx-pref-height: 360px;
+}
+
+.menu-card:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 15, 0, 0, 5);
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+.menu-card .food-image {
+    -fx-background-radius: 12px 12px 0 0;
+    -fx-background-size: contain;
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-color: white;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 4, 0, 0, 2);
+    -fx-fit-width: 220px;
+    -fx-fit-height: 160px;
+    -fx-min-width: 220px;
+    -fx-min-height: 160px;
+    -fx-max-width: 220px;
+    -fx-max-height: 160px;
+    -fx-pref-width: 220px;
+    -fx-pref-height: 160px;
+}
+
+.menu-card .food-name {
+    -fx-font-size: 16px;
+    -fx-font-weight: 500;
+    -fx-text-fill: -text-primary;
+    -fx-alignment: center;
+    -fx-wrap-text: true;
+    -fx-max-width: 220px;
+    -fx-pref-width: 220px;
+}
+
+.menu-card .food-price {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -restaurant-primary;
+    -fx-alignment: center;
+    -fx-max-width: 220px;
+    -fx-pref-width: 220px;
+}
+
+.menu-card .food-description {
+    -fx-font-size: 14px;
+    -fx-font-weight: 300;
+    -fx-text-fill: -text-secondary;
+    -fx-wrap-text: true;
+    -fx-max-width: 220px;
+    -fx-pref-width: 220px;
+    -fx-alignment: center;
+}
+
+.menu-card .quantity-spinner {
+    -fx-background-color: white;
+    -fx-border-color: #ecf0f1;
+    -fx-border-radius: 20px;
+    -fx-background-radius: 20px;
+    -fx-pref-width: 220px;
+    -fx-max-width: 220px;
+    -fx-alignment: center;
+    -fx-font-size: 14px;
+    -fx-padding: 4px;
+    -fx-max-height: 32px;
+}
+
+.menu-card .quantity-spinner .increment-arrow-button,
+.menu-card .quantity-spinner .decrement-arrow-button {
+    -fx-background-color: -restaurant-primary;
+    -fx-background-radius: 20px;
+    -fx-padding: 4px;
+    -fx-cursor: hand;
+    -fx-text-fill: white;
+}
+
+.menu-card .quantity-spinner .increment-arrow-button:hover,
+.menu-card .quantity-spinner .decrement-arrow-button:hover {
+    -fx-background-color: -restaurant-secondary;
+}
+
+.menu-card .quantity-spinner .text-field {
+    -fx-background-color: transparent;
+    -fx-alignment: center;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -text-primary;
+}
+
+.menu-card .add-btn {
+    -fx-background-color: -restaurant-primary;
+    -fx-background-radius: 20px;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-pref-width: 220px;
+    -fx-max-width: 220px;
+    -fx-pref-height: 40px;
+    -fx-cursor: hand;
+    -fx-margin-top: 10px;
+    -fx-transition: all 0.3s ease;
+}
+
+.menu-card .add-btn:hover {
+    -fx-background-color: -restaurant-secondary;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 4, 0, 0, 2);
+}
+
+/* Responsive Layout */
+@media (max-width: 1200px) {
+    .menu-card {
+        -fx-min-width: 220px;
+        -fx-max-width: 220px;
+        -fx-min-height: 340px;
+        -fx-max-height: 340px;
+        -fx-pref-width: 220px;
+        -fx-pref-height: 340px;
+    }
+
+    .menu-card .food-image,
+    .menu-card .food-name,
+    .menu-card .food-price,
+    .menu-card .food-description,
+    .menu-card .quantity-spinner,
+    .menu-card .add-btn {
+        -fx-max-width: 190px;
+        -fx-pref-width: 190px;
+    }
+}
+
+@media (max-width: 768px) {
+    .menu-card {
+        -fx-min-width: 200px;
+        -fx-max-width: 200px;
+        -fx-min-height: 320px;
+        -fx-max-height: 320px;
+        -fx-pref-width: 200px;
+        -fx-pref-height: 320px;
+    }
+
+    .menu-card .food-image,
+    .menu-card .food-name,
+    .menu-card .food-price,
+    .menu-card .food-description,
+    .menu-card .quantity-spinner,
+    .menu-card .add-btn {
+        -fx-max-width: 170px;
+        -fx-pref-width: 170px;
+    }
+}
+
+@media (max-width: 480px) {
+    .menu-card {
+        -fx-min-width: 160px;
+        -fx-max-width: 160px;
+        -fx-min-height: 280px;
+        -fx-max-height: 280px;
+        -fx-pref-width: 160px;
+        -fx-pref-height: 280px;
+    }
+
+    .menu-card .food-image,
+    .menu-card .food-name,
+    .menu-card .food-price,
+    .menu-card .food-description,
+    .menu-card .quantity-spinner,
+    .menu-card .add-btn {
+        -fx-max-width: 140px;
+        -fx-pref-width: 140px;
+    }
+
+    .menu-card .food-name {
+        -fx-font-size: 14px;
+    }
+
+    .menu-card .food-price {
+        -fx-font-size: 16px;
+    }
+
+    .menu-card .food-description {
+        -fx-font-size: 12px;
+    }
+}
