@@ -681,72 +681,15 @@ public class AdminDashboardController implements Initializable {
         orderTotalColumn.setCellValueFactory(
                 cellData -> new SimpleStringProperty(String.format("$%.2f", cellData.getValue().getTotal())));
 
-        // Add action buttons for order status updates
-        TableColumn<Order, Void> actionColumn = new TableColumn<>("Actions");
-        actionColumn.setCellFactory(param -> new TableCell<Order, Void>() {
-            private final Button statusButton = new Button("Update Status");
-            private final Button cancelButton = new Button("Cancel");
-            private final HBox pane = new HBox(statusButton, cancelButton);
-
-            {
-                pane.setSpacing(10);
-                statusButton.setStyle("-fx-background-color: #3498db; -fx-text-fill: white;");
-                cancelButton.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white;");
-                statusButton.setOnAction(event -> {
-                    Order order = getTableView().getItems().get(getIndex());
-                    handleOrderStatusChange(order);
-                });
-                cancelButton.setOnAction(event -> {
-                    Order order = getTableView().getItems().get(getIndex());
-                    updateOrderStatus(order, Order.OrderStatus.CANCELLED);
-                });
-            }
-
-            @Override
-            protected void updateItem(Void item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty) {
-                    setGraphic(null);
-                } else {
-                    Order order = getTableView().getItems().get(getIndex());
-                    statusButton.setText(order.getStatus() == Order.OrderStatus.DELIVERED ? "View" : "Next Status");
-                    cancelButton.setDisable(order.getStatus() == Order.OrderStatus.DELIVERED ||
-                            order.getStatus() == Order.OrderStatus.CANCELLED);
-                    setGraphic(pane);
-                }
-            }
-        });
-
-        if (!ordersTable.getColumns().contains(actionColumn)) {
-            ordersTable.getColumns().add(actionColumn);
-        }
-
-        ordersTable.setRowFactory(tv -> {
-            TableRow<Order> row = new TableRow<>();
-            row.setOnMouseClicked(event -> {
-                if (event.getClickCount() == 2 && !row.isEmpty()) {
-                    Order order = row.getItem();
-                    showOrderDetails(order);
-                }
-            });
-            return row;
-        });
-
         refreshOrdersTable();
     }
 
     private void refreshOrdersTable() {
-        try {
-            List<Order> orders = orderDAO.getOrdersByStatus(Order.OrderStatus.QUEUED);
-            orders.addAll(orderDAO.getOrdersByStatus(Order.OrderStatus.IN_PROGRESS));
-            orders.addAll(orderDAO.getOrdersByStatus(Order.OrderStatus.READY));
-            orders.addAll(orderDAO.getOrdersByStatus(Order.OrderStatus.DELIVERED));
-            ordersTable.setItems(FXCollections.observableArrayList(orders));
-        } catch (Exception e) {
-            statusLabel.setText("Error loading orders: " + e.getMessage());
-            statusLabel.setTextFill(Color.RED);
-            e.printStackTrace();
-        }
+        List<Order> orders = orderDAO.getOrdersByStatus(Order.OrderStatus.QUEUED);
+        orders.addAll(orderDAO.getOrdersByStatus(Order.OrderStatus.IN_PROGRESS));
+        orders.addAll(orderDAO.getOrdersByStatus(Order.OrderStatus.READY));
+        orders.addAll(orderDAO.getOrdersByStatus(Order.OrderStatus.DELIVERED));
+        ordersTable.setItems(FXCollections.observableArrayList(orders));
     }
 
     private void handleOrderStatusChange(Order order) {
@@ -761,7 +704,7 @@ public class AdminDashboardController implements Initializable {
                 updateOrderStatus(order, Order.OrderStatus.DELIVERED);
                 break;
             case DELIVERED:
-                showOrderDetails(order);
+                updateOrderStatus(order, Order.OrderStatus.CANCELLED);
                 break;
             default:
                 break;
@@ -769,52 +712,9 @@ public class AdminDashboardController implements Initializable {
     }
 
     private void updateOrderStatus(Order order, Order.OrderStatus newStatus) {
-        try {
-            order.setStatus(newStatus);
-            boolean updated = orderDAO.updateOrderStatus(order.getOrderId(), newStatus);
-            if (updated) {
-                refreshOrdersTable();
-                statusLabel.setText("Order status updated to " + newStatus.getDisplayName());
-                statusLabel.setTextFill(Color.GREEN);
-            } else {
-                statusLabel.setText("Failed to update order status in database");
-                statusLabel.setTextFill(Color.RED);
-            }
-        } catch (Exception e) {
-            statusLabel.setText("Error updating order status: " + e.getMessage());
-            statusLabel.setTextFill(Color.RED);
-            e.printStackTrace();
-        }
-    }
-
-    private void showOrderDetails(Order order) {
-        Alert alert = new Alert(AlertType.INFORMATION);
-        alert.setTitle("Order Details");
-        alert.setHeaderText("Order ID: " + order.getOrderId());
-
-        StringBuilder details = new StringBuilder();
-        details.append("Date: ").append(order.getDate().toString()).append("\n");
-        details.append("Status: ").append(order.getStatus().getDisplayName()).append("\n");
-        details.append("Total: $").append(String.format("%.2f", order.getTotal())).append("\n\n");
-        details.append("Items:\n");
-        for (Order.OrderItem item : order.getItems()) {
-            details.append("- ")
-                    .append(item.getMenuItem().getTitle())
-                    .append(" (Qty: ")
-                    .append(item.getQuantity())
-                    .append(", Price: $")
-                    .append(String.format("%.2f", item.getMenuItem().getPrice()))
-                    .append(")\n");
-        }
-
-        TextArea textArea = new TextArea(details.toString());
-        textArea.setEditable(false);
-        textArea.setWrapText(true);
-        textArea.setPrefRowCount(10);
-        textArea.setPrefColumnCount(40);
-
-        alert.getDialogPane().setContent(textArea);
-        alert.showAndWait();
+        order.setStatus(newStatus);
+        orderDAO.updateOrderStatus(order.getOrderId(), newStatus);
+        refreshOrdersTable();
     }
 
     private void handleOrderItemClick(Order.OrderItem orderItem) {
@@ -985,9 +885,8 @@ public class AdminDashboardController implements Initializable {
             stage.setTitle("Management");
             stage.show();
         } catch (Exception e) {
-            statusLabel.setText("Error loading management dashboard: " + e.getMessage());
-            statusLabel.setTextFill(Color.RED);
             e.printStackTrace();
         }
     }
 }
+

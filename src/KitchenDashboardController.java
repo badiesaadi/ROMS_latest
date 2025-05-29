@@ -141,7 +141,6 @@ public class KitchenDashboardController implements Initializable {
         deliveryPartnerColumn
                 .setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getManagerId()));
         statusColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getStatus()));
-
         // Setup actions column with buttons
         actionsColumn.setCellFactory(param -> new TableCell<Order, Void>() {
             private final Button actionBtn = new Button("Update Status");
@@ -599,9 +598,11 @@ public class KitchenDashboardController implements Initializable {
         try {
             List<Order> orders = orderDAO.getOrdersByStatus(Order.OrderStatus.QUEUED);
             orders.addAll(orderDAO.getOrdersByStatus(Order.OrderStatus.IN_PROGRESS));
-            orders.addAll(orderDAO.getOrdersByStatus(Order.OrderStatus.READY)); // Include READY orders
+            orders.addAll(orderDAO.getOrdersByStatus(Order.OrderStatus.READY));
+            System.out.println("Refreshing orders table with " + orders.size() + " orders");
             this.orders.setAll(orders);
             ordersTable.setItems(this.orders);
+            ordersTable.refresh();
         } catch (Exception e) {
             showAlert(AlertType.ERROR, "Refresh Orders Error", "Failed to refresh orders table: " + e.getMessage());
             e.printStackTrace();

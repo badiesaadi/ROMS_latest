@@ -19,6 +19,7 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
 import javafx.event.ActionEvent;
 import javafx.stage.Stage;
 import javafx.scene.Node; // Import Node class
@@ -68,7 +69,7 @@ public class CustomerViewController implements Initializable {
     }
 
     // Method to access orders from other controllers
-    //check this
+    //check this 
     public static List<Order> getAllOrders() {
         return allOrders;
     }
@@ -134,7 +135,7 @@ public class CustomerViewController implements Initializable {
         }
     }
 
-
+   
     private void displayMenuItems() {
         menuItemsContainer.getChildren().clear();
         for (MenuItem item : menuItems) {
@@ -464,13 +465,39 @@ public class CustomerViewController implements Initializable {
         }
     }
 
+    @FXML
+    void goToWelcomePage(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("welcome.fxml"));
+            Parent root = loader.load();
+
+            Font customFont = Font.loadFont(
+                getClass().getResourceAsStream("./tommy-mid.otf"), 
+                20
+            );
+
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(getClass().getResource("menu-style.css").toExternalForm()); // Add the stylesheet
+
+            Stage stage = (Stage) placeOrderBtn.getScene().getWindow();
+
+            stage.setScene(scene);
+            stage.setTitle("Welcome Page");
+            StageManager.applyStageSettings(stage);
+            stage.show();
+        } catch (IOException e) {
+            System.err.println("Error loading admin login: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
     private void handlePlaceOrder() {
         if (cartItems.isEmpty()) {
             showAlert("Empty Cart", "Your cart is empty. Please add items before placing an order.");
             return;
         }
 
-        //check this you need to delete delivery partner from
+        //check this you need to delete delivery partner from 
         Order order = new Order(new ArrayList<>(cartItems.values()), total);
         OrderDAO orderDAO = new OrderDAO();
         int orderId = orderDAO.createOrder(order);
