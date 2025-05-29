@@ -4,7 +4,7 @@ rem Set the JavaFX path - update this with your actual JavaFX path
 rem feriel
 rem set JAVAFX_PATH=C:\Program Files\Java\javafx-sdk-21.0.6
 rem ilyes
-set JAVAFX_PATH=C:\Java\javafx-sdk-21.0.6
+set JAVAFX_PATH=C:\javafx-sdk-21.0.6
 rem badi3
 rem set JAVAFX_PATH=C:\javafx-sdk-21.0.6
 
@@ -12,7 +12,7 @@ rem Set the MySQL connector path
 rem feriel
 rem set MYSQL_CONNECTOR=C:\mysql-connector-j-9.2.0.jar
 rem ilyes
-set MYSQL_CONNECTOR=C:\Users\BLEUSMEN\Downloads\mysql-connector-j-9.2.0\mysql-connector-j-9.2.0\mysql-connector-j-9.2.0.jar
+set MYSQL_CONNECTOR=C:\mysql-connector-j-9.2.0.jar
 rem badi3
 rem set MYSQL_CONNECTOR=C:\mysql-connector-j-9.2.0.jar
 
