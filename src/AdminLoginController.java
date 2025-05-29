@@ -26,6 +26,8 @@ public class AdminLoginController {
     // @FXML private ToggleGroup loginType;
     @FXML private Button signupButton;
 
+    private String currentUserRole; // Variable to store the role of the logged-in user
+
     @FXML
     private void handleLogin(ActionEvent event) {
         String username = usernameField.getText().trim();
@@ -45,10 +47,14 @@ public class AdminLoginController {
                 ResultSet rs = pstmt.executeQuery();
 
                 if (rs.next()) {
-                    String role = rs.getString("role");
-                    if (role.equals("manager")) {
+                    currentUserRole = rs.getString("role"); // Save the role of the logged-in user
+                    if ("manager".equals(currentUserRole)) {
                         loadDashboard("admin_dashboard.fxml", "Restaurant Admin Dashboard");
-                    } else if (role.equals("kitchen")) {
+                    } 
+                    else if("sub_manager".equals(currentUserRole)){
+                        loadDashboard("admin_dashboard.fxml", "Restaurant Admin Dashboard");
+                    }
+                    else if ("kitchen".equals(currentUserRole)) {
                         loadDashboard("kitchen_dashboard.fxml", "Kitchen Dashboard");
                     } else {
                         errorLabel.setText("Invalid role.");
@@ -68,9 +74,12 @@ public class AdminLoginController {
 
     private void loadDashboard(String fxmlFile, String title) {
         try {
-            // Load the dashboard
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
             Parent root = loader.load();
+
+            // Pass the current user role to the AdminDashboardController
+            AdminDashboardController controller = loader.getController();
+            controller.setCurrentUserRole(currentUserRole);
 
             Scene scene = new Scene(root);
             Stage stage = (Stage) loginButton.getScene().getWindow();
@@ -141,5 +150,9 @@ public class AdminLoginController {
             errorLabel.setVisible(true);
             e.printStackTrace();
         }
+    }
+
+     String getCurrentUserRole() {
+        return currentUserRole; // Return the role of the logged-in user
     }
 }

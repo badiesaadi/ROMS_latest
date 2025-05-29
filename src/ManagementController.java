@@ -46,7 +46,12 @@ public class ManagementController {
 
     private void loadUsers() {
         userList.clear();
-        usersTableDAO.getAllUsers().forEach( user -> userList.add(new User(user.getId(), user.getUsername(), user.getRole())));
+        usersTableDAO.getAllUsers().forEach(user -> {
+            if ("manager".equals(user.getRole()) && userList.stream().anyMatch(u -> "manager".equals(u.getRole()))) {
+                return; // Skip adding additional managers
+            }
+            userList.add(new User(user.getId(), user.getUsername(), user.getRole()));
+        });
         userTable.setItems(userList);
     }
 
@@ -54,10 +59,10 @@ public class ManagementController {
     public void handleAddUser() {
         String username = usernameField.getText().trim();
         String password = passwordField.getText().trim();
-        String role = getSelectedRole();
+        String role = getSelectedRole(); // Determine role based on checkboxes
 
         if (username.isEmpty() || password.isEmpty() || role == null) {
-            showAlert(AlertType.WARNING, "Please fill in all fields.");
+            showAlert(AlertType.WARNING, "Please fill in all fields and select a role.");
             return;
         }
 
@@ -82,6 +87,11 @@ public class ManagementController {
             return;
         }
 
+        if ("manager".equals(selectedUser.getRole())) {
+            // Allow manager to update only username and password, ignore role changes
+            role = "manager";
+        }
+
         if (username.isEmpty() || password.isEmpty() || role == null) {
             showAlert(AlertType.WARNING, "Please fill in all fields.");
             return;
@@ -100,6 +110,11 @@ public class ManagementController {
     public void handleDeleteUser() {
         User selectedUser = userTable.getSelectionModel().getSelectedItem();
         if (selectedUser != null) {
+            if ("manager".equals(selectedUser.getRole())) {
+                showAlert(AlertType.WARNING, "You cannot delete the manager account.");
+                return;
+            }
+
             boolean success = usersTableDAO.deleteUser(selectedUser.getId());
             if (success) {
                 showAlert(AlertType.INFORMATION, "User deleted successfully.");
@@ -117,8 +132,8 @@ public class ManagementController {
         User selectedUser = userTable.getSelectionModel().getSelectedItem();
         if (selectedUser != null) {
             usernameField.setText(selectedUser.getUsername());
-            passwordField.setText(""); // Passwords are typically not displayed for security reasons
-            if ("manager".equals(selectedUser.getRole())) {
+            passwordField.setText(usersTableDAO.getPasswordById(selectedUser.getId())); // Display password
+            if ("manager".equals(selectedUser.getRole()) || "sub_manager".equals(selectedUser.getRole())) {
                 managerCheckBox.setSelected(true);
                 kitchenCheckBox.setSelected(false);
             } else if ("kitchen".equals(selectedUser.getRole())) {
@@ -139,11 +154,11 @@ public class ManagementController {
             showAlert(AlertType.WARNING, "Please select only one role.");
             return null;
         } else if (managerCheckBox.isSelected()) {
-            return "manager";
+            return "sub_manager"; // Assign "sub_manager" if manager checkbox is selected
         } else if (kitchenCheckBox.isSelected()) {
             return "kitchen";
         } else {
-            return null;
+            return null; // No role selected
         }
     }
 

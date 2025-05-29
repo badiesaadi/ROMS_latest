@@ -86,7 +86,7 @@ public class AdminDashboardController implements Initializable {
     private Button clearButton;
     @FXML
     private Button refreshFeedbackButton;
-
+    
     // Data
     private ObservableList<MenuItem> menuItems = FXCollections.observableArrayList();
     private MenuItem selectedMenuItem;
@@ -122,8 +122,17 @@ public class AdminDashboardController implements Initializable {
     @FXML
     private Button deleteFeedbackButton;
 
+    @FXML
+    private Button managementButton;
+
     private OrderDAO orderDAO = new OrderDAO();
     private FeedbackDAO feedbackDAO = new FeedbackDAO();
+
+    private String currentUserRole;
+
+    public void setCurrentUserRole(String role) {
+        this.currentUserRole = role;
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -156,6 +165,11 @@ public class AdminDashboardController implements Initializable {
         // Initialize category buttons
         updateCategoryButton.setDisable(true);
         deleteCategoryButton.setDisable(true);
+
+        // Hide management button for sub_manager role
+        if ("sub_manager".equals(currentUserRole)) {
+            managementButton.setVisible(false);
+        }
     }
 
     private void setupTable() {

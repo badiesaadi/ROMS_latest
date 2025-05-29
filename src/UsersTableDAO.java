@@ -70,4 +70,19 @@ public class UsersTableDAO {
         }
         return users;
     }
+
+    public String getPasswordById(int userId) {
+        String sql = "SELECT mot_de_pass FROM users WHERE user_id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getString("mot_de_pass");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null; // Return null if password is not found or an error occurs
+    }
 }
