@@ -1,250 +1,109 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.Tab?>
-<?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.FlowPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: #f8f9fa;" xmlns="http://javafx.com/javafx/17.0.15" xmlns:fx="http://javafx.com/fxml/1" fx:controller="KitchenDashboardController">
-   <top>
-      <HBox alignment="CENTER_LEFT" prefHeight="60.0" prefWidth="200.0" style="-fx-background-color: #e74c3c;" BorderPane.alignment="CENTER">
-         <children>
-            <Label text="Kitchen Dashboard" textFill="WHITE">
-               <font>
-                  <Font name="System Bold" size="18.0" />
-               </font>
-               <HBox.margin>
-                  <Insets left="20.0" />
-               </HBox.margin>
-            </Label>
-            <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
+<TabPane fx:controller="KitchenDashboardController" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+   <tabs>
+      <!-- Orders Tab -->
+      <Tab text="Orders" closable="false">
+         <content>
+            <VBox spacing="10">
                <children>
-                  <Button mnemonicParsing="false" onAction="#handleBackToCustomerView" style="-fx-background-color: transparent; -fx-text-fill: white;" text="Customer View">
-                     <HBox.margin>
-                        <Insets right="10.0" />
-                     </HBox.margin>
-                     <font>
-                        <Font name="System Bold" size="12.0" />
-                     </font>
-                  </Button>
-                  <Button mnemonicParsing="false" onAction="#handleLogout" style="-fx-background-color: #c0392b; -fx-text-fill: white; -fx-background-radius: 4;" text="Logout">
-                     <HBox.margin>
-                        <Insets right="20.0" />
-                     </HBox.margin>
-                     <font>
-                        <Font name="System Bold" size="12.0" />
-                     </font>
-                  </Button>
-               </children>
-            </HBox>
-         </children>
-      </HBox>
-   </top>
-   <center>
-      <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
-        <tabs>
-          <Tab text="Orders">
-               <content>
-                  <BorderPane prefHeight="200.0" prefWidth="200.0">
-                     <center>
-                        <TableView fx:id="ordersTable" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-                          <columns>
-                            <TableColumn fx:id="orderIdColumn" prefWidth="120.0" text="Order ID" />
-                            <TableColumn fx:id="orderTimeColumn" prefWidth="140.0" text="Time" />
-                              <TableColumn fx:id="itemsColumn" prefWidth="300.0" text="Items" />
-                              <TableColumn fx:id="deliveryPartnerColumn" prefWidth="150.0" text="Delivery Partner" />
-                              <TableColumn fx:id="statusColumn" prefWidth="120.0" text="Status" />
-                              <TableColumn fx:id="actionsColumn" prefWidth="150.0" text="Actions" />
-                          </columns>
-                        </TableView>
-                     </center>
-                     <bottom>
-                        <VBox prefHeight="160.0" prefWidth="100.0" spacing="10.0" BorderPane.alignment="CENTER">
-                           <children>
-                              <Label fx:id="selectedOrderIdLabel" text="Order: No selection" textFill="#2c3e50">
-                                 <font>
-                                    <Font name="System Bold" size="14.0" />
-                                 </font>
-                              </Label>
-                              <HBox alignment="CENTER_LEFT" prefHeight="40.0" prefWidth="200.0" spacing="10.0">
-                                 <children>
-                                    <Label text="Status:" textFill="#2c3e50">
-                                       <font>
-                                          <Font name="System Bold" size="12.0" />
-                                       </font>
-                                    </Label>
-                                    <ComboBox fx:id="statusComboBox" prefHeight="30.0" prefWidth="200.0" promptText="Select status" />
-                                 </children>
-                              </HBox>
-                              <Label text="Notes:" textFill="#2c3e50">
-                                 <font>
-                                    <Font name="System Bold" size="12.0" />
-                                 </font>
-                              </Label>
-                              <TextArea fx:id="orderNotesField" prefHeight="40.0" prefWidth="200.0" promptText="Add notes about this order..." />
-                              <HBox alignment="CENTER_RIGHT" prefHeight="40.0" prefWidth="200.0">
-                                 <children>
-                                    <Button fx:id="updateOrderButton" disable="true" mnemonicParsing="false" onAction="#handleUpdateOrder" prefHeight="30.0" prefWidth="120.0" style="-fx-background-color: #e74c3c; -fx-text-fill: white;" text="Update Order">
-                                       <font>
-                                          <Font name="System Bold" size="12.0" />
-                                       </font>
-                                    </Button>
-                                 </children>
-                              </HBox>
-                           </children>
-                           <padding>
-                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                           </padding>
-                        </VBox>
-                     </bottom>
+                  <TableView fx:id="ordersTable">
+                     <columns>
+                        <TableColumn fx:id="orderIdColumn" text="Order ID" prefWidth="100" />
+                        <TableColumn fx:id="orderDateColumn" text="Date" prefWidth="150" />
+                        <TableColumn fx:id="orderItemsColumn" text="Items" prefWidth="200" />
+                        <TableColumn fx:id="deliveryPartnerColumn" text="Manager" prefWidth="150" />
+                        <TableColumn fx:id="statusColumn" text="Status" prefWidth="100" />
+                        <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="150" />
+                     </columns>
+                  </TableView>
+                  <HBox spacing="10" alignment="CENTER">
+                     <children>
+                        <Label fx:id="selectedOrderIdLabel" text="Order: None" />
+                        <ComboBox fx:id="statusComboBox" prefWidth="150" />
+                        <Button fx:id="updateOrderButton" text="Update Order" disable="true" />
+                     </children>
                      <padding>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        <Insets top="10" right="10" bottom="10" left="10" />
                      </padding>
-                  </BorderPane>
-               </content>
-          </Tab>
-          <Tab text="Inventory">
-               <content>
-                  <BorderPane prefHeight="200.0" prefWidth="200.0">
-                     <center>
-                        <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                  </HBox>
+               </children>
+               <padding>
+                  <Insets top="10" right="10" bottom="10" left="10" />
+               </padding>
+            </VBox>
+         </content>
+      </Tab>
+
+      <!-- Inventory Tab -->
+      <Tab text="Inventory" closable="false">
+         <content>
+            <VBox spacing="10">
+               <children>
+                  <TableView fx:id="inventoryTable">
+                     <columns>
+                        <TableColumn fx:id="ingredientIdColumn" text="ID" prefWidth="100" />
+                        <TableColumn fx:id="ingredientNameColumn" text="Name" prefWidth="150" />
+                        <TableColumn fx:id="quantityColumn" text="Quantity" prefWidth="100" />
+                        <TableColumn fx:id="unitColumn" text="Unit" prefWidth="100" />
+                        <TableColumn fx:id="minQuantityColumn" text="Min Quantity" prefWidth="100" />
+                        <TableColumn fx:id="categoryColumn" text="Category" prefWidth="100" />
+                        <TableColumn fx:id="inventoryActionsColumn" text="Actions" prefWidth="150" />
+                     </columns>
+                  </TableView>
+                  <VBox fx:id="lowStockContainer" spacing="5" />
+                  <VBox spacing="10">
+                     <children>
+                        <Label text="Add/Edit Ingredient" style="-fx-font-weight: bold;" />
+                        <HBox spacing="10">
                            <children>
-                              <VBox prefHeight="640.0" prefWidth="400.0" spacing="10.0">
-                                 <children>
-                                    <Label text="Ingredient Management" textFill="#2c3e50">
-                                       <font>
-                                          <Font name="System Bold" size="16.0" />
-                                       </font>
-                                    </Label>
-                                    <Label text="Ingredient Name" textFill="#7f8c8d">
-                                       <font>
-                                          <Font name="System Bold" size="12.0" />
-                                       </font>
-                                    </Label>
-                                    <TextField fx:id="ingredientNameField" promptText="Enter ingredient name" />
-                                    <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
-                                       <children>
-                                          <VBox prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
-                                             <children>
-                                                <Label text="Quantity" textFill="#7f8c8d">
-                                                   <font>
-                                                      <Font name="System Bold" size="12.0" />
-                                                   </font>
-                                                </Label>
-                                                <TextField fx:id="quantityField" promptText="e.g. 5.0" />
-                                             </children>
-                                          </VBox>
-                                          <VBox layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
-                                             <children>
-                                                <Label text="Min. Quantity" textFill="#7f8c8d">
-                                                   <font>
-                                                      <Font name="System Bold" size="12.0" />
-                                                   </font>
-                                                </Label>
-                                                <TextField fx:id="minQuantityField" promptText="e.g. 1.0" />
-                                             </children>
-                                          </VBox>
-                                          <VBox layoutX="110.0" layoutY="10.0" prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
-                                             <children>
-                                                <Label text="Unit" textFill="#7f8c8d">
-                                                   <font>
-                                                      <Font name="System Bold" size="12.0" />
-                                                   </font>
-                                                </Label>
-                                                <TextField fx:id="unitField" promptText="e.g. kg" />
-                                             </children>
-                                          </VBox>
-                                       </children>
-                                    </HBox>
-                                    <Label text="Category" textFill="#7f8c8d">
-                                       <font>
-                                          <Font name="System Bold" size="12.0" />
-                                       </font>
-                                    </Label>
-                                    <ComboBox fx:id="ingredientCategoryComboBox" prefWidth="150.0" promptText="Select category" />
-                                    <HBox alignment="CENTER" prefHeight="40.0" prefWidth="200.0" spacing="10.0">
-                                       <children>
-                                          <Button fx:id="addIngredientButton" mnemonicParsing="false" onAction="#handleAddIngredient" prefHeight="35.0" prefWidth="110.0" style="-fx-background-color: #2ecc71; -fx-text-fill: white;" text="Add" textFill="WHITE">
-                                             <font>
-                                                <Font name="System Bold" size="12.0" />
-                                             </font>
-                                          </Button>
-                                          <Button fx:id="updateIngredientButton" disable="true" mnemonicParsing="false" onAction="#handleUpdateIngredient" prefHeight="35.0" prefWidth="110.0" style="-fx-background-color: #3498db; -fx-text-fill: white;" text="Update">
-                                             <font>
-                                                <Font name="System Bold" size="12.0" />
-                                             </font>
-                                          </Button>
-                                          <Button fx:id="clearIngredientFormButton" mnemonicParsing="false" onAction="#handleClearIngredientForm" prefHeight="35.0" prefWidth="110.0" style="-fx-background-color: #ecf0f1; -fx-text-fill: #7f8c8d;" text="Clear">
-                                             <font>
-                                                <Font name="System Bold" size="12.0" />
-                                             </font>
-                                          </Button>
-                                       </children>
-                                    </HBox>
-                                    <Label text="Low Stock Notifications" textFill="#2c3e50">
-                                       <font>
-                                          <Font name="System Bold" size="16.0" />
-                                       </font>
-                                       <VBox.margin>
-                                          <Insets top="20.0" />
-                                       </VBox.margin>
-                                    </Label>
-                                    <ScrollPane prefHeight="150.0" prefWidth="200.0" styleClass="transparent" stylesheets="@menu-style.css">
-                                       <content>
-                                          <VBox fx:id="lowStockContainer" prefWidth="380.0" />
-                                       </content>
-                                    </ScrollPane>
-                                 </children>
-                                 <padding>
-                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                 </padding>
-                              </VBox>
-                              <VBox prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
-                                 <children>
-                                    <Label text="Ingredients Inventory" textFill="#2c3e50">
-                                       <font>
-                                          <Font name="System Bold" size="16.0" />
-                                       </font>
-                                       <VBox.margin>
-                                          <Insets bottom="10.0" />
-                                       </VBox.margin>
-                                    </Label>
-                                    <TableView fx:id="inventoryTable" prefHeight="640.0" prefWidth="650.0" VBox.vgrow="ALWAYS">
-                                      <columns>
-                                        <TableColumn fx:id="ingredientIdColumn" prefWidth="60.0" text="ID" />
-                                        <TableColumn fx:id="ingredientNameColumn" prefWidth="150.0" text="Name" />
-                                          <TableColumn fx:id="quantityColumn" prefWidth="90.0" text="Quantity" />
-                                          <TableColumn fx:id="unitColumn" prefWidth="60.0" text="Unit" />
-                                          <TableColumn fx:id="minQuantityColumn" prefWidth="90.0" text="Min. Qty" />
-                                          <TableColumn fx:id="categoryColumn" prefWidth="100.0" text="Category" />
-                                          <TableColumn fx:id="inventoryActionsColumn" prefWidth="100.0" text="Actions" />
-                                      </columns>
-                                    </TableView>
-                                 </children>
-                                 <padding>
-                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                 </padding>
-                              </VBox>
+                              <Label text="Name:" />
+                              <TextField fx:id="ingredientNameField" prefWidth="150" />
                            </children>
                         </HBox>
-                     </center>
-                  </BorderPane>
-               </content>
-          </Tab>
-        </tabs>
-      </TabPane>
-   </center>
-</BorderPane> 
+                        <HBox spacing="10">
+                           <children>
+                              <Label text="Quantity:" />
+                              <TextField fx:id="quantityField" prefWidth="100" />
+                           </children>
+                        </HBox>
+                        <HBox spacing="10">
+                           <children>
+                              <Label text="Min Quantity:" />
+                              <TextField fx:id="minQuantityField" prefWidth="100" />
+                           </children>
+                        </HBox>
+                        <HBox spacing="10">
+                           <children>
+                              <Label text="Unit:" />
+                              <TextField fx:id="unitField" prefWidth="100" />
+                           </children>
+                        </HBox>
+                        <HBox spacing="10">
+                           <children>
+                              <Label text="Category:" />
+                              <ComboBox fx:id="ingredientCategoryComboBox" prefWidth="150" />
+                           </children>
+                        </HBox>
+                        <HBox spacing="10">
+                           <children>
+                              <Button fx:id="addIngredientButton" text="Add Ingredient" />
+                              <Button fx:id="updateIngredientButton" text="Update Ingredient" disable="true" />
+                              <Button fx:id="clearIngredientFormButton" text="Clear Form" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </children>
+               <padding>
+                  <Insets top="10" right="10" bottom="10" left="10" />
+               </padding>
+            </VBox>
+         </content>
+      </Tab>
+   </tabs>
+</TabPane>

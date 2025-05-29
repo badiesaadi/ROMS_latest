@@ -1,5 +1,3 @@
--- MySQL Schema for Restaurant Management System
-
 -- Create the database
 CREATE DATABASE restaurant_db;
 USE restaurant_db;
@@ -12,7 +10,7 @@ CREATE TABLE Staff (
     kitchen_id INT UNIQUE
 );
 
--- Create Category table
+-- Create the Category table
 CREATE TABLE Category (
     title VARCHAR(50) PRIMARY KEY
 );
@@ -30,7 +28,7 @@ CREATE TABLE MenuItem (
     FOREIGN KEY (kitchen_id) REFERENCES Staff(kitchen_id)
 );
 
--- Create Ingredient table
+-- Create the Ingredient table
 CREATE TABLE Ingredient (
     title VARCHAR(100) PRIMARY KEY,
     current_quantity DECIMAL(10,2) NOT NULL,
@@ -39,7 +37,7 @@ CREATE TABLE Ingredient (
     last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
--- Create Supplier table
+-- Create the Supplier table
 CREATE TABLE Supplier (
     supplier_id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL,
@@ -49,7 +47,7 @@ CREATE TABLE Supplier (
     address VARCHAR(255)
 );
 
--- Create Purchase Order table (simplified)
+-- Create the Purchase_Order table (simplified)
 CREATE TABLE Purchase_Order (
     po_id INT PRIMARY KEY AUTO_INCREMENT,
     supplier_id INT NOT NULL,
@@ -61,7 +59,7 @@ CREATE TABLE Purchase_Order (
     FOREIGN KEY (created_by) REFERENCES Staff(staff_id)
 );
 
--- Create Customer table
+-- Create the Customer table
 CREATE TABLE Customer (
     customer_id INT PRIMARY KEY AUTO_INCREMENT,
     address VARCHAR(255),
@@ -69,7 +67,7 @@ CREATE TABLE Customer (
     to_deliver BOOLEAN DEFAULT FALSE
 );
 
--- Create Order table
+-- Create the Orders table (renamed from Order)
 CREATE TABLE Order (
     order_id INT PRIMARY KEY AUTO_INCREMENT,
     status VARCHAR(50) NOT NULL,
@@ -80,7 +78,7 @@ CREATE TABLE Order (
     FOREIGN KEY (staff_id) REFERENCES Staff(staff_id)
 );
 
--- Create Order_Items table (simplified)
+-- Create the Order_Items table (simplified)
 CREATE TABLE Order_Items (
     order_id INT,
     item_id INT,
@@ -90,7 +88,7 @@ CREATE TABLE Order_Items (
     FOREIGN KEY (item_id) REFERENCES MenuItem(item_id)
 );
 
--- Create feedback table
+-- Create the Feedback table
 CREATE TABLE feedback (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -100,9 +98,10 @@ CREATE TABLE feedback (
     submission_date TIMESTAMP NOT NULL
 );
 
--- CREATE table users(
---     user_id INT AUTO_INCREMENT PRIMARY KEY,
---     username VARCHAR(225) NOT NULL,
---     role ENUM('manager', 'kitchen') NOT NULL,
---     mot_de_pass VARCHAR(100) NOT NULL
--- )
+-- Create the Users table
+CREATE TABLE Users (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(225) NOT NULL,
+    role ENUM('manager', 'kitchen') NOT NULL,
+    mot_de_pass VARCHAR(100) NOT NULL
+);
