@@ -21,12 +21,9 @@ public class AdminLoginController {
     @FXML private PasswordField passwordField;
     @FXML private Button loginButton;
     @FXML private Label errorLabel;
-    // @FXML private RadioButton adminRadio;
-    // @FXML private RadioButton kitchenRadio;
-    // @FXML private ToggleGroup loginType;
     @FXML private Button signupButton;
 
-    private String currentUserRole; // Variable to store the role of the logged-in user
+    private String currentUserRole; //  to store the role of the logged-in user
 
     @FXML
     private void handleLogin(ActionEvent event) {
@@ -47,7 +44,8 @@ public class AdminLoginController {
                 ResultSet rs = pstmt.executeQuery();
 
                 if (rs.next()) {
-                    currentUserRole = rs.getString("role"); // Save the role of the logged-in user
+                    currentUserRole = rs.getString("role"); // Save the role   
+        System.out.println("\n\n\n\n\n\n\n" + currentUserRole + "\n\n\n\n\n\n\n");         
                     if ("manager".equals(currentUserRole)) {
                         loadDashboard("admin_dashboard.fxml", "Restaurant Admin Dashboard");
                     } 
@@ -153,6 +151,6 @@ public class AdminLoginController {
     }
 
      String getCurrentUserRole() {
-        return currentUserRole; // Return the role of the logged-in user
+        return currentUserRole; 
     }
 }

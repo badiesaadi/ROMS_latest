@@ -130,12 +130,22 @@ public class AdminDashboardController implements Initializable {
 
     private String currentUserRole;
 
+
     public void setCurrentUserRole(String role) {
         this.currentUserRole = role;
+        //System.out.println("\n\n\n\n\n\n\n" + currentUserRole + "In admin dashboard" + "\n\n\n\n\n\n\n");         
+                // Hide management button for sub_manager role
+                if ("sub_manager".equals(currentUserRole)) {
+
+                    managementButton.setVisible(false);
+                }
     }
+
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
         setupTable();
         loadCategories();
         loadMenuItems();
@@ -166,10 +176,6 @@ public class AdminDashboardController implements Initializable {
         updateCategoryButton.setDisable(true);
         deleteCategoryButton.setDisable(true);
 
-        // Hide management button for sub_manager role
-        if ("sub_manager".equals(currentUserRole)) {
-            managementButton.setVisible(false);
-        }
     }
 
     private void setupTable() {
