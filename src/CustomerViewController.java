@@ -19,6 +19,7 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
 import javafx.event.ActionEvent;
 import javafx.stage.Stage;
 import javafx.scene.Node; // Import Node class
@@ -456,6 +457,32 @@ public class CustomerViewController implements Initializable {
 
             stage.setScene(scene);
             stage.setTitle("Admin Login");
+            StageManager.applyStageSettings(stage);
+            stage.show();
+        } catch (IOException e) {
+            System.err.println("Error loading admin login: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void goToWelcomePage(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("welcome.fxml"));
+            Parent root = loader.load();
+
+            Font customFont = Font.loadFont(
+                getClass().getResourceAsStream("./tommy-mid.otf"), 
+                20
+            );
+
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(getClass().getResource("menu-style.css").toExternalForm()); // Add the stylesheet
+
+            Stage stage = (Stage) placeOrderBtn.getScene().getWindow();
+
+            stage.setScene(scene);
+            stage.setTitle("Welcome Page");
             StageManager.applyStageSettings(stage);
             stage.show();
         } catch (IOException e) {
