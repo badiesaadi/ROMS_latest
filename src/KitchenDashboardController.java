@@ -166,14 +166,6 @@ public class KitchenDashboardController implements Initializable {
             }
         });
 
-        // Handle row selection
-        ordersTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            if (newSelection != null) {
-                selectedOrder = newSelection;
-                populateOrderDetails(selectedOrder);
-            }
-        });
-
         refreshOrdersTable();
     }
 
@@ -368,7 +360,7 @@ public class KitchenDashboardController implements Initializable {
 
     private void populateOrderDetails(Order order) {
         try {
-            selectedOrderIdLabel.setText("Order: " + order.getOrderId());
+            selectedOrderIdLabel.setText("Order: ");
             statusComboBox.setValue(order.getStatus());
             updateOrderButton.setDisable(false);
         } catch (Exception e) {
@@ -645,4 +637,11 @@ public class KitchenDashboardController implements Initializable {
             refreshOrdersTable(); // Show all orders if no status is selected
         }
     }
+
+    // private void setupUserPermissions() {
+    //     if (currentUser.getRole().equals("kitchen")) {
+    //         statusComboBox.setDisable(false); // Allow filtering
+    //         actionsColumn.setVisible(true); // Allow editing order status
+    //     }
+    // }
 }
