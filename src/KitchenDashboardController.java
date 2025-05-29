@@ -47,8 +47,6 @@ public class KitchenDashboardController implements Initializable {
     @FXML
     private TableColumn<Order, String> orderItemsColumn;
     @FXML
-    private TableColumn<Order, String> deliveryPartnerColumn;
-    @FXML
     private TableColumn<Order, Order.OrderStatus> statusColumn;
     @FXML
     private TableColumn<Order, Void> actionsColumn;
@@ -138,8 +136,6 @@ public class KitchenDashboardController implements Initializable {
                 .setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDate().toString()));
         orderItemsColumn
                 .setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getItemsSummary()));
-        deliveryPartnerColumn
-                .setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getManagerId()));
         statusColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getStatus()));
 
         // Setup actions column with buttons
@@ -240,7 +236,7 @@ public class KitchenDashboardController implements Initializable {
 
     private void setupStatusComboBox() {
         statusComboBox.getItems().clear(); // Clear existing items
-        statusComboBox.getItems().addAll(Order.OrderStatus.QUEUED, Order.OrderStatus.IN_PROGRESS, Order.OrderStatus.READY); // Add only the desired statuses
+        statusComboBox.getItems().addAll(Order.OrderStatus.ALL, Order.OrderStatus.QUEUED, Order.OrderStatus.IN_PROGRESS, Order.OrderStatus.READY); // Add "All" and other statuses
     }
 
     private void setupIngredientCategoryComboBox() {
@@ -626,7 +622,12 @@ public class KitchenDashboardController implements Initializable {
         Order.OrderStatus selectedStatus = statusComboBox.getValue();
         if (selectedStatus != null) {
             try {
-                List<Order> filteredOrders = orderDAO.getOrdersByStatus(selectedStatus);
+                List<Order> filteredOrders;
+                if (selectedStatus == Order.OrderStatus.ALL) {
+                    filteredOrders = orderDAO.getAllOrders(); // Fetch all orders when "All" is selected
+                } else {
+                    filteredOrders = orderDAO.getOrdersByStatus(selectedStatus);
+                }
                 this.orders.setAll(filteredOrders);
                 ordersTable.setItems(this.orders);
             } catch (Exception e) {

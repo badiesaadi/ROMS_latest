@@ -1,63 +1,70 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-<TabPane fx:controller="KitchenDashboardController" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+<TabPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="KitchenDashboardController">
    <tabs>
       <!-- Orders Tab -->
-      <Tab text="Orders" closable="false">
+      <Tab closable="false" text="Orders">
          <content>
             <VBox spacing="10">
                <children>
                   <TableView fx:id="ordersTable">
                      <columns>
-                        <TableColumn fx:id="orderIdColumn" text="Order ID" prefWidth="100" />
-                        <TableColumn fx:id="orderDateColumn" text="Date" prefWidth="150" />
-                        <TableColumn fx:id="orderItemsColumn" text="Items" prefWidth="200" />
-                        <TableColumn fx:id="deliveryPartnerColumn" text="Manager" prefWidth="150" />
-                        <TableColumn fx:id="statusColumn" text="Status" prefWidth="100" />
-                        <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="150" />
+                        <TableColumn fx:id="orderIdColumn" prefWidth="100" text="Order ID" />
+                        <TableColumn fx:id="orderDateColumn" prefWidth="150" text="Date" />
+                        <TableColumn fx:id="orderItemsColumn" prefWidth="200" text="Items" />
+                        <TableColumn fx:id="statusColumn" prefWidth="100" text="Status" />
+                        <TableColumn fx:id="actionsColumn" prefWidth="150" text="Actions" />
                      </columns>
                   </TableView>
-                  <HBox spacing="10" alignment="CENTER">
+                  <HBox alignment="CENTER" spacing="10">
                      <children>
                         <Label fx:id="selectedOrderIdLabel" text="Order: None" />
-                        <ComboBox fx:id="statusComboBox" prefWidth="150" onAction="#handleStatusFilter" />
+                        <ComboBox fx:id="statusComboBox" onAction="#handleStatusFilter" prefWidth="150" />
                      </children>
                      <padding>
-                        <Insets top="10" right="10" bottom="10" left="10" />
+                        <Insets bottom="10" left="10" right="10" top="10" />
                      </padding>
                   </HBox>
                </children>
                <padding>
-                  <Insets top="10" right="10" bottom="10" left="10" />
+                  <Insets bottom="10" left="10" right="10" top="10" />
                </padding>
             </VBox>
          </content>
       </Tab>
 
       <!-- Inventory Tab -->
-      <Tab text="Inventory"  closable="false">
+      <Tab closable="false" disable="true">
          <content>
             <VBox spacing="10">
                <children>
                   <TableView fx:id="inventoryTable">
                      <columns>
-                        <TableColumn fx:id="ingredientIdColumn" text="ID" prefWidth="100" />
-                        <TableColumn fx:id="ingredientNameColumn" text="Name" prefWidth="150" />
-                        <TableColumn fx:id="quantityColumn" text="Quantity" prefWidth="100" />
-                        <TableColumn fx:id="unitColumn" text="Unit" prefWidth="100" />
-                        <TableColumn fx:id="minQuantityColumn" text="Min Quantity" prefWidth="100" />
-                        <TableColumn fx:id="categoryColumn" text="Category" prefWidth="100" />
-                        <TableColumn fx:id="inventoryActionsColumn" text="Actions" prefWidth="150" />
+                        <TableColumn fx:id="ingredientIdColumn" prefWidth="100" text="ID" />
+                        <TableColumn fx:id="ingredientNameColumn" prefWidth="150" text="Name" />
+                        <TableColumn fx:id="quantityColumn" prefWidth="100" text="Quantity" />
+                        <TableColumn fx:id="unitColumn" prefWidth="100" text="Unit" />
+                        <TableColumn fx:id="minQuantityColumn" prefWidth="100" text="Min Quantity" />
+                        <TableColumn fx:id="categoryColumn" prefWidth="100" text="Category" />
+                        <TableColumn fx:id="inventoryActionsColumn" prefWidth="150" text="Actions" />
                      </columns>
                   </TableView>
                   <VBox fx:id="lowStockContainer" spacing="5" />
                   <VBox spacing="10">
                      <children>
-                        <Label text="Add/Edit Ingredient" style="-fx-font-weight: bold;" />
+                        <Label style="-fx-font-weight: bold;" text="Add/Edit Ingredient" />
                         <HBox spacing="10">
                            <children>
                               <Label text="Name:" />
@@ -91,7 +98,7 @@
                         <HBox spacing="10">
                            <children>
                               <Button fx:id="addIngredientButton" text="Add Ingredient" />
-                              <Button fx:id="updateIngredientButton" text="Update Ingredient" disable="true" />
+                              <Button fx:id="updateIngredientButton" disable="true" text="Update Ingredient" />
                               <Button fx:id="clearIngredientFormButton" text="Clear Form" />
                            </children>
                         </HBox>
@@ -99,7 +106,7 @@
                   </VBox>
                </children>
                <padding>
-                  <Insets top="10" right="10" bottom="10" left="10" />
+                  <Insets bottom="10" left="10" right="10" top="10" />
                </padding>
             </VBox>
          </content>

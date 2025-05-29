@@ -24,7 +24,6 @@
                         <TableColumn fx:id="orderIdColumn" prefWidth="100" text="Order ID" />
                         <TableColumn fx:id="orderDateColumn" prefWidth="150" text="Date" />
                         <TableColumn fx:id="orderItemsColumn" prefWidth="200" text="Items" />
-                        <TableColumn fx:id="deliveryPartnerColumn" prefWidth="150" text="Manager" />
                         <TableColumn fx:id="statusColumn" prefWidth="100" text="Status" />
                         <TableColumn fx:id="actionsColumn" prefWidth="150" text="Actions" />
                      </columns>
