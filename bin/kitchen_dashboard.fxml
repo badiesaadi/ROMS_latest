@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
@@ -25,6 +24,8 @@
                      <children>
                         <Label fx:id="selectedOrderIdLabel" text="Order: None" />
                         <ComboBox fx:id="statusComboBox" prefWidth="150" onAction="#handleStatusFilter" />
+                        <Button fx:id="updateOrderButton" text="Update Order" onAction="#handleUpdateOrder" />
+                        <Button fx:id="backToCustomerViewButton" text="Back to Customer View" onAction="#handleBackToCustomerView" />
                      </children>
                      <padding>
                         <Insets top="10" right="10" bottom="10" left="10" />
@@ -39,7 +40,7 @@
       </Tab>
 
       <!-- Inventory Tab -->
-      <Tab text="Inventory"  closable="false">
+      <Tab text="Inventory" closable="false">
          <content>
             <VBox spacing="10">
                <children>

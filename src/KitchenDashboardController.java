@@ -61,6 +61,10 @@ public class KitchenDashboardController implements Initializable {
     @FXML
     private Button updateOrderButton;
 
+    // New button for navigation
+    @FXML
+    private Button backToCustomerViewButton;
+
     // Inventory Tab
     @FXML
     private TableView<Ingredient> inventoryTable;
@@ -359,7 +363,7 @@ public class KitchenDashboardController implements Initializable {
 
     private void populateOrderDetails(Order order) {
         try {
-            selectedOrderIdLabel.setText("Order: ");
+            selectedOrderIdLabel.setText("Order: " + order.getOrderId());
             statusComboBox.setValue(order.getStatus());
             updateOrderButton.setDisable(false);
         } catch (Exception e) {
@@ -638,11 +642,4 @@ public class KitchenDashboardController implements Initializable {
             refreshOrdersTable(); // Show all orders if no status is selected
         }
     }
-
-    // private void setupUserPermissions() {
-    //     if (currentUser.getRole().equals("kitchen")) {
-    //         statusComboBox.setDisable(false); // Allow filtering
-    //         actionsColumn.setVisible(true); // Allow editing order status
-    //     }
-    // }
 }
