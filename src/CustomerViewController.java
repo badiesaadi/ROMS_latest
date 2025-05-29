@@ -12,28 +12,25 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.*;
-import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.event.ActionEvent;
 import javafx.stage.Stage;
-import javafx.scene.Node; // Import Node class
+import javafx.scene.Node;
+import javafx.event.ActionEvent;
 
 public class CustomerViewController implements Initializable {
     @FXML
     private VBox cartItemsContainer;
-
     @FXML
     private FlowPane menuItemsContainer;
     @FXML
     private HBox menuTypesContainer;
     @FXML
     private TextField searchField;
-
     @FXML
     private Label totalLabel;
     @FXML
@@ -41,34 +38,27 @@ public class CustomerViewController implements Initializable {
     @FXML
     private Button placeOrderBtn;
 
-
     private List<MenuItem> menuItems = new ArrayList<>();
     private Map<Integer, CartItem> cartItems = new HashMap<>();
     private Map<Integer, Spinner<Integer>> menuSpinners = new HashMap<>();
     private String currentCategory = "All";
-    //check these
     private double subTotal = 0.0;
     private double discount = 0.0;
     private double tax = 0.0;
+    private double total = 0;
 
-    private double total = 0.0;
-
-    // Static list to store orders across the application
-    //check this
     private static List<Order> allOrders = new ArrayList<>();
+    private MenuItemDAO menuItemDAO = new MenuItemDAO(); // Declare as field
 
     @Override
-    public void initialize(URL location, @SuppressWarnings("unused") ResourceBundle resources) {
+    public void initialize(URL location, ResourceBundle resources) {
         loadMenuItems();
         setupSearch();
         setupCategoryButtons();
-        //check this (already set it to "All")
-        currentCategory = "All"; // Ensure "All" is selected initially
-        filterAndDisplayMenuItems(); // Sort and display items initially
+        currentCategory = "All";
+        filterAndDisplayMenuItems();
     }
 
-    // Method to access orders from other controllers
-    //check this 
     public static List<Order> getAllOrders() {
         return allOrders;
     }
@@ -80,10 +70,7 @@ public class CustomerViewController implements Initializable {
     }
 
     private void setupCategoryButtons() {
-        // Clear existing buttons
         menuTypesContainer.getChildren().clear();
-
-        // Add "All" button
         FXMLLoader allLoader = new FXMLLoader(getClass().getResource("category_button.fxml"));
         try {
             VBox allButton = allLoader.load();
@@ -94,16 +81,12 @@ public class CustomerViewController implements Initializable {
                 activateCategoryButton(allController);
                 filterAndDisplayMenuItems();
             });
-            menuTypesContainer.getChildren().add(allButton);
+            menuTypesContainer.getChildren().addAll(allButton);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        // Load categories from database
-        MenuItemDAO menuItemDAO = new MenuItemDAO();
-        List<String> categories = menuItemDAO.getAllCategories();
-
-        // Add category buttons
+        List<String> categories = menuItemDAO.getAllCategories(); // Use field
         for (String category : categories) {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("category_button.fxml"));
             try {
@@ -134,7 +117,6 @@ public class CustomerViewController implements Initializable {
         }
     }
 
-   
     private void displayMenuItems() {
         menuItemsContainer.getChildren().clear();
         for (MenuItem item : menuItems) {
@@ -145,20 +127,16 @@ public class CustomerViewController implements Initializable {
     private void filterAndDisplayMenuItems() {
         String searchText = searchField.getText().toLowerCase();
         menuItemsContainer.getChildren().clear();
-
         List<MenuItem> filteredItems = new ArrayList<>();
-
         for (MenuItem item : menuItems) {
             if ((currentCategory.equals("All") || item.getCategory().equals(currentCategory)) &&
                     (searchText.isEmpty() || item.getName().toLowerCase().contains(searchText))) {
                 filteredItems.add(item);
             }
         }
-
         if (currentCategory.equals("All")) {
             filteredItems.sort((item1, item2) -> item1.getCategory().compareTo(item2.getCategory()));
         }
-
         for (MenuItem item : filteredItems) {
             displayMenuItem(item);
         }
@@ -168,184 +146,107 @@ public class CustomerViewController implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("menuItem.fxml"));
             VBox menuCard = loader.load();
-
             ImageView imageView = (ImageView) menuCard.lookup("#menuImage");
             Label nameLabel = (Label) menuCard.lookup("#menuName");
             Label priceLabel = (Label) menuCard.lookup("#menuPrice");
             Spinner<?> spinnerNode = (Spinner<?>) menuCard.lookup("#addToOrder");
             Button submitBtn = (Button) menuCard.lookup("#submitQuantityBtn");
 
-            if (spinnerNode instanceof Spinner) {
-                Spinner<Integer> quantitySpinner = (Spinner<Integer>) spinnerNode;
-
-                // Configure spinner with proper bounds and start from 1
-                SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10, 1);
-                quantitySpinner.setValueFactory(valueFactory);
-                quantitySpinner.setEditable(false);
-                menuSpinners.put(item.getId(), quantitySpinner);
-
-                // Restore quantity if item is in cart
-                CartItem cartItem = cartItems.get(item.getId());
-                if (cartItem != null) {
-                    quantitySpinner.getValueFactory().setValue(cartItem.getQuantity());
-                }
-
-                // Add to cart action
-                submitBtn.setOnAction(e -> {
-                    int quantity = quantitySpinner.getValue();
-                    if (quantity > 0) {
-                        addToCart(item, quantity);
+            if (spinnerNode instanceof Spinner<?>) {
+                if (spinnerNode.getValueFactory() instanceof SpinnerValueFactory.IntegerSpinnerValueFactory) {
+                    @SuppressWarnings("unchecked")
+                    Spinner<Integer> quantitySpinner = (Spinner<Integer>) spinnerNode;
+                    SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10, 1);
+                    quantitySpinner.setValueFactory(valueFactory);
+                    quantitySpinner.setEditable(false);
+                    menuSpinners.put(item.getId(), quantitySpinner);
+                    CartItem cartItem = cartItems.get(item.getId());
+                    if (cartItem != null) {
+                        quantitySpinner.getValueFactory().setValue(cartItem.getQuantity());
                     }
-                });
+                    submitBtn.setOnAction(e -> {
+                        int quantity = quantitySpinner.getValue();
+                        if (quantity > 0) {
+                            addToCart(item, quantity);
+                        }
+                    });
+                } else {
+                    System.err.println("Spinner has unexpected value type for item: " + item.getName());
+                }
             }
 
-            // Try to load the image
             String imagePath = item.getImagePath();
             if (imagePath != null && !imagePath.isEmpty()) {
                 try {
-                    // Try with bin/images path first
                     java.io.File file = new java.io.File("bin/" + imagePath);
                     if (file.exists()) {
                         Image image = new Image(file.toURI().toString());
                         imageView.setImage(image);
                     } else {
-                        // Try with absolute path
                         file = new java.io.File(imagePath);
                         if (file.exists()) {
                             Image image = new Image(file.toURI().toString());
                             imageView.setImage(image);
                         } else {
-                            // Use Redis image as fallback
                             Image redisImage = new Image(getClass().getResourceAsStream("/images/error.png"));
                             imageView.setImage(redisImage);
                         }
                     }
                 } catch (Exception e) {
                     System.err.println("Failed to load image: " + imagePath + " - " + e.getMessage());
-                    // Use Redis image as fallback
                     Image redisImage = new Image(getClass().getResourceAsStream("/images/error.png"));
                     imageView.setImage(redisImage);
                 }
             } else {
-                // Use Redis image as fallback
                 Image redisImage = new Image(getClass().getResourceAsStream("/images/error.png"));
                 imageView.setImage(redisImage);
             }
 
             nameLabel.setText(item.getName());
             priceLabel.setText(String.format("%.2f DA", item.getPrice()));
-
             menuCard.setOnMouseClicked(event -> {
                 currentCategory = item.getCategory();
                 filterAndDisplayMenuItems();
-                setupCategoryButtons(); // Update category buttons to reflect the selection
+                setupCategoryButtons();
             });
-
             menuItemsContainer.getChildren().add(menuCard);
-
         } catch (IOException e) {
             System.err.println("Error loading menu item: " + e.getMessage());
             e.printStackTrace();
         }
     }
 
-    //check this
-
-    // Helper method to create a colored placeholder for missing images
     private void createColoredPlaceholder(ImageView imageView, String category) {
-        // Use a color based on category
         String color;
         switch (category) {
-            case "Coffee":
-                color = "#8B4513"; // Brown
-                break;
-            case "Burger":
-                color = "#CD5C5C"; // Indian Red
-                break;
-            case "Italian":
-                color = "#FF6347"; // Tomato
-                break;
-            case "Mexican":
-                color = "#3CB371"; // Medium Sea Green
-                break;
-            case "Drinks":
-                color = "#4682B4"; // Steel Blue
-                break;
-            case "Snack":
-                color = "#9ACD32"; // Yellow Green
-                break;
-            case "Soup":
-                color = "#DEB887"; // Burlywood
-                break;
-            case "Seafood":
-                color = "#4169E1"; // Royal Blue
-                break;
-            default:
-                color = "#6A5ACD"; // Slate Blue
+            case "Coffee": color = "#8B4513"; break;
+            case "Burger": color = "#CD5C5C"; break;
+            case "Italian": color = "#FF6347"; break;
+            case "Mexican": color = "#3CB371"; break;
+            case "Drinks": color = "#4682B4"; break;
+            case "Snack": color = "#9ACD32"; break;
+            case "Soup": color = "#DEB887"; break;
+            case "Seafood": color = "#4169E1"; break;
+            default: color = "#6A5ACD";
         }
-
-        // Create a colored background for the ImageView
-        Rectangle rect = new Rectangle(
-                0, 0, imageView.getFitWidth(), imageView.getFitHeight());
+        Rectangle rect = new Rectangle(0, 0, imageView.getFitWidth(), imageView.getFitHeight());
         rect.setFill(Color.web(color));
         rect.setArcWidth(15);
         rect.setArcHeight(15);
-
-        // Create a snapshot of the rectangle and set it as the image
         SnapshotParameters params = new SnapshotParameters();
         params.setFill(Color.TRANSPARENT);
         WritableImage image = rect.snapshot(params, null);
         imageView.setImage(image);
     }
 
-    // Method to load menu items from the database
     private void loadMenuItems() {
-        MenuItemDAO menuItemDAO = new MenuItemDAO();
         try {
-            // Load menu items from database
             menuItems = menuItemDAO.getAllMenuItems();
-
-            // If database returned no items, load sample items for testing
-            // if (menuItems.isEmpty()) {
-            // loadSampleMenuItems();
-            // }
         } catch (Exception e) {
             System.err.println("Error loading menu items from database: " + e.getMessage());
             e.printStackTrace();
-
-            // Fall back to sample data if database fails
-            // loadSampleMenuItems();
         }
     }
-
-    // Load sample menu items for testing purposes
-    // private void loadSampleMenuItems() {
-    // menuItems.add(new MenuItem(1, "Cappuccino", 4.95, "Coffee",
-    // "images/cappuccino-jpg-.png"));
-    // menuItems.add(new MenuItem(2, "Mushroom Pizza", 9.95, "Italian",
-    // "images/mushroom-pizza-jpg-.png"));
-    // menuItems.add(new MenuItem(3, "Tacos Salsa", 5.95, "Mexican",
-    // "images/tacos-jpg-.png"));
-    // menuItems.add(new MenuItem(4, "Meat burger", 5.95, "Burger",
-    // "images/meat-burger-jpg-.png"));
-    // menuItems.add(new MenuItem(5, "Fresh melon juice", 3.95, "Drinks",
-    // "images/melon-juice-jpg-.png"));
-    // menuItems.add(
-    // new MenuItem(6, "Vegetable salad", 4.95, "Snack",
-    // "images/users-icon-png-vegetable-salad-jpg.png"));
-    // menuItems.add(new MenuItem(7, "Black chicken Burger", 6.95, "Burger",
-    // "images/black-chicken-jpg-.png"));
-    // menuItems.add(new MenuItem(8, "Bakso Kuah sapi", 5.95, "Soup",
-    // "images/bakso-jpg-.png"));
-    // menuItems.add(new MenuItem(9, "Italian Pizza", 9.95, "Italian",
-    // "images/italian-pizza-jpg-.png"));
-    // menuItems.add(new MenuItem(10, "Sausage Pizza", 8.95, "Italian",
-    // "images/sausage-pizza-jpg-.png"));
-    // menuItems.add(new MenuItem(11, "Seafood Paella", 12.95, "Seafood",
-    // "images/seafood-paella-jpg-.png"));
-    // menuItems.add(new MenuItem(12, "Ranch Burger", 7.95, "Burger",
-    // "images/ranch-burger-jpg-.png"));
-    // }
 
     private void addToCart(MenuItem item, int quantity) {
         CartItem cartItem = cartItems.get(item.getId());
@@ -355,7 +256,6 @@ public class CustomerViewController implements Initializable {
         } else {
             cartItem.setQuantity(quantity);
         }
-
         updateCartDisplay();
         updateCartSummary();
     }
@@ -366,9 +266,7 @@ public class CustomerViewController implements Initializable {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("cart_item.fxml"));
                 VBox cartItemBox = loader.load();
-
                 MenuItem item = cartItem.getMenuItem();
-
                 Label foodNameLabel = (Label) cartItemBox.lookup("#foodNameLabel");
                 Label priceLabel = (Label) cartItemBox.lookup("#priceLabel");
                 Label quantityLabel = (Label) cartItemBox.lookup("#quantityLabel");
@@ -379,7 +277,6 @@ public class CustomerViewController implements Initializable {
                 foodNameLabel.setText(item.getName());
                 priceLabel.setText(String.format("%.2f DA", cartItem.getTotal()));
                 quantityLabel.setText(String.valueOf(cartItem.getQuantity()));
-
                 Spinner<Integer> menuSpinner = menuSpinners.get(item.getId());
 
                 plusBtn.setOnAction(e -> {
@@ -416,7 +313,6 @@ public class CustomerViewController implements Initializable {
                 });
 
                 cartItemsContainer.getChildren().add(cartItemBox);
-
             } catch (IOException e) {
                 System.out.println("Error loading cart item: " + e.getMessage());
             }
@@ -427,13 +323,11 @@ public class CustomerViewController implements Initializable {
         total = cartItems.values().stream()
                 .mapToDouble(CartItem::getTotal)
                 .sum();
-
-
         totalLabel.setText(String.format("%.2f DA", total));
     }
 
     @FXML
-    void cancelOrder(@SuppressWarnings("unused") ActionEvent event) {
+    void cancelOrder(ActionEvent event) {
         cartItems.clear();
         menuSpinners.values().forEach(spinner -> spinner.getValueFactory().setValue(0));
         updateCartDisplay();
@@ -450,10 +344,8 @@ public class CustomerViewController implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("admin_login.fxml"));
             Parent root = loader.load();
-
             Scene scene = new Scene(root);
             Stage stage = (Stage) placeOrderBtn.getScene().getWindow();
-
             stage.setScene(scene);
             stage.setTitle("Admin Login");
             StageManager.applyStageSettings(stage);
@@ -470,18 +362,20 @@ public class CustomerViewController implements Initializable {
             return;
         }
 
-        //check this you need to delete delivery partner from 
         Order order = new Order(new ArrayList<>(cartItems.values()), total);
         OrderDAO orderDAO = new OrderDAO();
         int orderId = orderDAO.createOrder(order);
 
-        String orderDetails = new String();
-        orderDetails = orderDetails + ("Your order has been placed successfully.\n\n");
-        orderDetails =orderDetails +("Order ID: ") + (orderId) +("\n") ;
-        orderDetails =orderDetails +("Total Items: ")  + (cartItems.size()) +("\n");
-        orderDetails = orderDetails +("Total Amount: ") +(String.format("%.2f", total)) + ("\n\n");
-
         if (orderId > 0) {
+            order.setOrderId(orderId);
+            allOrders.add(order);
+            String orderDetails = String.format(
+                    "Your order has been placed successfully.\n\n" +
+                            "Order ID: %d\n" +
+                            "Total Items: %d\n" +
+                            "Total Amount: %.2f DA\n\n",
+                    orderId, cartItems.size(), total
+            );
             showAlert("Order Placed", orderDetails);
             cartItems.clear();
             menuSpinners.values().forEach(spinner -> spinner.getValueFactory().setValue(0));

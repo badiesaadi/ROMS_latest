@@ -4,106 +4,66 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 
-<TabPane fx:controller="KitchenDashboardController" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+<TabPane fx:controller="KitchenDashboardController" xmlns:fx="http://javafx.com/fxml">
    <tabs>
-      <!-- Orders Tab -->
       <Tab text="Orders" closable="false">
-         <content>
-            <VBox spacing="10">
-               <children>
-                  <TableView fx:id="ordersTable">
-                     <columns>
-                        <TableColumn fx:id="orderIdColumn" text="Order ID" prefWidth="100" />
-                        <TableColumn fx:id="orderDateColumn" text="Date" prefWidth="150" />
-                        <TableColumn fx:id="orderItemsColumn" text="Items" prefWidth="200" />
-                        <TableColumn fx:id="deliveryPartnerColumn" text="Manager" prefWidth="150" />
-                        <TableColumn fx:id="statusColumn" text="Status" prefWidth="100" />
-                        <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="150" />
-                     </columns>
-                  </TableView>
-                  <HBox spacing="10" alignment="CENTER">
-                     <children>
-                        <Label fx:id="selectedOrderIdLabel" text="Order: None" />
-                        <ComboBox fx:id="statusComboBox" prefWidth="150" />
-                        <Button fx:id="updateOrderButton" text="Update Order" disable="true" />
-                     </children>
-                     <padding>
-                        <Insets top="10" right="10" bottom="10" left="10" />
-                     </padding>
-                  </HBox>
-               </children>
-               <padding>
-                  <Insets top="10" right="10" bottom="10" left="10" />
-               </padding>
-            </VBox>
-         </content>
+         <VBox spacing="10" style="-fx-padding: 10;">
+            <TableView fx:id="ordersTable" prefHeight="400">
+               <columns>
+                  <TableColumn fx:id="orderIdColumn" text="Order ID" prefWidth="75"/>
+                  <TableColumn fx:id="orderDateColumn" text="Date" prefWidth="150"/>
+                  <TableColumn fx:id="orderItemsColumn" text="Items" prefWidth="300"/>
+                  <TableColumn fx:id="deliveryPartnerColumn" text="Delivery Partner" prefWidth="100"/>
+                  <TableColumn fx:id="statusColumn" text="Status" prefWidth="100"/>
+                  <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="100"/>
+               </columns>
+            </TableView>
+            <HBox spacing="10">
+               <Label fx:id="selectedOrderIdLabel" text="Selected Order: None"/>
+               <ComboBox fx:id="statusComboBox" promptText="Select Status"/>
+               <Button fx:id="updateOrderButton" text="Update Order" onAction="#handleUpdateOrder"/>
+               <Button fx:id="refreshOrdersButton" text="Refresh Orders" onAction="#handleRefreshOrders"/>
+            </HBox>
+         </VBox>
       </Tab>
-
-      <!-- Inventory Tab -->
       <Tab text="Inventory" closable="false">
-         <content>
-            <VBox spacing="10">
-               <children>
-                  <TableView fx:id="inventoryTable">
-                     <columns>
-                        <TableColumn fx:id="ingredientIdColumn" text="ID" prefWidth="100" />
-                        <TableColumn fx:id="ingredientNameColumn" text="Name" prefWidth="150" />
-                        <TableColumn fx:id="quantityColumn" text="Quantity" prefWidth="100" />
-                        <TableColumn fx:id="unitColumn" text="Unit" prefWidth="100" />
-                        <TableColumn fx:id="minQuantityColumn" text="Min Quantity" prefWidth="100" />
-                        <TableColumn fx:id="categoryColumn" text="Category" prefWidth="100" />
-                        <TableColumn fx:id="inventoryActionsColumn" text="Actions" prefWidth="150" />
-                     </columns>
-                  </TableView>
-                  <VBox fx:id="lowStockContainer" spacing="5" />
-                  <VBox spacing="10">
-                     <children>
-                        <Label text="Add/Edit Ingredient" style="-fx-font-weight: bold;" />
-                        <HBox spacing="10">
-                           <children>
-                              <Label text="Name:" />
-                              <TextField fx:id="ingredientNameField" prefWidth="150" />
-                           </children>
-                        </HBox>
-                        <HBox spacing="10">
-                           <children>
-                              <Label text="Quantity:" />
-                              <TextField fx:id="quantityField" prefWidth="100" />
-                           </children>
-                        </HBox>
-                        <HBox spacing="10">
-                           <children>
-                              <Label text="Min Quantity:" />
-                              <TextField fx:id="minQuantityField" prefWidth="100" />
-                           </children>
-                        </HBox>
-                        <HBox spacing="10">
-                           <children>
-                              <Label text="Unit:" />
-                              <TextField fx:id="unitField" prefWidth="100" />
-                           </children>
-                        </HBox>
-                        <HBox spacing="10">
-                           <children>
-                              <Label text="Category:" />
-                              <ComboBox fx:id="ingredientCategoryComboBox" prefWidth="150" />
-                           </children>
-                        </HBox>
-                        <HBox spacing="10">
-                           <children>
-                              <Button fx:id="addIngredientButton" text="Add Ingredient" />
-                              <Button fx:id="updateIngredientButton" text="Update Ingredient" disable="true" />
-                              <Button fx:id="clearIngredientFormButton" text="Clear Form" />
-                           </children>
-                        </HBox>
-                     </children>
-                  </VBox>
-               </children>
-               <padding>
-                  <Insets top="10" right="10" bottom="10" left="10" />
-               </padding>
-            </VBox>
-         </content>
+         <VBox spacing="10" style="-fx-padding: 10;">
+            <TableView fx:id="inventoryTable" prefHeight="400">
+               <columns>
+                  <TableColumn fx:id="ingredientIdColumn" text="ID" prefWidth="50"/>
+                  <TableColumn fx:id="ingredientNameColumn" text="Name" prefWidth="150"/>
+                  <TableColumn fx:id="quantityColumn" text="Quantity" prefWidth="100"/>
+                  <TableColumn fx:id="unitColumn" text="Unit" prefWidth="75"/>
+                  <TableColumn fx:id="minQuantityColumn" text="Min Quantity" prefWidth="100"/>
+                  <TableColumn fx:id="categoryColumn" text="Category" prefWidth="100"/>
+                  <TableColumn fx:id="inventoryActionsColumn" text="Actions" prefWidth="150"/>
+               </columns>
+            </TableView>
+            <HBox spacing="10">
+               <VBox spacing="5">
+                  <Label text="Ingredient Name"/>
+                  <TextField fx:id="ingredientNameField"/>
+                  <Label text="Quantity"/>
+                  <TextField fx:id="quantityField"/>
+                  <Label text="Minimum Quantity"/>
+                  <TextField fx:id="minQuantityField"/>
+                  <Label text="Unit"/>
+                  <TextField fx:id="unitField"/>
+                  <Label text="Category"/>
+                  <ComboBox fx:id="ingredientCategoryComboBox" promptText="Select Category"/>
+                  <HBox spacing="5">
+                     <Button fx:id="addIngredientButton" text="Add Ingredient" onAction="#handleAddIngredient"/>
+                     <Button fx:id="updateIngredientButton" text="Update Ingredient" onAction="#handleUpdateIngredient"/>
+                     <Button fx:id="clearIngredientFormButton" text="Clear Form" onAction="#handleClearIngredientForm"/>
+                  </HBox>
+               </VBox>
+               <VBox fx:id="lowStockContainer" spacing="5">
+                  <Label text="Low Stock Notifications"/>
+               </VBox>
+            </HBox>
+            <Button text="Back to Customer View" onAction="#handleBackToCustomerView"/>
+            <Button text="Logout" onAction="#handleLogout"/>
+         </VBox>
       </Tab>
    </tabs>
 </TabPane>

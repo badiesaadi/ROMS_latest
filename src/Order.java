@@ -1,13 +1,18 @@
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
-import java.sql.Date;
-import java.text.SimpleDateFormat;
 import java.util.stream.Collectors;
 
 public class Order {
+    private int orderId;
+    private OrderStatus status;
+    private Date date;
+    private int customerId;
+    private String staffId;
+    private int kitchenId;
+    private String managerId;
+    private List<OrderItem> items;
+
     public enum OrderStatus {
         QUEUED("Queued"),
         IN_PROGRESS("In Progress"),
@@ -26,26 +31,41 @@ public class Order {
         }
     }
 
-    private int orderId;
-    private OrderStatus status;
-    private Date date;
-    private int customerId;
-    private int staffId;
-    private List<OrderItem> items;
-    private int kitchenId;
-    private String managerId;
+    public static class OrderItem {
+        private MenuItem menuItem;
+        private int quantity;
 
-    public Order() {
-        this.date = new Date(System.currentTimeMillis());
-        this.items = new ArrayList<>();
-        this.status = OrderStatus.QUEUED;
+        public OrderItem(MenuItem menuItem, int quantity) {
+            this.menuItem = menuItem;
+            this.quantity = quantity;
+        }
+
+        public MenuItem getMenuItem() {
+            return menuItem;
+        }
+
+        public int getQuantity() {
+            return quantity;
+        }
     }
 
     public Order(List<CartItem> cartItems, double total) {
-        this();
+        this.items = new ArrayList<>();
         for (CartItem cartItem : cartItems) {
             this.items.add(new OrderItem(cartItem.getMenuItem(), cartItem.getQuantity()));
         }
+        this.status = OrderStatus.QUEUED;
+        this.date = new Date(System.currentTimeMillis());
+        this.customerId = 0;
+        this.staffId = null;
+        this.kitchenId = 0;
+        this.managerId = null;
+    }
+
+    public Order() {
+        this.items = new ArrayList<>();
+        this.status = OrderStatus.QUEUED;
+        this.date = new Date(System.currentTimeMillis());
     }
 
     public int getOrderId() {
@@ -80,22 +100,13 @@ public class Order {
         this.customerId = customerId;
     }
 
-    public int getStaffId() {
+    public String getStaffId() {
         return staffId;
     }
 
-    public void setStaffId(int staffId) {
+    public void setStaffId(String staffId) {
         this.staffId = staffId;
     }
-
-    public List<OrderItem> getItems() {
-        return items;
-    }
-
-    public void setItems(List<OrderItem> items) {
-        this.items = items;
-    }
-
 
     public int getKitchenId() {
         return kitchenId;
@@ -106,11 +117,19 @@ public class Order {
     }
 
     public String getManagerId() {
-        return managerId;
+        return managerId != null ? managerId : "N/A";
     }
 
     public void setManagerId(String managerId) {
         this.managerId = managerId;
+    }
+
+    public List<OrderItem> getItems() {
+        return items;
+    }
+
+    public void setItems(List<OrderItem> items) {
+        this.items = items;
     }
 
     public double getTotal() {
@@ -121,61 +140,20 @@ public class Order {
 
     public String getItemsSummary() {
         return items.stream()
-                .map(item -> String.format("%s x%d", item.getMenuItem().getTitle(), item.getQuantity()))
-                .collect(java.util.stream.Collectors.joining(", "));
+                .map(item -> item.getMenuItem().getTitle() + " x" + item.getQuantity())
+                .collect(Collectors.joining(", "));
     }
 
-    public static class OrderItem {
-        private MenuItem menuItem;
-        private int quantity;
-
-        public OrderItem(MenuItem menuItem, int quantity) {
-            this.menuItem = menuItem;
-            this.quantity = quantity;
-        }
-
-        public MenuItem getMenuItem() {
-            return menuItem;
-        }
-
-        public void setMenuItem(MenuItem menuItem) {
-            this.menuItem = menuItem;
-        }
-
-        public int getQuantity() {
-            return quantity;
-        }
-
-        public void setQuantity(int quantity) {
-            this.quantity = quantity;
-        }
-    }
-}
-
-class OrderItem {
-    private int orderId;
-    private MenuItem menuItem;
-    private int quantity;
-
-    public OrderItem(int orderId, MenuItem menuItem, int quantity) {
-        this.orderId = orderId;
-        this.menuItem = menuItem;
-        this.quantity = quantity;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Order order = (Order) o;
+        return orderId == order.orderId;
     }
 
-    public int getOrderId() {
-        return orderId;
-    }
-
-    public MenuItem getMenuItem() {
-        return menuItem;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(orderId);
     }
 }

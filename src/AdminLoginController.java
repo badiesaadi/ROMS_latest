@@ -1,145 +1,115 @@
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import javafx.event.ActionEvent;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleGroup;
-import javafx.stage.Stage;
+import javafx.fxml.Initializable;
+import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import java.net.URL;
+import java.util.List;
+import java.util.ResourceBundle;
 
-public class AdminLoginController {
-    @FXML private TextField usernameField;
-    @FXML private PasswordField passwordField;
-    @FXML private Button loginButton;
-    @FXML private Label errorLabel;
-    // @FXML private RadioButton adminRadio;
-    // @FXML private RadioButton kitchenRadio;
-    // @FXML private ToggleGroup loginType;
-    @FXML private Button signupButton;
-
+public class AdminDashboardController implements Initializable {
     @FXML
-    private void handleLogin(ActionEvent event) {
-        String username = usernameField.getText().trim();
-        String password = passwordField.getText().trim();
+    private TableView<Order> ordersTable;
+    @FXML
+    private TableColumn<Order, Integer> orderIdColumn;
+    @FXML
+    private TableColumn<Order, String> orderDateColumn;
+    @FXML
+    private TableColumn<Order, String> orderItemsColumn;
+    @FXML
+    private TableColumn<Order, String> statusColumn;
+    @FXML
+    private TableColumn<Order, String> totalColumn;
+    @FXML
+    private TableColumn<Order, Void> actionsColumn;
 
-        if (username.isEmpty() || password.isEmpty()) {
-            errorLabel.setText("Username and password are required.");
-            errorLabel.setVisible(true);
-            return;
-        }
+    private ObservableList<Order> orders = FXCollections.observableArrayList();
+    private OrderDAO orderDAO = new OrderDAO();
 
-        try (Connection conn = DatabaseConnection.getConnection()) {
-            String sql = "SELECT role FROM users WHERE username = ? AND mot_de_pass = ?";
-            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-                pstmt.setString(1, username);
-                pstmt.setString(2, password);
-                ResultSet rs = pstmt.executeQuery();
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        setupOrdersTable();
+        loadOrders();
+        startOrderRefreshThread();
+    }
 
-                if (rs.next()) {
-                    String role = rs.getString("role");
-                    if (role.equals("manager")) {
-                        loadDashboard("admin_dashboard.fxml", "Restaurant Admin Dashboard");
-                    } else if (role.equals("kitchen")) {
-                        loadDashboard("kitchen_dashboard.fxml", "Kitchen Dashboard");
-                    } else {
-                        errorLabel.setText("Invalid role.");
-                        errorLabel.setVisible(true);
-                    }
-                } else {
-                    errorLabel.setText("Invalid username or password.");
-                    errorLabel.setVisible(true);
+    private void setupOrdersTable() {
+        orderIdColumn.setCellValueFactory(
+                cellData -> new SimpleIntegerProperty(cellData.getValue().getOrderId()).asObject());
+        orderDateColumn.setCellValueFactory(
+                cellData -> new SimpleStringProperty(cellData.getValue().getDate().toString()));
+        orderItemsColumn.setCellValueFactory(
+                cellData -> new SimpleStringProperty(cellData.getValue().getItemsSummary()));
+        statusColumn.setCellValueFactory(
+                cellData -> new SimpleStringProperty(cellData.getValue().getStatus().getDisplayName()));
+        totalColumn.setCellValueFactory(
+                cellData -> new SimpleStringProperty(String.format("$%.2f", cellData.getValue().getTotal())));
+
+        actionsColumn.setCellFactory(param -> new TableCell<Order, Void>() {
+            private final Button cancelBtn = new Button("Cancel");
+            private final HBox pane = new HBox(cancelBtn);
+
+            {
+                cancelBtn.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white;");
+                cancelBtn.setOnAction(event -> {
+                    Order order = getTableView().getItems().get(getIndex());
+                    updateOrderStatus(order, Order.OrderStatus.CANCELLED);
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                setGraphic(empty ? null : pane);
+            }
+        });
+
+        ordersTable.setItems(orders);
+    }
+
+    private void loadOrders() {
+        List<Order> existingOrders = orderDAO.getAllOrders();
+        orders.addAll(existingOrders);
+    }
+
+    private void startOrderRefreshThread() {
+        Thread refreshThread = new Thread(() -> {
+            while (true) {
+                try {
+                    Thread.sleep(30000);
+                    Platform.runLater(() -> {
+                        List<Order> currentOrders = orderDAO.getOrdersByStatus(Order.OrderStatus.QUEUED);
+                        currentOrders.addAll(orderDAO.getOrdersByStatus(Order.OrderStatus.IN_PROGRESS));
+                        currentOrders.addAll(orderDAO.getOrdersByStatus(Order.OrderStatus.READY));
+                        orders.clear();
+                        orders.addAll(currentOrders);
+                        ordersTable.refresh();
+                    });
+                } catch (InterruptedException e) {
+                    break;
                 }
             }
-        } catch (SQLException e) {
-            errorLabel.setText("Database error: " + e.getMessage());
-            errorLabel.setVisible(true);
-            e.printStackTrace();
-        }
+        });
+        refreshThread.setDaemon(true);
+        refreshThread.start();
     }
 
-    private void loadDashboard(String fxmlFile, String title) {
-        try {
-            // Load the dashboard
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
-            Parent root = loader.load();
-
-            Scene scene = new Scene(root);
-            Stage stage = (Stage) loginButton.getScene().getWindow();
-            stage.setScene(scene);
-            stage.setTitle(title);
-            stage.setWidth(1500);
-            StageManager.applyStageSettings(stage);
-            stage.centerOnScreen();
-            stage.show();
-        } catch (IOException e) {
-            errorLabel.setText("Error loading dashboard: " + e.getMessage());
-            errorLabel.setVisible(true);
-            e.printStackTrace();
-        }
+    private void updateOrderStatus(Order order, Order.OrderStatus newStatus) {
+        order.setStatus(newStatus);
+        orderDAO.updateOrderStatus(order.getOrderId(), newStatus);
+        ordersTable.refresh();
+        showAlert(Alert.AlertType.INFORMATION, "Success", "Order status updated to " + newStatus.getDisplayName());
     }
 
-    @FXML
-    private void handleBackToCustomerView(ActionEvent event) {
-        try {
-            // Load the customer view
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("customer_view.fxml"));
-            Parent root = loader.load();
-
-            Scene scene = new Scene(root);
-            Stage stage = (Stage) loginButton.getScene().getWindow();
-            stage.setScene(scene);
-            stage.setTitle("Restaurant Customer View");
-            StageManager.applyStageSettings(stage);
-            stage.show();
-        } catch (IOException e) {
-            errorLabel.setText("Error loading customer view: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
-    @FXML
-    private void handleSignup(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("signup.fxml"));
-            Parent root = loader.load();
-
-            Scene scene = new Scene(root);
-            Stage stage = (Stage) signupButton.getScene().getWindow();
-            stage.setScene(scene);
-            stage.setTitle("Sign Up");
-            stage.centerOnScreen();
-            stage.show();
-        } catch (IOException e) {
-            errorLabel.setText("Error loading signup page: " + e.getMessage());
-            errorLabel.setVisible(true);
-            e.printStackTrace();
-        }
-    }
-
-    @FXML
-    private void initialize() {
-        try {
-            Connection conn = DatabaseConnection.getConnection();
-            String sql = "SELECT COUNT(*) FROM users";
-            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-                ResultSet rs = pstmt.executeQuery();
-                if (rs.next() && rs.getInt(1) == 0) {
-                    signupButton.setVisible(true);
-                }
-            }
-        } catch (SQLException e) {
-            errorLabel.setText("Database error: " + e.getMessage());
-            errorLabel.setVisible(true);
-            e.printStackTrace();
-        }
+    private void showAlert(Alert.AlertType type, String title, String message) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

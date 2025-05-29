@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
-
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -24,7 +23,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -58,8 +56,6 @@ public class KitchenDashboardController implements Initializable {
     // Order Details
     @FXML
     private Label selectedOrderIdLabel;
-    // @FXML
-    // private TextArea orderNotesField;
     @FXML
     private ComboBox<Order.OrderStatus> statusComboBox;
     @FXML
@@ -124,8 +120,6 @@ public class KitchenDashboardController implements Initializable {
         loadSampleIngredients();
         setupIngredientMappings();
         checkLowStockIngredients();
-
-        // Start a thread to periodically refresh orders (every 30 seconds)
         startOrderRefreshThread();
     }
 
@@ -140,6 +134,33 @@ public class KitchenDashboardController implements Initializable {
                 .setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getManagerId()));
         statusColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getStatus()));
 
+        // Setup actions column with buttons
+        actionsColumn.setCellFactory(param -> new TableCell<Order, Void>() {
+            private final Button statusBtn = new Button("Change Status");
+            private final HBox pane = new HBox(statusBtn);
+
+            {
+                statusBtn.setStyle("-fx-background-color: #3498db; -fx-text-fill: white;");
+                statusBtn.setOnAction(event -> {
+                    Order order = getTableView().getItems().get(getIndex());
+                    handleOrderStatusChange(order);
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                setGraphic(empty ? null : pane);
+            }
+        });
+
+        ordersTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                selectedOrder = newSelection;
+                populateOrderDetails(selectedOrder);
+            }
+        });
+
         refreshOrdersTable();
     }
 
@@ -151,23 +172,19 @@ public class KitchenDashboardController implements Initializable {
         minQuantityColumn.setCellValueFactory(new PropertyValueFactory<>("minQuantity"));
         categoryColumn.setCellValueFactory(new PropertyValueFactory<>("category"));
 
-        // Custom cell factory for quantity column to highlight low stock
         quantityColumn.setCellFactory(column -> new TableCell<Ingredient, Double>() {
             @Override
             protected void updateItem(Double quantity, boolean empty) {
                 super.updateItem(quantity, empty);
-
                 if (empty || quantity == null) {
                     setText(null);
                     setStyle("");
                 } else {
                     setText(String.format("%.2f", quantity));
-
-                    // Get the current row's ingredient
                     if (getTableRow() != null && getTableRow().getItem() != null) {
                         Ingredient ingredient = (Ingredient) getTableRow().getItem();
                         if (ingredient.isLowStock()) {
-                            setStyle("-fx-text-fill: #e74c3c;"); // Red for low stock
+                            setStyle("-fx-text-fill: #e74c3c;");
                         } else {
                             setStyle("");
                         }
@@ -176,7 +193,6 @@ public class KitchenDashboardController implements Initializable {
             }
         });
 
-        // Setup actions column with buttons for inventory
         inventoryActionsColumn.setCellFactory(param -> new TableCell<Ingredient, Void>() {
             private final Button editBtn = new Button("Edit");
             private final Button addStockBtn = new Button("+");
@@ -185,12 +201,10 @@ public class KitchenDashboardController implements Initializable {
             {
                 editBtn.setStyle("-fx-background-color: #3498db; -fx-text-fill: white;");
                 addStockBtn.setStyle("-fx-background-color: #2ecc71; -fx-text-fill: white;");
-
                 editBtn.setOnAction(event -> {
                     Ingredient ingredient = getTableView().getItems().get(getIndex());
                     populateIngredientForm(ingredient);
                 });
-
                 addStockBtn.setOnAction(event -> {
                     Ingredient ingredient = getTableView().getItems().get(getIndex());
                     showAddStockDialog(ingredient);
@@ -204,7 +218,6 @@ public class KitchenDashboardController implements Initializable {
             }
         });
 
-        // Handle row selection
         inventoryTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
                 selectedIngredient = newSelection;
@@ -224,38 +237,28 @@ public class KitchenDashboardController implements Initializable {
     }
 
     private void loadOrders() {
-        // Get orders from the CustomerViewController
-        List<Order> existingOrders = CustomerViewController.getAllOrders();
+        List<Order> existingOrders = orderDAO.getAllOrders();
         orders.addAll(existingOrders);
-
-        // If no orders exist yet, create some sample orders
         if (orders.isEmpty()) {
             createSampleOrders();
         }
-
         ordersTable.setItems(orders);
     }
 
     private void createSampleOrders() {
-        // Create some sample orders for testing
         List<CartItem> items1 = new ArrayList<>();
         items1.add(new CartItem(new MenuItem(1, "Cappuccino", 4.95, "Coffee", "", 1), 2));
         items1.add(new CartItem(new MenuItem(2, "Mushroom Pizza", 9.95, "Italian", "", 1), 1));
-
         List<CartItem> items2 = new ArrayList<>();
         items2.add(new CartItem(new MenuItem(4, "Meat burger", 5.95, "Burger", "", 1), 3));
         items2.add(new CartItem(new MenuItem(5, "Fresh melon juice", 3.95, "Drinks", "", 1), 3));
-
         Order order1 = new Order(items1, 19.85);
         Order order2 = new Order(items2, 29.7);
-
-        // Add sample orders
         orders.add(order1);
         orders.add(order2);
     }
 
     private void loadSampleIngredients() {
-        // Add sample ingredients
         ingredients.add(new Ingredient(nextIngredientId++, "Flour", 10.0, 5.0, "kg", "Bakery"));
         ingredients.add(new Ingredient(nextIngredientId++, "Tomatoes", 5.0, 2.0, "kg", "Produce"));
         ingredients.add(new Ingredient(nextIngredientId++, "Ground Beef", 8.0, 3.0, "kg", "Meat"));
@@ -265,22 +268,15 @@ public class KitchenDashboardController implements Initializable {
         ingredients.add(new Ingredient(nextIngredientId++, "Chicken Breast", 6.0, 2.0, "kg", "Meat"));
         ingredients.add(new Ingredient(nextIngredientId++, "Burger Buns", 40.0, 10.0, "pcs", "Bakery"));
         ingredients.add(new Ingredient(nextIngredientId++, "Milk", 7.0, 2.0, "L", "Dairy"));
-
-        // For demonstration, set one ingredient to low stock
         ingredients.add(new Ingredient(nextIngredientId++, "Mushrooms", 0.5, 1.0, "kg", "Produce"));
-
         inventoryTable.setItems(ingredients);
     }
 
     private void setupIngredientMappings() {
-        // Setup mappings between menu items and ingredients
         for (Ingredient ingredient : ingredients) {
-            // Find matching menu items that might use this ingredient (simplified mapping)
             for (Order order : orders) {
                 for (Order.OrderItem orderItem : order.getItems()) {
                     MenuItem menuItem = orderItem.getMenuItem();
-
-                    // Simple matching based on name (in a real app, would be more sophisticated)
                     if (menuItem.getTitle().toLowerCase().contains(ingredient.getName().toLowerCase())) {
                         menuItemIngredients.add(new MenuItemIngredient(menuItem, ingredient, 0.1));
                     }
@@ -291,20 +287,15 @@ public class KitchenDashboardController implements Initializable {
 
     private void checkLowStockIngredients() {
         lowStockContainer.getChildren().clear();
-
-        // Filter low stock ingredients
         List<Ingredient> lowStock = ingredients.stream()
                 .filter(Ingredient::isLowStock)
                 .collect(Collectors.toList());
-
         if (lowStock.isEmpty()) {
             Label noLowStockLabel = new Label("No low stock ingredients");
-            noLowStockLabel.setStyle("-fx-text-fill: #2ecc71;"); // Green
+            noLowStockLabel.setStyle("-fx-text-fill: #2ecc71;");
             lowStockContainer.getChildren().add(noLowStockLabel);
             return;
         }
-
-        // Add warning for each low stock ingredient
         for (Ingredient ingredient : lowStock) {
             Label lowStockLabel = new Label(ingredient.getName() + " is low in stock! " +
                     String.format("%.2f%s remaining (minimum: %.2f%s)",
@@ -312,8 +303,7 @@ public class KitchenDashboardController implements Initializable {
                             ingredient.getUnit(),
                             ingredient.getMinQuantity(),
                             ingredient.getUnit()));
-
-            lowStockLabel.setStyle("-fx-text-fill: #e74c3c;"); // Red
+            lowStockLabel.setStyle("-fx-text-fill: #e74c3c;");
             lowStockLabel.setWrapText(true);
             lowStockContainer.getChildren().add(lowStockLabel);
         }
@@ -321,7 +311,6 @@ public class KitchenDashboardController implements Initializable {
 
     private void populateOrderDetails(Order order) {
         selectedOrderIdLabel.setText("Order: " + order.getOrderId());
-      //  orderNotesField.setText(order.getNotes());
         statusComboBox.setValue(order.getStatus());
         updateOrderButton.setDisable(false);
     }
@@ -332,7 +321,6 @@ public class KitchenDashboardController implements Initializable {
         minQuantityField.setText(String.valueOf(ingredient.getMinQuantity()));
         unitField.setText(ingredient.getUnit());
         ingredientCategoryComboBox.setValue(ingredient.getCategory());
-
         addIngredientButton.setDisable(true);
         updateIngredientButton.setDisable(false);
     }
@@ -342,7 +330,6 @@ public class KitchenDashboardController implements Initializable {
         dialog.setTitle("Add Stock");
         dialog.setHeaderText("Add stock to " + ingredient.getName());
         dialog.setContentText("Enter amount to add:");
-
         Optional<String> result = dialog.showAndWait();
         result.ifPresent(amount -> {
             try {
@@ -362,30 +349,22 @@ public class KitchenDashboardController implements Initializable {
         Thread refreshThread = new Thread(() -> {
             while (true) {
                 try {
-                    Thread.sleep(30000); // 30 seconds
-
-                    // Update UI on JavaFX thread
+                    Thread.sleep(30000);
                     Platform.runLater(() -> {
-                        // Refresh orders from CustomerViewController
-                        List<Order> currentOrders = CustomerViewController.getAllOrders();
-
-                        // Add any new orders that aren't in our list
-                        for (Order newOrder : currentOrders) {
-                            if (!orders.contains(newOrder)) {
-                                orders.add(newOrder);
-                            }
-                        }
-
+                        OrderDAO orderDAO = new OrderDAO();
+                        List<Order> currentOrders = orderDAO.getOrdersByStatus(Order.OrderStatus.QUEUED);
+                        currentOrders.addAll(orderDAO.getOrdersByStatus(Order.OrderStatus.IN_PROGRESS));
+                        orders.clear();
+                        orders.addAll(currentOrders);
                         ordersTable.refresh();
+                        System.out.println("Refreshed orders: " + orders.size());
                     });
                 } catch (InterruptedException e) {
-                    // Thread interrupted
                     break;
                 }
             }
         });
-
-        refreshThread.setDaemon(true); // Make it a daemon thread so it doesn't prevent app exit
+        refreshThread.setDaemon(true);
         refreshThread.start();
     }
 
@@ -395,10 +374,8 @@ public class KitchenDashboardController implements Initializable {
             showAlert(AlertType.WARNING, "No Selection", "Please select an order to update.");
             return;
         }
-
         selectedOrder.setStatus(statusComboBox.getValue());
-      //  selectedOrder.setNotes(orderNotesField.getText());
-
+        orderDAO.updateOrderStatus(selectedOrder.getOrderId(), statusComboBox.getValue());
         ordersTable.refresh();
         showAlert(AlertType.INFORMATION, "Success", "Order updated successfully.");
     }
@@ -411,15 +388,12 @@ public class KitchenDashboardController implements Initializable {
             double minQuantity = Double.parseDouble(minQuantityField.getText().trim());
             String unit = unitField.getText().trim();
             String category = ingredientCategoryComboBox.getValue();
-
             if (name.isEmpty() || unit.isEmpty() || category == null) {
                 showAlert(AlertType.ERROR, "Input Error", "Please fill all fields.");
                 return;
             }
-
             Ingredient newIngredient = new Ingredient(nextIngredientId++, name, quantity, minQuantity, unit, category);
             ingredients.add(newIngredient);
-
             clearIngredientForm();
             checkLowStockIngredients();
             showAlert(AlertType.INFORMATION, "Success", "Ingredient added successfully.");
@@ -434,14 +408,12 @@ public class KitchenDashboardController implements Initializable {
             showAlert(AlertType.WARNING, "No Selection", "Please select an ingredient to update.");
             return;
         }
-
         try {
             selectedIngredient.setName(ingredientNameField.getText().trim());
             selectedIngredient.setQuantity(Double.parseDouble(quantityField.getText().trim()));
             selectedIngredient.setMinQuantity(Double.parseDouble(minQuantityField.getText().trim()));
             selectedIngredient.setUnit(unitField.getText().trim());
             selectedIngredient.setCategory(ingredientCategoryComboBox.getValue());
-
             inventoryTable.refresh();
             clearIngredientForm();
             checkLowStockIngredients();
@@ -462,7 +434,6 @@ public class KitchenDashboardController implements Initializable {
         minQuantityField.clear();
         unitField.clear();
         ingredientCategoryComboBox.setValue(null);
-
         selectedIngredient = null;
         addIngredientButton.setDisable(false);
         updateIngredientButton.setDisable(true);
@@ -471,10 +442,8 @@ public class KitchenDashboardController implements Initializable {
     @FXML
     private void handleLogout() {
         try {
-            // Load the login screen
             FXMLLoader loader = new FXMLLoader(getClass().getResource("admin_login.fxml"));
             Parent root = loader.load();
-
             Scene scene = new Scene(root);
             Stage stage = (Stage) ordersTable.getScene().getWindow();
             stage.setScene(scene);
@@ -489,10 +458,8 @@ public class KitchenDashboardController implements Initializable {
     @FXML
     private void handleBackToCustomerView() {
         try {
-            // Load the customer view
             FXMLLoader loader = new FXMLLoader(getClass().getResource("customer_view.fxml"));
             Parent root = loader.load();
-
             Scene scene = new Scene(root);
             Stage stage = (Stage) ordersTable.getScene().getWindow();
             stage.setScene(scene);
@@ -502,6 +469,11 @@ public class KitchenDashboardController implements Initializable {
             showAlert(AlertType.ERROR, "Navigation Error", "Error returning to customer view: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    private void handleRefreshOrders() {
+        refreshOrdersTable();
     }
 
     private void showAlert(AlertType alertType, String title, String message) {
@@ -535,7 +507,10 @@ public class KitchenDashboardController implements Initializable {
     private void refreshOrdersTable() {
         List<Order> orders = orderDAO.getOrdersByStatus(Order.OrderStatus.QUEUED);
         orders.addAll(orderDAO.getOrdersByStatus(Order.OrderStatus.IN_PROGRESS));
-        ordersTable.setItems(FXCollections.observableArrayList(orders));
+        this.orders.clear();
+        this.orders.addAll(orders);
+        ordersTable.setItems(this.orders);
+        ordersTable.refresh();
     }
 
     private void handleOrderStatusChange(Order order) {
