@@ -19,6 +19,8 @@
                   <Button fx:id="logoutButton" mnemonicParsing="false" onAction="#handleLogout" text="Logout" />
                   <Button fx:id="customerViewButton" mnemonicParsing="false" onAction="#handleBackToCustomerView" text="Back to Customer View" />
                   <Button fx:id="kitchenDashboardButton" mnemonicParsing="false" onAction="#handleKitchenDashboard" text="Kitchen Dashboard" />
+                  <Button fx:id="managementButton" mnemonicParsing="false" onAction="#handleManagementNavigation" text="Management" styleClass="management-button">
+            </Button>
                </children>
                <VBox.margin>
                   <Insets bottom="10.0" />

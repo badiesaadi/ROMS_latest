@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class UsersTableDAO {
 
@@ -51,14 +52,18 @@ public class UsersTableDAO {
         }
     }
 
-    public List<String> getAllUsers() {
-        List<String> users = new ArrayList<>();
+    public List<User> getAllUsers() {
+        List<User> users = new ArrayList<>();
         String sql = "SELECT * FROM users";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql);
              ResultSet rs = pstmt.executeQuery()) {
             while (rs.next()) {
-                users.add(rs.getString("username"));
+                users.add(new User(
+                    rs.getInt("user_id"),
+                    rs.getString("username"),
+                    rs.getString("role")
+                ));
             }
         } catch (SQLException e) {
             e.printStackTrace();

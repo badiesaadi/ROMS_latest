@@ -68,7 +68,7 @@ CREATE TABLE Customer (
 );
 
 -- Create the Orders table (renamed from Order)
-CREATE TABLE Orders (
+CREATE TABLE Order (
     order_id INT PRIMARY KEY AUTO_INCREMENT,
     status VARCHAR(50) NOT NULL,
     date DATE NOT NULL,
@@ -84,18 +84,18 @@ CREATE TABLE Order_Items (
     item_id INT,
     quantity INT DEFAULT 1,
     PRIMARY KEY (order_id, item_id),
-    FOREIGN KEY (order_id) REFERENCES Orders(order_id),
+    FOREIGN KEY (order_id) REFERENCES Order(order_id),
     FOREIGN KEY (item_id) REFERENCES MenuItem(item_id)
 );
 
 -- Create the Feedback table
-CREATE TABLE Feedback (
+CREATE TABLE feedback (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     phone VARCHAR(20) NOT NULL,
     comment TEXT NOT NULL,
     rating INT NOT NULL CHECK (rating BETWEEN 1 AND 5),
-    submission_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    submission_date TIMESTAMP NOT NULL
 );
 
 -- Create the Users table

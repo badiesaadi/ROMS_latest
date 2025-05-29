@@ -874,4 +874,18 @@ public class AdminDashboardController implements Initializable {
             statusLabel.setTextFill(Color.ORANGE);
         }
     }
+
+    @FXML
+    public void handleManagementNavigation() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("management.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Management");
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

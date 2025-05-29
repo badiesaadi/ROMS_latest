@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ManagementController" spacing="10" alignment="CENTER">
+    <Label text="Management Page" styleClass="title-label" />
+    <TableView fx:id="userTable" prefHeight="200" prefWidth="400" onMouseClicked="#populateFields">
+        <columns>
+            <TableColumn fx:id="usernameColumn" text="Username" />
+            <TableColumn fx:id="roleColumn" text="Role" />
+        </columns>
+    </TableView>
+    <HBox spacing="10">
+        <VBox spacing="5">
+            <Label text="Username:" />
+            <TextField fx:id="usernameField" promptText="Enter username" />
+        </VBox>
+        <VBox spacing="5">
+            <Label text="Password:" />
+            <TextField fx:id="passwordField" promptText="Enter password" />
+        </VBox>
+        <VBox spacing="5">
+            <Label text="Role:" />
+            <HBox spacing="10">
+                <CheckBox fx:id="managerCheckBox" text="Manager" />
+                <CheckBox fx:id="kitchenCheckBox" text="Kitchen" />
+            </HBox>
+        </VBox>
+    </HBox>
+    <HBox spacing="10">
+        <Button text="Add User" onAction="#handleAddUser" />
+        <Button text="Update User" onAction="#handleUpdateUser" />
+        <Button text="Delete User" onAction="#handleDeleteUser" />
+    </HBox>
+</VBox>
