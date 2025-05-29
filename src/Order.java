@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 public class Order {
     public enum OrderStatus {
         QUEUED("Queued"),
+        ALL("All"),
         IN_PROGRESS("In Progress"),
         READY("Ready"),
         DELIVERED("Delivered"),
