@@ -24,13 +24,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.beans.property.SimpleStringProperty;
@@ -58,8 +56,6 @@ public class KitchenDashboardController implements Initializable {
     // Order Details
     @FXML
     private Label selectedOrderIdLabel;
-    // @FXML
-    // private TextArea orderNotesField;
     @FXML
     private ComboBox<Order.OrderStatus> statusComboBox;
     @FXML
@@ -112,21 +108,27 @@ public class KitchenDashboardController implements Initializable {
     private Order selectedOrder;
     private Ingredient selectedIngredient;
     private int nextIngredientId = 1;
-    private OrderDAO orderDAO = new OrderDAO();
+    private OrderDAO orderDAO;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        setupOrdersTable();
-        setupInventoryTable();
-        setupStatusComboBox();
-        setupIngredientCategoryComboBox();
-        loadOrders();
-        loadSampleIngredients();
-        setupIngredientMappings();
-        checkLowStockIngredients();
+        try {
+            orderDAO = new OrderDAO();
+            setupOrdersTable();
+            setupInventoryTable();
+            setupStatusComboBox();
+            setupIngredientCategoryComboBox();
+            loadOrders();
+            loadSampleIngredients();
+            setupIngredientMappings();
+            checkLowStockIngredients();
 
-        // Start a thread to periodically refresh orders (every 30 seconds)
-        startOrderRefreshThread();
+            // Start a thread to periodically refresh orders
+            startOrderRefreshThread();
+        } catch (Exception e) {
+            showAlert(AlertType.ERROR, "Initialization Error", "Failed to initialize dashboard: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     private void setupOrdersTable() {
@@ -139,6 +141,32 @@ public class KitchenDashboardController implements Initializable {
         deliveryPartnerColumn
                 .setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getManagerId()));
         statusColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getStatus()));
+
+        // Setup actions column with buttons
+        actionsColumn.setCellFactory(param -> new TableCell<Order, Void>() {
+            private final Button actionBtn = new Button("Update Status");
+
+            {
+                actionBtn.setOnAction(event -> {
+                    Order order = getTableView().getItems().get(getIndex());
+                    handleOrderStatusChange(order);
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                setGraphic(empty ? null : actionBtn);
+            }
+        });
+
+        // Handle row selection
+        ordersTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                selectedOrder = newSelection;
+                populateOrderDetails(selectedOrder);
+            }
+        });
 
         refreshOrdersTable();
     }
@@ -163,11 +191,10 @@ public class KitchenDashboardController implements Initializable {
                 } else {
                     setText(String.format("%.2f", quantity));
 
-                    // Get the current row's ingredient
                     if (getTableRow() != null && getTableRow().getItem() != null) {
                         Ingredient ingredient = (Ingredient) getTableRow().getItem();
                         if (ingredient.isLowStock()) {
-                            setStyle("-fx-text-fill: #e74c3c;"); // Red for low stock
+                            setStyle("-fx-text-fill: #e74c3c;");
                         } else {
                             setStyle("");
                         }
@@ -224,183 +251,199 @@ public class KitchenDashboardController implements Initializable {
     }
 
     private void loadOrders() {
-        // Get orders from the CustomerViewController
-        List<Order> existingOrders = CustomerViewController.getAllOrders();
-        orders.addAll(existingOrders);
+        try {
+            // Get orders from the database
+            List<Order> dbOrders = orderDAO.getOrdersByStatus(Order.OrderStatus.QUEUED);
+            dbOrders.addAll(orderDAO.getOrdersByStatus(Order.OrderStatus.IN_PROGRESS));
+            orders.addAll(dbOrders);
 
-        // If no orders exist yet, create some sample orders
-        if (orders.isEmpty()) {
-            createSampleOrders();
+            // If no orders exist, create sample orders
+            if (orders.isEmpty()) {
+                createSampleOrders();
+            }
+
+            ordersTable.setItems(orders);
+        } catch (Exception e) {
+            showAlert(AlertType.ERROR, "Load Orders Error", "Failed to load orders: " + e.getMessage());
+            e.printStackTrace();
         }
-
-        ordersTable.setItems(orders);
     }
 
     private void createSampleOrders() {
-        // Create some sample orders for testing
-        List<CartItem> items1 = new ArrayList<>();
-        items1.add(new CartItem(new MenuItem(1, "Cappuccino", 4.95, "Coffee", "", 1), 2));
-        items1.add(new CartItem(new MenuItem(2, "Mushroom Pizza", 9.95, "Italian", "", 1), 1));
+        try {
+            List<CartItem> items1 = new ArrayList<>();
+            items1.add(new CartItem(new MenuItem(1, "Cappuccino", 4.95, "Coffee", "", 1), 2));
+            items1.add(new CartItem(new MenuItem(2, "Mushroom Pizza", 9.95, "Italian", "", 1), 1));
 
-        List<CartItem> items2 = new ArrayList<>();
-        items2.add(new CartItem(new MenuItem(4, "Meat burger", 5.95, "Burger", "", 1), 3));
-        items2.add(new CartItem(new MenuItem(5, "Fresh melon juice", 3.95, "Drinks", "", 1), 3));
+            List<CartItem> items2 = new ArrayList<>();
+            items2.add(new CartItem(new MenuItem(4, "Meat burger", 5.95, "Burger", "", 1), 3));
+            items2.add(new CartItem(new MenuItem(5, "Fresh melon juice", 3.95, "Drinks", "", 1), 3));
 
-        Order order1 = new Order(items1, 19.85);
-        Order order2 = new Order(items2, 29.7);
+            Order order1 = new Order(items1, 19.85);
+            Order order2 = new Order(items2, 29.7);
 
-        // Add sample orders
-        orders.add(order1);
-        orders.add(order2);
+            orders.add(order1);
+            orders.add(order2);
+        } catch (Exception e) {
+            showAlert(AlertType.ERROR, "Sample Orders Error", "Failed to create sample orders: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     private void loadSampleIngredients() {
-        // Add sample ingredients
-        ingredients.add(new Ingredient(nextIngredientId++, "Flour", 10.0, 5.0, "kg", "Bakery"));
-        ingredients.add(new Ingredient(nextIngredientId++, "Tomatoes", 5.0, 2.0, "kg", "Produce"));
-        ingredients.add(new Ingredient(nextIngredientId++, "Ground Beef", 8.0, 3.0, "kg", "Meat"));
-        ingredients.add(new Ingredient(nextIngredientId++, "Mozzarella Cheese", 4.0, 1.5, "kg", "Dairy"));
-        ingredients.add(new Ingredient(nextIngredientId++, "Coffee Beans", 3.0, 1.0, "kg", "Beverages"));
-        ingredients.add(new Ingredient(nextIngredientId++, "Lettuce", 1.5, 1.0, "kg", "Produce"));
-        ingredients.add(new Ingredient(nextIngredientId++, "Chicken Breast", 6.0, 2.0, "kg", "Meat"));
-        ingredients.add(new Ingredient(nextIngredientId++, "Burger Buns", 40.0, 10.0, "pcs", "Bakery"));
-        ingredients.add(new Ingredient(nextIngredientId++, "Milk", 7.0, 2.0, "L", "Dairy"));
+        try {
+            ingredients.add(new Ingredient(nextIngredientId++, "Flour", 10.0, 5.0, "kg", "Bakery"));
+            ingredients.add(new Ingredient(nextIngredientId++, "Tomatoes", 5.0, 2.0, "kg", "Produce"));
+            ingredients.add(new Ingredient(nextIngredientId++, "Ground Beef", 8.0, 3.0, "kg", "Meat"));
+            ingredients.add(new Ingredient(nextIngredientId++, "Mozzarella Cheese", 4.0, 1.5, "kg", "Dairy"));
+            ingredients.add(new Ingredient(nextIngredientId++, "Coffee Beans", 3.0, 1.0, "kg", "Beverages"));
+            ingredients.add(new Ingredient(nextIngredientId++, "Lettuce", 1.5, 1.0, "kg", "Produce"));
+            ingredients.add(new Ingredient(nextIngredientId++, "Chicken Breast", 6.0, 2.0, "kg", "Meat"));
+            ingredients.add(new Ingredient(nextIngredientId++, "Burger Buns", 40.0, 10.0, "pcs", "Bakery"));
+            ingredients.add(new Ingredient(nextIngredientId++, "Milk", 7.0, 2.0, "L", "Dairy"));
+            ingredients.add(new Ingredient(nextIngredientId++, "Mushrooms", 0.5, 1.0, "kg", "Produce"));
 
-        // For demonstration, set one ingredient to low stock
-        ingredients.add(new Ingredient(nextIngredientId++, "Mushrooms", 0.5, 1.0, "kg", "Produce"));
-
-        inventoryTable.setItems(ingredients);
+            inventoryTable.setItems(ingredients);
+        } catch (Exception e) {
+            showAlert(AlertType.ERROR, "Sample Ingredients Error", "Failed to load sample ingredients: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     private void setupIngredientMappings() {
-        // Setup mappings between menu items and ingredients
-        for (Ingredient ingredient : ingredients) {
-            // Find matching menu items that might use this ingredient (simplified mapping)
-            for (Order order : orders) {
-                for (Order.OrderItem orderItem : order.getItems()) {
-                    MenuItem menuItem = orderItem.getMenuItem();
-
-                    // Simple matching based on name (in a real app, would be more sophisticated)
-                    if (menuItem.getTitle().toLowerCase().contains(ingredient.getName().toLowerCase())) {
-                        menuItemIngredients.add(new MenuItemIngredient(menuItem, ingredient, 0.1));
+        try {
+            for (Ingredient ingredient : ingredients) {
+                for (Order order : orders) {
+                    for (Order.OrderItem orderItem : order.getItems()) {
+                        MenuItem menuItem = orderItem.getMenuItem();
+                        if (menuItem.getTitle().toLowerCase().contains(ingredient.getName().toLowerCase())) {
+                            menuItemIngredients.add(new MenuItemIngredient(menuItem, ingredient, 0.1));
+                        }
                     }
                 }
             }
+        } catch (Exception e) {
+            showAlert(AlertType.ERROR, "Ingredient Mapping Error", "Failed to setup ingredient mappings: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
     private void checkLowStockIngredients() {
-        lowStockContainer.getChildren().clear();
+        try {
+            lowStockContainer.getChildren().clear();
+            List<Ingredient> lowStock = ingredients.stream()
+                    .filter(Ingredient::isLowStock)
+                    .collect(Collectors.toList());
 
-        // Filter low stock ingredients
-        List<Ingredient> lowStock = ingredients.stream()
-                .filter(Ingredient::isLowStock)
-                .collect(Collectors.toList());
+            if (lowStock.isEmpty()) {
+                Label noLowStockLabel = new Label("No low stock ingredients");
+                noLowStockLabel.setStyle("-fx-text-fill: #2ecc71;");
+                lowStockContainer.getChildren().add(noLowStockLabel);
+                return;
+            }
 
-        if (lowStock.isEmpty()) {
-            Label noLowStockLabel = new Label("No low stock ingredients");
-            noLowStockLabel.setStyle("-fx-text-fill: #2ecc71;"); // Green
-            lowStockContainer.getChildren().add(noLowStockLabel);
-            return;
-        }
-
-        // Add warning for each low stock ingredient
-        for (Ingredient ingredient : lowStock) {
-            Label lowStockLabel = new Label(ingredient.getName() + " is low in stock! " +
-                    String.format("%.2f%s remaining (minimum: %.2f%s)",
-                            ingredient.getQuantity(),
-                            ingredient.getUnit(),
-                            ingredient.getMinQuantity(),
-                            ingredient.getUnit()));
-
-            lowStockLabel.setStyle("-fx-text-fill: #e74c3c;"); // Red
-            lowStockLabel.setWrapText(true);
-            lowStockContainer.getChildren().add(lowStockLabel);
+            for (Ingredient ingredient : lowStock) {
+                Label lowStockLabel = new Label(ingredient.getName() + " is low in stock! " +
+                        String.format("%.2f%s remaining (minimum: %.2f%s)",
+                                ingredient.getQuantity(),
+                                ingredient.getUnit(),
+                                ingredient.getMinQuantity(),
+                                ingredient.getUnit()));
+                lowStockLabel.setStyle("-fx-text-fill: #e74c3c;");
+                lowStockLabel.setWrapText(true);
+                lowStockContainer.getChildren().add(lowStockLabel);
+            }
+        } catch (Exception e) {
+            showAlert(AlertType.ERROR, "Low Stock Check Error", "Failed to check low stock ingredients: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
     private void populateOrderDetails(Order order) {
-        selectedOrderIdLabel.setText("Order: " + order.getOrderId());
-      //  orderNotesField.setText(order.getNotes());
-        statusComboBox.setValue(order.getStatus());
-        updateOrderButton.setDisable(false);
+        try {
+            selectedOrderIdLabel.setText("Order: " + order.getOrderId());
+            statusComboBox.setValue(order.getStatus());
+            updateOrderButton.setDisable(false);
+        } catch (Exception e) {
+            showAlert(AlertType.ERROR, "Populate Order Error", "Failed to populate order details: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     private void populateIngredientForm(Ingredient ingredient) {
-        ingredientNameField.setText(ingredient.getName());
-        quantityField.setText(String.valueOf(ingredient.getQuantity()));
-        minQuantityField.setText(String.valueOf(ingredient.getMinQuantity()));
-        unitField.setText(ingredient.getUnit());
-        ingredientCategoryComboBox.setValue(ingredient.getCategory());
-
-        addIngredientButton.setDisable(true);
-        updateIngredientButton.setDisable(false);
+        try {
+            ingredientNameField.setText(ingredient.getName());
+            quantityField.setText(String.valueOf(ingredient.getQuantity()));
+            minQuantityField.setText(String.valueOf(ingredient.getMinQuantity()));
+            unitField.setText(ingredient.getUnit());
+            ingredientCategoryComboBox.setValue(ingredient.getCategory());
+            addIngredientButton.setDisable(true);
+            updateIngredientButton.setDisable(false);
+        } catch (Exception e) {
+            showAlert(AlertType.ERROR, "Populate Ingredient Error", "Failed to populate ingredient form: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     private void showAddStockDialog(Ingredient ingredient) {
-        TextInputDialog dialog = new TextInputDialog("1.0");
-        dialog.setTitle("Add Stock");
-        dialog.setHeaderText("Add stock to " + ingredient.getName());
-        dialog.setContentText("Enter amount to add:");
+        try {
+            TextInputDialog dialog = new TextInputDialog("1.0");
+            dialog.setTitle("Add Stock");
+            dialog.setHeaderText("Add stock to " + ingredient.getName());
+            dialog.setContentText("Enter amount to add:");
 
-        Optional<String> result = dialog.showAndWait();
-        result.ifPresent(amount -> {
-            try {
-                double amountValue = Double.parseDouble(amount);
-                if (amountValue > 0) {
-                    ingredient.increaseQuantity(amountValue);
-                    inventoryTable.refresh();
-                    checkLowStockIngredients();
+            Optional<String> result = dialog.showAndWait();
+            result.ifPresent(amount -> {
+                try {
+                    double amountValue = Double.parseDouble(amount);
+                    if (amountValue > 0) {
+                        ingredient.increaseQuantity(amountValue);
+                        inventoryTable.refresh();
+                        checkLowStockIngredients();
+                    }
+                } catch (NumberFormatException e) {
+                    showAlert(AlertType.ERROR, "Input Error", "Please enter a valid number.");
                 }
-            } catch (NumberFormatException e) {
-                showAlert(AlertType.ERROR, "Input Error", "Please enter a valid number.");
-            }
-        });
+            });
+        } catch (Exception e) {
+            showAlert(AlertType.ERROR, "Add Stock Error", "Failed to add stock: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     private void startOrderRefreshThread() {
         Thread refreshThread = new Thread(() -> {
-            while (true) {
+            while (!Thread.currentThread().isInterrupted()) {
                 try {
-                    Thread.sleep(30000); // 30 seconds
-
-                    // Update UI on JavaFX thread
-                    Platform.runLater(() -> {
-                        // Refresh orders from CustomerViewController
-                        List<Order> currentOrders = CustomerViewController.getAllOrders();
-
-                        // Add any new orders that aren't in our list
-                        for (Order newOrder : currentOrders) {
-                            if (!orders.contains(newOrder)) {
-                                orders.add(newOrder);
-                            }
-                        }
-
-                        ordersTable.refresh();
-                    });
+                    Thread.sleep(30000);
+                    Platform.runLater(this::refreshOrdersTable);
                 } catch (InterruptedException e) {
-                    // Thread interrupted
+                    Thread.currentThread().interrupt();
                     break;
+                } catch (Exception e) {
+                    Platform.runLater(() -> showAlert(AlertType.ERROR, "Refresh Error", "Failed to refresh orders: " + e.getMessage()));
                 }
             }
         });
-
-        refreshThread.setDaemon(true); // Make it a daemon thread so it doesn't prevent app exit
+        refreshThread.setDaemon(true);
         refreshThread.start();
     }
 
     @FXML
     private void handleUpdateOrder() {
-        if (selectedOrder == null) {
-            showAlert(AlertType.WARNING, "No Selection", "Please select an order to update.");
-            return;
+        try {
+            if (selectedOrder == null) {
+                showAlert(AlertType.WARNING, "No Selection", "Please select an order to update.");
+                return;
+            }
+            selectedOrder.setStatus(statusComboBox.getValue());
+            orderDAO.updateOrderStatus(selectedOrder.getOrderId(), selectedOrder.getStatus());
+            ordersTable.refresh();
+            showAlert(AlertType.INFORMATION, "Success", "Order updated successfully.");
+        } catch (Exception e) {
+            showAlert(AlertType.ERROR, "Update Order Error", "Failed to update order: " + e.getMessage());
+            e.printStackTrace();
         }
-
-        selectedOrder.setStatus(statusComboBox.getValue());
-      //  selectedOrder.setNotes(orderNotesField.getText());
-
-        ordersTable.refresh();
-        showAlert(AlertType.INFORMATION, "Success", "Order updated successfully.");
     }
 
     @FXML
@@ -419,41 +462,49 @@ public class KitchenDashboardController implements Initializable {
 
             Ingredient newIngredient = new Ingredient(nextIngredientId++, name, quantity, minQuantity, unit, category);
             ingredients.add(newIngredient);
-
             clearIngredientForm();
             checkLowStockIngredients();
             showAlert(AlertType.INFORMATION, "Success", "Ingredient added successfully.");
         } catch (NumberFormatException e) {
             showAlert(AlertType.ERROR, "Input Error", "Please enter valid numbers for quantity fields.");
+        } catch (Exception e) {
+            showAlert(AlertType.ERROR, "Add Ingredient Error", "Failed to add ingredient: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
     @FXML
     private void handleUpdateIngredient() {
-        if (selectedIngredient == null) {
-            showAlert(AlertType.WARNING, "No Selection", "Please select an ingredient to update.");
-            return;
-        }
-
         try {
+            if (selectedIngredient == null) {
+                showAlert(AlertType.WARNING, "No Selection", "Please select an ingredient to update.");
+                return;
+            }
             selectedIngredient.setName(ingredientNameField.getText().trim());
             selectedIngredient.setQuantity(Double.parseDouble(quantityField.getText().trim()));
             selectedIngredient.setMinQuantity(Double.parseDouble(minQuantityField.getText().trim()));
             selectedIngredient.setUnit(unitField.getText().trim());
             selectedIngredient.setCategory(ingredientCategoryComboBox.getValue());
-
             inventoryTable.refresh();
             clearIngredientForm();
             checkLowStockIngredients();
             showAlert(AlertType.INFORMATION, "Success", "Ingredient updated successfully.");
         } catch (NumberFormatException e) {
             showAlert(AlertType.ERROR, "Input Error", "Please enter valid numbers for quantity fields.");
+        } catch (Exception e) {
+            showAlert(AlertType.ERROR, "Update Ingredient Error", "Failed to update ingredient: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
     @FXML
     private void handleClearIngredientForm() {
-        clearIngredientForm();
+        try {
+            clearIngredientForm();
+        } catch (Exception e) {
+            showAlert(AlertType.ERROR, "Clear Form Error", "Failed to clear ingredient form: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     private void clearIngredientForm() {
@@ -462,7 +513,6 @@ public class KitchenDashboardController implements Initializable {
         minQuantityField.clear();
         unitField.clear();
         ingredientCategoryComboBox.setValue(null);
-
         selectedIngredient = null;
         addIngredientButton.setDisable(false);
         updateIngredientButton.setDisable(true);
@@ -471,10 +521,8 @@ public class KitchenDashboardController implements Initializable {
     @FXML
     private void handleLogout() {
         try {
-            // Load the login screen
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("admin_login.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/admin_login.fxml"));
             Parent root = loader.load();
-
             Scene scene = new Scene(root);
             Stage stage = (Stage) ordersTable.getScene().getWindow();
             stage.setScene(scene);
@@ -489,10 +537,8 @@ public class KitchenDashboardController implements Initializable {
     @FXML
     private void handleBackToCustomerView() {
         try {
-            // Load the customer view
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("customer_view.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/customer_view.fxml"));
             Parent root = loader.load();
-
             Scene scene = new Scene(root);
             Stage stage = (Stage) ordersTable.getScene().getWindow();
             stage.setScene(scene);
@@ -513,44 +559,65 @@ public class KitchenDashboardController implements Initializable {
     }
 
     private void updateOrderStatus(Order order, Order.OrderStatus newStatus) {
-        order.setStatus(newStatus);
-        orderDAO.updateOrderStatus(order.getOrderId(), newStatus);
-        refreshOrdersTable();
+        try {
+            order.setStatus(newStatus);
+            orderDAO.updateOrderStatus(order.getOrderId(), newStatus);
+            refreshOrdersTable();
+        } catch (Exception e) {
+            showAlert(AlertType.ERROR, "Update Status Error", "Failed to update order status: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     private void handleOrderItemClick(Order.OrderItem orderItem) {
-        MenuItem menuItem = orderItem.getMenuItem();
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Item Details");
-        alert.setHeaderText(menuItem.getTitle());
-        alert.setContentText(String.format(
-                "Price: $%.2f\nQuantity: %d\nCategory: %s\nKitchen: %d",
-                menuItem.getPrice(),
-                orderItem.getQuantity(),
-                menuItem.getCategoryTitle(),
-                menuItem.getKitchenId()));
-        alert.showAndWait();
+        try {
+            MenuItem menuItem = orderItem.getMenuItem();
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Item Details");
+            alert.setHeaderText(menuItem.getTitle());
+            alert.setContentText(String.format(
+                    "Price: $%.2f\nQuantity: %d\nCategory: %s\nKitchen: %d",
+                    menuItem.getPrice(),
+                    orderItem.getQuantity(),
+                    menuItem.getCategoryTitle(),
+                    menuItem.getKitchenId()));
+            alert.showAndWait();
+        } catch (Exception e) {
+            showAlert(AlertType.ERROR, "Item Click Error", "Failed to display item details: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     private void refreshOrdersTable() {
-        List<Order> orders = orderDAO.getOrdersByStatus(Order.OrderStatus.QUEUED);
-        orders.addAll(orderDAO.getOrdersByStatus(Order.OrderStatus.IN_PROGRESS));
-        ordersTable.setItems(FXCollections.observableArrayList(orders));
+        try {
+            List<Order> orders = orderDAO.getOrdersByStatus(Order.OrderStatus.QUEUED);
+            orders.addAll(orderDAO.getOrdersByStatus(Order.OrderStatus.IN_PROGRESS));
+            this.orders.setAll(orders);
+            ordersTable.setItems(this.orders);
+        } catch (Exception e) {
+            showAlert(AlertType.ERROR, "Refresh Orders Error", "Failed to refresh orders table: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     private void handleOrderStatusChange(Order order) {
-        switch (order.getStatus()) {
-            case QUEUED:
-                updateOrderStatus(order, Order.OrderStatus.IN_PROGRESS);
-                break;
-            case IN_PROGRESS:
-                updateOrderStatus(order, Order.OrderStatus.READY);
-                break;
-            case READY:
-                updateOrderStatus(order, Order.OrderStatus.DELIVERED);
-                break;
-            default:
-                break;
+        try {
+            switch (order.getStatus()) {
+                case QUEUED:
+                    updateOrderStatus(order, Order.OrderStatus.IN_PROGRESS);
+                    break;
+                case IN_PROGRESS:
+                    updateOrderStatus(order, Order.OrderStatus.READY);
+                    break;
+                case READY:
+                    updateOrderStatus(order, Order.OrderStatus.DELIVERED);
+                    break;
+                default:
+                    break;
+            }
+        } catch (Exception e) {
+            showAlert(AlertType.ERROR, "Status Change Error", "Failed to change order status: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }
