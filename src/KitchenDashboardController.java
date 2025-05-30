@@ -60,6 +60,9 @@ public class KitchenDashboardController implements Initializable {
     @FXML
     private Button backToCustomerViewButton;
 
+    @FXML
+    private Button logoutButton;
+
     // Data
     private ObservableList<Order> orders = FXCollections.observableArrayList();
     private Order selectedOrder;

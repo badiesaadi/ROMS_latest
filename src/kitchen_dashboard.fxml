@@ -17,6 +17,15 @@
       <Label text="Kitchen Dashboard" styleClass="dashboard-title"/>
    </HBox>
 
+   <HBox alignment="CENTER_RIGHT" spacing="10">
+   <Button fx:id="logoutButton"
+           text="Logout"
+           style="-fx-background-color: #C62828; -fx-text-fill: white;"
+           onAction="#handleLogout"/>
+</HBox>
+
+   
+
    <!-- Orders Table -->
    <TableView fx:id="ordersTable" prefHeight="400" styleClass="table-view">
       <columns>
