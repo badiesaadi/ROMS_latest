@@ -5,7 +5,6 @@ public class MenuItem {
     private int quantity;
     private String categoryTitle;
     private String imagePath;
-    private int kitchenId;
 
     // Default constructor
     public MenuItem() {
@@ -13,20 +12,19 @@ public class MenuItem {
     }
 
     // New constructor for database operations
-    public MenuItem(int itemId, String title, double price, String categoryTitle, String imagePath, int kitchenId) {
+    public MenuItem(int itemId, String title, double price, String categoryTitle, String imagePath) {
         this.itemId = itemId;
         this.title = title;
         this.price = price;
         this.quantity = 0;
         this.categoryTitle = categoryTitle;
         this.imagePath = imagePath;
-        this.kitchenId = kitchenId;
     }
 
-    // Legacy constructor for backward compatibility
-    public MenuItem(int itemId, String title, double price, String categoryTitle, String imagePath) {
-        this(itemId, title, price, categoryTitle, imagePath, 0);
-    }
+    // // Legacy constructor for backward compatibility
+    // public MenuItem(int itemId, String title, double price, String categoryTitle, String imagePath) {
+    //     this(itemId, title, price, categoryTitle, imagePath, 0);
+    // }
 
     // Getters and setters
     public int getItemId() {
@@ -75,14 +73,6 @@ public class MenuItem {
 
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
-    }
-
-    public int getKitchenId() {
-        return kitchenId;
-    }
-
-    public void setKitchenId(int kitchenId) {
-        this.kitchenId = kitchenId;
     }
 
     // Legacy getters for backward compatibility

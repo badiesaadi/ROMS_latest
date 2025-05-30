@@ -31,7 +31,7 @@ public class MenuItemDAO {
             return false;
         }
 
-        String sql = "UPDATE MenuItem SET title = ?, price = ?, quantity = ?, category_title = ?, image_path = ?, kitchen_id = ? WHERE item_id = ?";
+        String sql = "UPDATE MenuItem SET title = ?, price = ?, quantity = ?, category_title = ?, image_path = ? WHERE item_id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -41,23 +41,7 @@ public class MenuItemDAO {
             pstmt.setInt(3, item.getQuantity());
             pstmt.setString(4, item.getCategoryTitle());
             pstmt.setString(5, item.getImagePath());
-
-            if (item.getKitchenId() != 0) {
-                String checkKitchenSql = "SELECT COUNT(*) FROM Staff WHERE kitchen_id = ? AND role = 'kitchen_staff'";
-                try (PreparedStatement checkStmt = conn.prepareStatement(checkKitchenSql)) {
-                    checkStmt.setInt(1, item.getKitchenId());
-                    ResultSet rs = checkStmt.executeQuery();
-                    if (rs.next() && rs.getInt(1) == 0) {
-                        pstmt.setNull(6, Types.INTEGER);
-                    } else {
-                        pstmt.setInt(6, item.getKitchenId());
-                    }
-                }
-            } else {
-                pstmt.setNull(6, Types.INTEGER);
-            }
-
-            pstmt.setInt(7, item.getItemId());
+            pstmt.setInt(6, item.getItemId());
 
             int affectedRows = pstmt.executeUpdate();
             System.out.println("Update MenuItem - Rows affected: " + affectedRows + ", Item ID: " + item.getItemId());
@@ -93,7 +77,7 @@ public class MenuItemDAO {
     }
 
     public int insertMenuItem(MenuItem item) {
-        String sql = "INSERT INTO MenuItem (title, price, quantity, category_title, image_path, kitchen_id) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO MenuItem (title, price, quantity, category_title, image_path) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -104,21 +88,7 @@ public class MenuItemDAO {
             pstmt.setString(4, item.getCategoryTitle());
             pstmt.setString(5, item.getImagePath());
 
-            if (item.getKitchenId() != 0) {
-                String checkKitchenSql = "SELECT COUNT(*) FROM Staff WHERE kitchen_id = ? AND role = 'kitchen_staff'";
-                try (PreparedStatement checkStmt = conn.prepareStatement(checkKitchenSql)) {
-                    checkStmt.setInt(1, item.getKitchenId());
-                    ResultSet rs = checkStmt.executeQuery();
-                    rs.next();
-                    if (rs.getInt(1) == 0) {
-                        pstmt.setNull(6, Types.INTEGER);
-                    } else {
-                        pstmt.setInt(6, item.getKitchenId());
-                    }
-                }
-            } else {
-                pstmt.setNull(6, Types.INTEGER);
-            }
+            
 
             int affectedRows = pstmt.executeUpdate();
             if (affectedRows > 0) {
@@ -170,7 +140,6 @@ public class MenuItemDAO {
                     item.setQuantity(rs.getInt("quantity"));
                     item.setCategoryTitle(rs.getString("category_title"));
                     item.setImagePath(rs.getString("image_path"));
-                    item.setKitchenId(rs.getInt("kitchen_id"));
                     return item;
                 }
             }
@@ -195,7 +164,6 @@ public class MenuItemDAO {
                 item.setQuantity(rs.getInt("quantity"));
                 item.setCategoryTitle(rs.getString("category_title"));
                 item.setImagePath(rs.getString("image_path"));
-                item.setKitchenId(rs.getInt("kitchen_id"));
                 items.add(item);
             }
         } catch (SQLException e) {
@@ -221,7 +189,6 @@ public class MenuItemDAO {
                 item.setQuantity(rs.getInt("quantity"));
                 item.setCategoryTitle(rs.getString("category_title"));
                 item.setImagePath(rs.getString("image_path"));
-                item.setKitchenId(rs.getInt("kitchen_id"));
                 items.add(item);
             }
         } catch (SQLException e) {
@@ -250,8 +217,8 @@ public class MenuItemDAO {
     }
 
     public void addMenuItem(MenuItem item) {
-        String query = "INSERT INTO MenuItem (title, price, quantity, category_title, image_path, kitchen_id) " +
-                "VALUES (?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO MenuItem (title, price, quantity, category_title, image_path) " +
+                "VALUES (?, ?, ?, ?, ?)";
 
         try (PreparedStatement pstmt = connection.prepareStatement(query)) {
             pstmt.setString(1, item.getTitle());
@@ -259,7 +226,6 @@ public class MenuItemDAO {
             pstmt.setInt(3, item.getQuantity());
             pstmt.setString(4, item.getCategoryTitle());
             pstmt.setString(5, item.getImagePath());
-            pstmt.setInt(6, item.getKitchenId());
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.err.println("Error adding menu item: " + e.getMessage());
@@ -267,29 +233,5 @@ public class MenuItemDAO {
         }
     }
 
-    public List<MenuItem> getMenuItemsByKitchen(int kitchenId) {
-        List<MenuItem> items = new ArrayList<>();
-        String query = "SELECT * FROM MenuItem WHERE kitchen_id = ?";
-
-        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
-            pstmt.setInt(1, kitchenId);
-            ResultSet rs = pstmt.executeQuery();
-
-            while (rs.next()) {
-                MenuItem item = new MenuItem();
-                item.setItemId(rs.getInt("item_id"));
-                item.setTitle(rs.getString("title"));
-                item.setPrice(rs.getDouble("price"));
-                item.setQuantity(rs.getInt("quantity"));
-                item.setCategoryTitle(rs.getString("category_title"));
-                item.setImagePath(rs.getString("image_path"));
-                item.setKitchenId(rs.getInt("kitchen_id"));
-                items.add(item);
-            }
-        } catch (SQLException e) {
-            System.err.println("Error retrieving menu items by kitchen: " + e.getMessage());
-            e.printStackTrace();
-        }
-        return items;
-    }
+    
 }

@@ -141,12 +141,12 @@ public class KitchenDashboardController implements Initializable {
     private void createSampleOrders() {
         try {
             List<CartItem> items1 = new ArrayList<>();
-            items1.add(new CartItem(new MenuItem(1, "Cappuccino", 4.95, "Coffee", "", 1), 2));
-            items1.add(new CartItem(new MenuItem(2, "Mushroom Pizza", 9.95, "Italian", "", 1), 1));
+            items1.add(new CartItem(new MenuItem(1, "Cappuccino", 4.95, "Coffee", ""), 2));
+            items1.add(new CartItem(new MenuItem(2, "Mushroom Pizza", 9.95, "Italian", ""), 1));
 
             List<CartItem> items2 = new ArrayList<>();
-            items2.add(new CartItem(new MenuItem(4, "Meat burger", 5.95, "Burger", "", 1), 3));
-            items2.add(new CartItem(new MenuItem(5, "Fresh melon juice", 3.95, "Drinks", "", 1), 3));
+            items2.add(new CartItem(new MenuItem(4, "Meat burger", 5.95, "Burger", ""), 3));
+            items2.add(new CartItem(new MenuItem(5, "Fresh melon juice", 3.95, "Drinks", ""), 3));
 
             Order order1 = new Order(items1, 19.85);
             Order order2 = new Order(items2, 29.7);
@@ -255,8 +255,7 @@ public class KitchenDashboardController implements Initializable {
                     "Price: $%.2f\nQuantity: %d\nCategory: %s\nKitchen: %d",
                     menuItem.getPrice(),
                     cartItem.getQuantity(),
-                    menuItem.getCategoryTitle(),
-                    menuItem.getKitchenId()));
+                    menuItem.getCategoryTitle()));
             alert.showAndWait();
         } catch (Exception e) {
             showAlert(AlertType.ERROR, "Item Click Error", "Failed to display item details: " + e.getMessage());

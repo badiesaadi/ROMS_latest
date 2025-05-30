@@ -170,8 +170,8 @@ public class OrderDAO {
                             rs.getString("title"),
                             rs.getDouble("price"),
                             rs.getString("category_title"),
-                            rs.getString("image_path"),
-                            rs.getInt("kitchen_id"));
+                            rs.getString("image_path")
+                            );
                     items.add(new CartItem(menuItem, rs.getInt("quantity")));
                 }
                 System.out.println("Found " + itemCount + " items for orderId: " + orderId);
