@@ -50,7 +50,7 @@ public class MenuItemController {
         if (menuItem != null) {
             menuName.setText(menuItem.getTitle());
             menuPrice.setText(String.format("$%.2f", menuItem.getPrice()));
-            addToOrder.getValueFactory().setValue(menuItem.getQuantity());
+            addToOrder.getValueFactory().setValue(0);
             if (menuItem.getImagePath() != null && !menuItem.getImagePath().isEmpty()) {
                 menuImage.setImage(new Image(menuItem.getImagePath()));
             }
@@ -66,7 +66,6 @@ public class MenuItemController {
 
         try {
             int newQuantity = addToOrder.getValue();
-            menuItem.setQuantity(newQuantity);
             boolean success = menuItemDAO.updateMenuItem(menuItem);
             if (success) {
                 showAlert(Alert.AlertType.INFORMATION, "Success", "Menu item quantity updated successfully.");

@@ -153,7 +153,7 @@ public class OrderDAO {
    
      */
     private List<CartItem> getOrderItems(Connection conn, int orderId) throws SQLException {
-        String sql = "SELECT m.item_id, m.title, m.price, m.category_title, m.image_path, m.kitchen_id, om.quantity " +
+        String sql = "SELECT m.item_id, m.title, m.price, m.category_title, m.image_path,  om.quantity " +
                 "FROM order_items om " +
                 "JOIN menuitem m ON om.item_id = m.item_id " +
                 "WHERE om.order_id = ?";

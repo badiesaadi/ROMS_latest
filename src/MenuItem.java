@@ -2,13 +2,11 @@ public class MenuItem {
     private int itemId;
     private String title;
     private double price;
-    private int quantity;
     private String categoryTitle;
     private String imagePath;
 
     // Default constructor
     public MenuItem() {
-        this.quantity = 0;
     }
 
     // New constructor for database operations
@@ -16,15 +14,9 @@ public class MenuItem {
         this.itemId = itemId;
         this.title = title;
         this.price = price;
-        this.quantity = 0;
         this.categoryTitle = categoryTitle;
         this.imagePath = imagePath;
     }
-
-    // // Legacy constructor for backward compatibility
-    // public MenuItem(int itemId, String title, double price, String categoryTitle, String imagePath) {
-    //     this(itemId, title, price, categoryTitle, imagePath, 0);
-    // }
 
     // Getters and setters
     public int getItemId() {
@@ -51,13 +43,7 @@ public class MenuItem {
         this.price = price;
     }
 
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
+   
 
     public String getCategoryTitle() {
         return categoryTitle;
