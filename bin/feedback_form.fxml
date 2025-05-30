@@ -17,7 +17,7 @@
 
         <VBox spacing="20" style="-fx-padding: 25; -fx-background-color: white; -fx-background-radius: 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 2);">
             <VBox spacing="5">
-                <Label text="Full Name" style="-fx-font-weight: bold; -fx-text-fill: #3498db;" />
+                <Label text="Full Name" style="-fx-font-weight: bold;-fx-background-color: #f9f9f9; -fx-text-fill: #3498db;" />
                 <TextField fx:id="nameField" promptText="Enter your full name"
                            style="-fx-background-radius: 8; -fx-background-color: #f9f9f9; -fx-border-color: #ddd; -fx-border-radius: 8;" />
             </VBox>
