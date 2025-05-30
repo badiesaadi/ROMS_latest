@@ -83,6 +83,6 @@ public class UsersTableDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null; // Return null if password is not found or an error occurs
+        return null; //   if password is not found or an error occurs
     }
 }

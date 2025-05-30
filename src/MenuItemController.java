@@ -40,10 +40,9 @@ public class MenuItemController {
 
     @FXML
     public void initialize() {
-        // Configure the Spinner (e.g., set min/max values)
+        // Configure the Spinner
         addToOrder.setValueFactory(new javafx.scene.control.SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100, 0));
 
-        // Bind button action
         submitQuantityBtn.setOnAction(event -> updateMenuItemQuantity());
     }
 

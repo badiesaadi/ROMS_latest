@@ -47,33 +47,19 @@ public class CustomerViewController implements Initializable {
     private List<MenuItem> menuItems = new ArrayList<>();
     private Map<Integer, CartItem> cartItems = new HashMap<>();
     private Map<Integer, Spinner<Integer>> menuSpinners = new HashMap<>();
-    private String currentCategory = "All";
-    //check these
-    private double subTotal = 0.0;
-    private double discount = 0.0;
-    private double tax = 0.0;
+    private String currentCategory;
 
     private double total = 0.0;
-
-    // Static list to store orders across the application
-    //check this
-    private static List<Order> allOrders = new ArrayList<>();
 
     @Override
     public void initialize(URL location, @SuppressWarnings("unused") ResourceBundle resources) {
         loadMenuItems();
         setupSearch();
         setupCategoryButtons();
-        //check this (already set it to "All")
         currentCategory = "All"; // Ensure "All" is selected initially
         filterAndDisplayMenuItems(); // Sort and display items initially
     }
 
-    // Method to access orders from other controllers
-    //check this
-    public static List<Order> getAllOrders() {
-        return allOrders;
-    }
 
     private void setupSearch() {
         searchField.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -201,17 +187,17 @@ public class CustomerViewController implements Initializable {
                 });
             }
 
-            // Try to load the image
+            //  try to load the image
             String imagePath = item.getImagePath();
             if (imagePath != null && !imagePath.isEmpty()) {
                 try {
-                    // Try with bin/images path first
+                    //  bin/images path first
                     java.io.File file = new java.io.File("bin/" + imagePath);
                     if (file.exists()) {
                         Image image = new Image(file.toURI().toString());
                         imageView.setImage(image);
                     } else {
-                        // Try with absolute path
+                        //  absolute path
                         file = new java.io.File(imagePath);
                         if (file.exists()) {
                             Image image = new Image(file.toURI().toString());
@@ -253,53 +239,7 @@ public class CustomerViewController implements Initializable {
 
     //check this
 
-    // Helper method to create a colored placeholder for missing images
-    private void createColoredPlaceholder(ImageView imageView, String category) {
-        // Use a color based on category
-        String color;
-        switch (category) {
-            case "Coffee":
-                color = "#8B4513"; // Brown
-                break;
-            case "Burger":
-                color = "#CD5C5C"; // Indian Red
-                break;
-            case "Italian":
-                color = "#FF6347"; // Tomato
-                break;
-            case "Mexican":
-                color = "#3CB371"; // Medium Sea Green
-                break;
-            case "Drinks":
-                color = "#4682B4"; // Steel Blue
-                break;
-            case "Snack":
-                color = "#9ACD32"; // Yellow Green
-                break;
-            case "Soup":
-                color = "#DEB887"; // Burlywood
-                break;
-            case "Seafood":
-                color = "#4169E1"; // Royal Blue
-                break;
-            default:
-                color = "#6A5ACD"; // Slate Blue
-        }
-
-        // Create a colored background for the ImageView
-        Rectangle rect = new Rectangle(
-                0, 0, imageView.getFitWidth(), imageView.getFitHeight());
-        rect.setFill(Color.web(color));
-        rect.setArcWidth(15);
-        rect.setArcHeight(15);
-
-        // Create a snapshot of the rectangle and set it as the image
-        SnapshotParameters params = new SnapshotParameters();
-        params.setFill(Color.TRANSPARENT);
-        WritableImage image = rect.snapshot(params, null);
-        imageView.setImage(image);
-    }
-
+   
     // Method to load menu items from the database
     private void loadMenuItems() {
         MenuItemDAO menuItemDAO = new MenuItemDAO();
@@ -307,47 +247,12 @@ public class CustomerViewController implements Initializable {
             // Load menu items from database
             menuItems = menuItemDAO.getAllMenuItems();
 
-            // If database returned no items, load sample items for testing
-            // if (menuItems.isEmpty()) {
-            // loadSampleMenuItems();
-            // }
         } catch (Exception e) {
             System.err.println("Error loading menu items from database: " + e.getMessage());
             e.printStackTrace();
 
-            // Fall back to sample data if database fails
-            // loadSampleMenuItems();
         }
     }
-
-    // Load sample menu items for testing purposes
-    // private void loadSampleMenuItems() {
-    // menuItems.add(new MenuItem(1, "Cappuccino", 4.95, "Coffee",
-    // "images/cappuccino-jpg-.png"));
-    // menuItems.add(new MenuItem(2, "Mushroom Pizza", 9.95, "Italian",
-    // "images/mushroom-pizza-jpg-.png"));
-    // menuItems.add(new MenuItem(3, "Tacos Salsa", 5.95, "Mexican",
-    // "images/tacos-jpg-.png"));
-    // menuItems.add(new MenuItem(4, "Meat burger", 5.95, "Burger",
-    // "images/meat-burger-jpg-.png"));
-    // menuItems.add(new MenuItem(5, "Fresh melon juice", 3.95, "Drinks",
-    // "images/melon-juice-jpg-.png"));
-    // menuItems.add(
-    // new MenuItem(6, "Vegetable salad", 4.95, "Snack",
-    // "images/users-icon-png-vegetable-salad-jpg.png"));
-    // menuItems.add(new MenuItem(7, "Black chicken Burger", 6.95, "Burger",
-    // "images/black-chicken-jpg-.png"));
-    // menuItems.add(new MenuItem(8, "Bakso Kuah sapi", 5.95, "Soup",
-    // "images/bakso-jpg-.png"));
-    // menuItems.add(new MenuItem(9, "Italian Pizza", 9.95, "Italian",
-    // "images/italian-pizza-jpg-.png"));
-    // menuItems.add(new MenuItem(10, "Sausage Pizza", 8.95, "Italian",
-    // "images/sausage-pizza-jpg-.png"));
-    // menuItems.add(new MenuItem(11, "Seafood Paella", 12.95, "Seafood",
-    // "images/seafood-paella-jpg-.png"));
-    // menuItems.add(new MenuItem(12, "Ranch Burger", 7.95, "Burger",
-    // "images/ranch-burger-jpg-.png"));
-    // }
 
     private void addToCart(MenuItem item, int quantity) {
         CartItem cartItem = cartItems.get(item.getId());
@@ -498,7 +403,6 @@ public class CustomerViewController implements Initializable {
             return;
         }
 
-        //check this you need to delete delivery partner from
         Order order = new Order(new ArrayList<>(cartItems.values()), total);
         OrderDAO orderDAO = new OrderDAO();
         int orderId = orderDAO.createOrder(order);

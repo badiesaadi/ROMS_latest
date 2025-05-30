@@ -9,7 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Alert;
 import javafx.stage.Modality;
 import java.io.IOException;
-import javafx.scene.text.Font; // Import Font class
+import javafx.scene.text.Font; 
 
 public class WelcomeController {
     @FXML
@@ -31,11 +31,11 @@ public class WelcomeController {
 
             if (customFont == null) {
                 System.out.println("Error: Font file not loaded");
-                // Fallback to a default font
+                // fallback 
                 nextScene.getRoot().setStyle("-fx-font-family: 'Arial';");
             } else {
                 System.out.println("Font loaded: " + customFont.getFamily());
-                // Apply the custom font globally
+                // Apply the  font 
                 nextScene.getRoot().setStyle("-fx-font-family: '" + customFont.getFamily() + "';");
             }
 
@@ -79,10 +79,6 @@ public class WelcomeController {
             );
 
             stage.setScene(new Scene(root));
-            ///stage.initModality(Modality.APPLICATION_MODAL);
-           /// stage.showAndWait();
-
-          //  stage.setScene(scene);
             stage.setTitle("Admin Login");
             StageManager.applyStageSettings(stage);
             stage.show();
@@ -91,33 +87,6 @@ public class WelcomeController {
             e.printStackTrace();
         }
     }
-
-
-
-    // @FXML
-    // private void handleLogin(ActionEvent event) {
-    //     try {
-    //         FXMLLoader loader = new FXMLLoader(getClass().getResource("admin_login.fxml"));
-    //         Parent root = loader.load();
-
-    //        // Scene scene = new Scene(root);
-    //       //  Stage stage = (Stage) placeOrderBtn.getScene().getWindow();
-
-
-    //         Stage stage = new Stage();
-    //         stage.setScene(new Scene(root));
-    //         stage.initModality(Modality.APPLICATION_MODAL);
-    //         stage.showAndWait();
-
-    //       //  stage.setScene(scene);
-    //         stage.setTitle("Admin Login");
-    //        // StageManager.applyStageSettings(stage);
-    //         stage.show();
-    //     } catch (IOException e) {
-    //         System.err.println("Error loading admin login: " + e.getMessage());
-    //         e.printStackTrace();
-    //     }
-    // }
 
     @FXML
     private void handleViewReviews(ActionEvent event) {

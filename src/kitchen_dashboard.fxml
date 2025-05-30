@@ -8,7 +8,6 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
@@ -37,73 +36,6 @@
                         <Insets bottom="10" left="10" right="10" top="10" />
                      </padding>
                   </HBox>
-               </children>
-               <padding>
-                  <Insets bottom="10" left="10" right="10" top="10" />
-               </padding>
-            </VBox>
-         </content>
-      </Tab>
-
-      <!-- Inventory Tab -->
-      <Tab closable="false" disable="true">
-         <content>
-            <VBox spacing="10">
-               <children>
-                  <TableView fx:id="inventoryTable">
-                     <columns>
-                        <TableColumn fx:id="ingredientIdColumn" prefWidth="100" text="ID" />
-                        <TableColumn fx:id="ingredientNameColumn" prefWidth="150" text="Name" />
-                        <TableColumn fx:id="quantityColumn" prefWidth="100" text="Quantity" />
-                        <TableColumn fx:id="unitColumn" prefWidth="100" text="Unit" />
-                        <TableColumn fx:id="minQuantityColumn" prefWidth="100" text="Min Quantity" />
-                        <TableColumn fx:id="categoryColumn" prefWidth="100" text="Category" />
-                        <TableColumn fx:id="inventoryActionsColumn" prefWidth="150" text="Actions" />
-                     </columns>
-                  </TableView>
-                  <VBox fx:id="lowStockContainer" spacing="5" />
-                  <VBox spacing="10">
-                     <children>
-                        <Label style="-fx-font-weight: bold;" text="Add/Edit Ingredient" />
-                        <HBox spacing="10">
-                           <children>
-                              <Label text="Name:" />
-                              <TextField fx:id="ingredientNameField" prefWidth="150" />
-                           </children>
-                        </HBox>
-                        <HBox spacing="10">
-                           <children>
-                              <Label text="Quantity:" />
-                              <TextField fx:id="quantityField" prefWidth="100" />
-                           </children>
-                        </HBox>
-                        <HBox spacing="10">
-                           <children>
-                              <Label text="Min Quantity:" />
-                              <TextField fx:id="minQuantityField" prefWidth="100" />
-                           </children>
-                        </HBox>
-                        <HBox spacing="10">
-                           <children>
-                              <Label text="Unit:" />
-                              <TextField fx:id="unitField" prefWidth="100" />
-                           </children>
-                        </HBox>
-                        <HBox spacing="10">
-                           <children>
-                              <Label text="Category:" />
-                              <ComboBox fx:id="ingredientCategoryComboBox" prefWidth="150" />
-                           </children>
-                        </HBox>
-                        <HBox spacing="10">
-                           <children>
-                              <Button fx:id="addIngredientButton" text="Add Ingredient" />
-                              <Button fx:id="updateIngredientButton" disable="true" text="Update Ingredient" />
-                              <Button fx:id="clearIngredientFormButton" text="Clear Form" />
-                           </children>
-                        </HBox>
-                     </children>
-                  </VBox>
                </children>
                <padding>
                   <Insets bottom="10" left="10" right="10" top="10" />
