@@ -708,7 +708,7 @@ public class AdminDashboardController implements Initializable {
         List<Order> orders = orderDAO.getOrdersByStatus(Order.OrderStatus.QUEUED);
         orders.addAll(orderDAO.getOrdersByStatus(Order.OrderStatus.IN_PROGRESS));
         orders.addAll(orderDAO.getOrdersByStatus(Order.OrderStatus.READY));
-        orders.addAll(orderDAO.getOrdersByStatus(Order.OrderStatus.DELIVERED));
+       // orders.addAll(orderDAO.getOrdersByStatus(Order.OrderStatus.DELIVERED));
         ordersTable.setItems(FXCollections.observableArrayList(orders));
     }
 
@@ -720,12 +720,12 @@ public class AdminDashboardController implements Initializable {
             case IN_PROGRESS:
                 updateOrderStatus(order, Order.OrderStatus.READY);
                 break;
-            case READY:
-                updateOrderStatus(order, Order.OrderStatus.DELIVERED);
-                break;
-            case DELIVERED:
-                updateOrderStatus(order, Order.OrderStatus.CANCELLED);
-                break;
+            // case READY:
+            //     updateOrderStatus(order, Order.OrderStatus.DELIVERED);
+            //     break;
+            // case DELIVERED:
+            //     updateOrderStatus(order, Order.OrderStatus.CANCELLED);
+            //     break;
             default:
                 break;
         }
@@ -737,15 +737,15 @@ public class AdminDashboardController implements Initializable {
         refreshOrdersTable();
     }
 
-    private void handleOrderItemClick(Order.OrderItem orderItem) {
-        MenuItem menuItem = orderItem.getMenuItem();
+    private void handleOrderItemClick(CartItem cartItem) {
+        MenuItem menuItem = cartItem.getMenuItem();
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Item Details");
         alert.setHeaderText(menuItem.getTitle());
         alert.setContentText(String.format(
                 "Price: $%.2f\nQuantity: %d\nCategory: %s\nKitchen: %d",
                 menuItem.getPrice(),
-                orderItem.getQuantity(),
+                cartItem.getQuantity(),
                 menuItem.getCategoryTitle(),
                 menuItem.getKitchenId()));
         alert.showAndWait();

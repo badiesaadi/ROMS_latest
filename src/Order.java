@@ -13,6 +13,8 @@ public class Order {
         ALL("All"),
         IN_PROGRESS("In Progress"),
         READY("Ready"),
+
+        //chech this
         DELIVERED("Delivered"),
         CANCELLED("Cancelled");
 
@@ -32,7 +34,8 @@ public class Order {
     private Date date;
     private int customerId;
     private int staffId;
-    private List<OrderItem> items;
+    private List<CartItem> items;
+    //check this
     private int kitchenId;
     private String managerId;
 
@@ -44,9 +47,7 @@ public class Order {
 
     public Order(List<CartItem> cartItems, double total) {
         this();
-        for (CartItem cartItem : cartItems) {
-            this.items.add(new OrderItem(cartItem.getMenuItem(), cartItem.getQuantity()));
-        }
+        this.items = new ArrayList<>(cartItems);
     }
 
     public int getOrderId() {
@@ -89,15 +90,15 @@ public class Order {
         this.staffId = staffId;
     }
 
-    public List<OrderItem> getItems() {
+    public List<CartItem> getItems() {
         return items;
     }
 
-    public void setItems(List<OrderItem> items) {
+    public void setItems(List<CartItem> items) {
         this.items = items;
     }
 
-
+    //check this
     public int getKitchenId() {
         return kitchenId;
     }
@@ -124,59 +125,5 @@ public class Order {
         return items.stream()
                 .map(item -> String.format("%s x%d", item.getMenuItem().getTitle(), item.getQuantity()))
                 .collect(java.util.stream.Collectors.joining(", "));
-    }
-
-    public static class OrderItem {
-        private MenuItem menuItem;
-        private int quantity;
-
-        public OrderItem(MenuItem menuItem, int quantity) {
-            this.menuItem = menuItem;
-            this.quantity = quantity;
-        }
-
-        public MenuItem getMenuItem() {
-            return menuItem;
-        }
-
-        public void setMenuItem(MenuItem menuItem) {
-            this.menuItem = menuItem;
-        }
-
-        public int getQuantity() {
-            return quantity;
-        }
-
-        public void setQuantity(int quantity) {
-            this.quantity = quantity;
-        }
-    }
-}
-
-class OrderItem {
-    private int orderId;
-    private MenuItem menuItem;
-    private int quantity;
-
-    public OrderItem(int orderId, MenuItem menuItem, int quantity) {
-        this.orderId = orderId;
-        this.menuItem = menuItem;
-        this.quantity = quantity;
-    }
-
-    public int getOrderId() {
-        return orderId;
-    }
-
-    public MenuItem getMenuItem() {
-        return menuItem;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
     }
 }

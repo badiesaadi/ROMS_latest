@@ -114,11 +114,11 @@ public class OrderDAO {
      * @return true if successful, false otherwise
      * @throws SQLException if a database error occurs
      */
-    private boolean insertOrderItems(Connection conn, int orderId, List<Order.OrderItem> items) throws SQLException {
+    private boolean insertOrderItems(Connection conn, int orderId, List<CartItem> items) throws SQLException {
         String sql = "INSERT INTO order_items (order_id, item_id, quantity) VALUES (?, ?, ?)";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            for (Order.OrderItem item : items) {
+            for (CartItem item : items) {
                 pstmt.setInt(1, orderId);
                 pstmt.setInt(2, item.getMenuItem().getItemId());
                 pstmt.setInt(3, item.getQuantity());
@@ -204,7 +204,7 @@ public class OrderDAO {
      * @return A list of menu items in the order
      * @throws SQLException if a database error occurs
      */
-    private List<Order.OrderItem> getOrderItems(Connection conn, int orderId) throws SQLException {
+    private List<CartItem> getOrderItems(Connection conn, int orderId) throws SQLException {
         String sql = "SELECT m.item_id, m.title, m.price, m.category_title, m.image_path, m.kitchen_id, om.quantity " +
                 "FROM order_items om " +
                 "JOIN menuitem m ON om.item_id = m.item_id " +
@@ -213,7 +213,7 @@ public class OrderDAO {
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, orderId);
             try (ResultSet rs = pstmt.executeQuery()) {
-                List<Order.OrderItem> items = new ArrayList<>();
+                List<CartItem> items = new ArrayList<>();
                 int itemCount = 0;
                 while (rs.next()) {
                     itemCount++;
@@ -224,7 +224,7 @@ public class OrderDAO {
                             rs.getString("category_title"),
                             rs.getString("image_path"),
                             rs.getInt("kitchen_id"));
-                    items.add(new Order.OrderItem(menuItem, rs.getInt("quantity")));
+                    items.add(new CartItem(menuItem, rs.getInt("quantity")));
                 }
                 System.out.println("Found " + itemCount + " items for orderId: " + orderId);
                 return items;
@@ -351,12 +351,12 @@ public class OrderDAO {
         }
     }
 
-    private boolean insertOrderItemsBatch(Connection conn, int orderId, List<Order.OrderItem> items)
+    private boolean insertOrderItemsBatch(Connection conn, int orderId, List<CartItem> items)
             throws SQLException {
         String sql = "INSERT INTO order_items (order_id, item_id, quantity) VALUES (?, ?, ?)";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            for (Order.OrderItem item : items) {
+            for (CartItem item : items) {
                 pstmt.setInt(1, orderId);
                 pstmt.setInt(2, item.getMenuItem().getItemId());
                 pstmt.setInt(3, item.getQuantity());

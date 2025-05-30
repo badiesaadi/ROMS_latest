@@ -312,7 +312,7 @@ public class KitchenDashboardController implements Initializable {
         try {
             for (Ingredient ingredient : ingredients) {
                 for (Order order : orders) {
-                    for (Order.OrderItem orderItem : order.getItems()) {
+                    for (CartItem orderItem : order.getItems()) {
                         MenuItem menuItem = orderItem.getMenuItem();
                         if (menuItem.getTitle().toLowerCase().contains(ingredient.getName().toLowerCase())) {
                             menuItemIngredients.add(new MenuItemIngredient(menuItem, ingredient, 0.1));
@@ -567,16 +567,16 @@ public class KitchenDashboardController implements Initializable {
         }
     }
 
-    private void handleOrderItemClick(Order.OrderItem orderItem) {
+    private void handleOrderItemClick(CartItem cartItem) {
         try {
-            MenuItem menuItem = orderItem.getMenuItem();
+            MenuItem menuItem = cartItem.getMenuItem();
             Alert alert = new Alert(AlertType.INFORMATION);
             alert.setTitle("Item Details");
             alert.setHeaderText(menuItem.getTitle());
             alert.setContentText(String.format(
                     "Price: $%.2f\nQuantity: %d\nCategory: %s\nKitchen: %d",
                     menuItem.getPrice(),
-                    orderItem.getQuantity(),
+                    cartItem.getQuantity(),
                     menuItem.getCategoryTitle(),
                     menuItem.getKitchenId()));
             alert.showAndWait();
@@ -610,9 +610,9 @@ public class KitchenDashboardController implements Initializable {
                 case IN_PROGRESS:
                     updateOrderStatus(order, Order.OrderStatus.READY);
                     break;
-                case READY:
-                    updateOrderStatus(order, Order.OrderStatus.DELIVERED);
-                    break;
+                // case READY:
+                //     updateOrderStatus(order, Order.OrderStatus.DELIVERED);
+                //     break;
                 default:
                     break;
             }
