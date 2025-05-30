@@ -18,4 +18,7 @@
    <padding>
       <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
    </padding>
+   <style>
+      -fx-background-color: #d5d8dc; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);
+   </style>
 </VBox>

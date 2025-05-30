@@ -911,3 +911,22 @@
 .Label {
   -fx-font-family: "MADE Tommy Soft", "Segoe UI", Arial, sans-serif !important;
 }
+
+/* Specific styles for adminBtn and welcomePageBtn to ensure transparency */
+#adminBtn, #welcomePageBtn {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-background-radius: 50%;
+    -fx-padding: 5px;
+    -fx-min-width: 35px;
+    -fx-min-height: 35px;
+}
+
+#adminBtn:hover, #welcomePageBtn:hover {
+    -fx-background-color: transparent;
+    -fx-cursor: hand;
+}
+
+#adminBtn .label, #welcomePageBtn .label {
+    -fx-text-fill: white; /* Ensures text/icon visibility against gradient background */
+}
