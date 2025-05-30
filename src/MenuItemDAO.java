@@ -7,10 +7,6 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Data Access Object (DAO) for the MenuItem entity.
- * Handles database operations related to menu items.
- */
 public class MenuItemDAO {
 
     private Connection connection;
@@ -24,21 +20,12 @@ public class MenuItemDAO {
         }
     }
 
-    /**
-     * Update an existing menu item in the database.
-     *
-     * @param item The menu item to update
-     * @return true if successful, false otherwise
-     * @throws SQLException if a database error occurs
-     */
     public boolean updateMenuItem(MenuItem item) throws SQLException {
-        // Validate item_id existence
         if (!menuItemExists(item.getItemId())) {
             System.err.println("Menu item with ID " + item.getItemId() + " does not exist.");
             return false;
         }
 
-        // Validate category_title
         if (item.getCategoryTitle() != null && !categoryExists(item.getCategoryTitle())) {
             System.err.println("Category " + item.getCategoryTitle() + " does not exist.");
             return false;
@@ -55,7 +42,6 @@ public class MenuItemDAO {
             pstmt.setString(4, item.getCategoryTitle());
             pstmt.setString(5, item.getImagePath());
 
-            // Validate kitchen_id
             if (item.getKitchenId() != 0) {
                 String checkKitchenSql = "SELECT COUNT(*) FROM Staff WHERE kitchen_id = ? AND role = 'kitchen_staff'";
                 try (PreparedStatement checkStmt = conn.prepareStatement(checkKitchenSql)) {
@@ -78,16 +64,10 @@ public class MenuItemDAO {
             return affectedRows > 0;
         } catch (SQLException e) {
             System.err.println("Error updating menu item: " + e.getMessage());
-            throw e; // Prop propagate the exception to the caller
+            throw e;
         }
     }
 
-    /**
-     * Check if a menu item exists by ID.
-     *
-     * @param itemId The ID to check
-     * @return true if exists, false otherwise
-     */
     private boolean menuItemExists(int itemId) throws SQLException {
         String sql = "SELECT COUNT(*) FROM MenuItem WHERE item_id = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
@@ -100,12 +80,6 @@ public class MenuItemDAO {
         }
     }
 
-    /**
-     * Check if a category exists by title.
-     *
-     * @param categoryTitle The category title to check
-     * @return true if exists, false otherwise
-     */
     private boolean categoryExists(String categoryTitle) throws SQLException {
         String sql = "SELECT COUNT(*) FROM Category WHERE title = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
@@ -118,7 +92,6 @@ public class MenuItemDAO {
         }
     }
 
-    // Rest of the methods remain unchanged
     public int insertMenuItem(MenuItem item) {
         String sql = "INSERT INTO MenuItem (title, price, quantity, category_title, image_path, kitchen_id) VALUES (?, ?, ?, ?, ?, ?)";
 
