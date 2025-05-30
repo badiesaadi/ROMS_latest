@@ -4,32 +4,33 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 
-<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+<VBox xmlns="http://javafx.com/javafx/17" stylesheets="@styles.css" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="KitchenDashboardController" prefWidth="800" prefHeight="600"
-      spacing="10" alignment="TOP_CENTER" style="-fx-background-color: #f4f4f4;">
+      spacing="10" alignment="TOP_CENTER" styleClass="root">
+   
    <padding>
       <Insets top="20" right="20" bottom="20" left="20"/>
    </padding>
 
    <!-- Header -->
-   <HBox alignment="CENTER" spacing="10">
-      <Label text="Kitchen Dashboard" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+   <HBox alignment="CENTER" spacing="10" styleClass="header">
+      <Label text="Kitchen Dashboard" styleClass="dashboard-title"/>
    </HBox>
 
    <!-- Orders Table -->
-   <TableView fx:id="ordersTable" prefHeight="400">
+   <TableView fx:id="ordersTable" prefHeight="400" styleClass="table-view">
       <columns>
-         <TableColumn fx:id="orderIdColumn" text="Order ID" prefWidth="100"/>
-         <TableColumn fx:id="orderDateColumn" text="Date" prefWidth="150"/>
-         <TableColumn fx:id="orderItemsColumn" text="Items" prefWidth="300"/>
-         <TableColumn fx:id="statusColumn" text="Status" prefWidth="100"/>
-         <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="100"/>
+         <TableColumn fx:id="orderIdColumn" text="Order ID" prefWidth="100" styleClass="table-column"/>
+         <TableColumn fx:id="orderDateColumn" text="Date" prefWidth="150" styleClass="table-column"/>
+         <TableColumn fx:id="orderItemsColumn" text="Items" prefWidth="300" styleClass="table-column"/>
+         <TableColumn fx:id="statusColumn" text="Status" prefWidth="100" styleClass="table-column"/>
+         <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="100" styleClass="table-column"/>
       </columns>
    </TableView>
 
    <!-- Order Details -->
-   <HBox alignment="CENTER_LEFT" spacing="10">
-      <Label fx:id="selectedOrderIdLabel" text="Orders Status: "  style="-fx-font-size: 14px;"/>
-      <ComboBox fx:id="statusComboBox" onAction="#handleStatusFilter" prefWidth="150"/>
-         </HBox>
+   <HBox alignment="CENTER_LEFT" spacing="10" styleClass="details-section">
+      <Label fx:id="selectedOrderIdLabel" text="Orders Status: " styleClass="status-label"/>
+      <ComboBox fx:id="statusComboBox" onAction="#handleStatusFilter" prefWidth="150" styleClass="combo-box"/>
+   </HBox>
 </VBox>
