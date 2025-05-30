@@ -6,9 +6,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="categoryButtonContainer" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="80.0" prefWidth="80.0" spacing="5.0" styleClass="category-button" stylesheets="@menu-style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="CategoryButtonController">
+<VBox fx:id="categoryButtonContainer" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="35.0" prefWidth="80.0" spacing="5.0" styleClass="category-button" stylesheets="@menu-style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="CategoryButtonController">
    <children>
-      <ImageView fx:id="categoryIcon" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="categoryIcon" fitHeight="16.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true" />
       <Label fx:id="categoryLabel" styleClass="category-label" text="Category" textAlignment="CENTER" wrapText="true">
          <font>
             <Font name="System Bold" size="12.0" />

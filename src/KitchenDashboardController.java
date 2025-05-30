@@ -26,6 +26,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.HBox;
+import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.beans.property.SimpleStringProperty;
@@ -56,14 +57,17 @@ public class KitchenDashboardController implements Initializable {
     @FXML
     private Button updateOrderButton;
 
-    // New button for navigation
+    // Navigation buttons
     @FXML
     private Button backToCustomerViewButton;
+    @FXML
+    private Button backToCustomerViewFromKitchenButton;
 
     // Data
     private ObservableList<Order> orders = FXCollections.observableArrayList();
     private Order selectedOrder;
     private OrderDAO orderDAO;
+    private boolean isUpdating = false;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -87,7 +91,6 @@ public class KitchenDashboardController implements Initializable {
         orderItemsColumn
                 .setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getItemsSummary()));
         statusColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getStatus()));
-        // Setup actions column with buttons
         actionsColumn.setCellFactory(param -> new TableCell<Order, Void>() {
             private final Button actionBtn = new Button("Update Status");
 
@@ -105,36 +108,54 @@ public class KitchenDashboardController implements Initializable {
                     setGraphic(null);
                 } else {
                     Order order = getTableRow().getItem();
-                    actionBtn.setDisable(order.getStatus() == Order.OrderStatus.READY); // Disable button if status is READY
+                    actionBtn.setDisable(order.getStatus() == Order.OrderStatus.READY);
                     setGraphic(actionBtn);
                 }
             }
         });
 
+        ordersTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            selectedOrder = newSelection;
+            if (selectedOrder != null) {
+                selectedOrderIdLabel.setText("Order ID: " + selectedOrder.getOrderId());
+                statusComboBox.setValue(selectedOrder.getStatus());
+            } else {
+                selectedOrderIdLabel.setText("Order ID: None");
+                statusComboBox.setValue(null);
+            }
+        });
+
+        // Set a placeholder for when the table is empty
+        ordersTable.setPlaceholder(new Label("No orders found for the selected status."));
+
         refreshOrdersTable();
     }
 
     private void setupStatusComboBox() {
-        statusComboBox.getItems().clear(); // Clear existing items
-        statusComboBox.getItems().addAll(Order.OrderStatus.ALL, Order.OrderStatus.QUEUED, Order.OrderStatus.IN_PROGRESS, Order.OrderStatus.READY); // Add "All" and other statuses
+        statusComboBox.getItems().clear();
+        statusComboBox.getItems().addAll(Order.OrderStatus.ALL, Order.OrderStatus.QUEUED,
+                Order.OrderStatus.IN_PROGRESS, Order.OrderStatus.READY);
+        statusComboBox.setValue(Order.OrderStatus.ALL);
+        statusComboBox.setOnAction(event -> handleStatusFilter());
     }
 
     private void loadOrders() {
         try {
-            // Get orders from the database
-            List<Order> dbOrders = orderDAO.getOrdersByStatus(Order.OrderStatus.QUEUED);
-            dbOrders.addAll(orderDAO.getOrdersByStatus(Order.OrderStatus.IN_PROGRESS));
+            List<Order> dbOrders = orderDAO.getAllOrders();
+            System.out.println("Loaded " + dbOrders.size() + " orders from database: " + dbOrders);
             orders.addAll(dbOrders);
 
-            // If no orders exist, create sample orders
             if (orders.isEmpty()) {
                 createSampleOrders();
+                System.out.println("No database orders found, using sample orders: " + orders);
             }
 
             ordersTable.setItems(orders);
         } catch (Exception e) {
             showAlert(AlertType.ERROR, "Load Orders Error", "Failed to load orders: " + e.getMessage());
             e.printStackTrace();
+            createSampleOrders(); // Fallback to sample orders on error
+            System.out.println("Error loading orders, using sample orders: " + orders);
         }
     }
 
@@ -145,14 +166,21 @@ public class KitchenDashboardController implements Initializable {
             items1.add(new CartItem(new MenuItem(2, "Mushroom Pizza", 9.95, "Italian", ""), 1));
 
             List<CartItem> items2 = new ArrayList<>();
-            items2.add(new CartItem(new MenuItem(4, "Meat burger", 5.95, "Burger", ""), 3));
-            items2.add(new CartItem(new MenuItem(5, "Fresh melon juice", 3.95, "Drinks", ""), 3));
+            items2.add(new CartItem(new MenuItem(4, "Meat Burger", 5.95, "Burger", ""), 3));
+            items2.add(new CartItem(new MenuItem(5, "Fresh Melon Juice", 3.95, "Drinks", ""), 3));
 
             Order order1 = new Order(items1, 19.85);
             Order order2 = new Order(items2, 29.7);
+            order1.setOrderId(1); // Assign temporary IDs
+            order2.setOrderId(2);
+            order1.setDate(new java.sql.Date(System.currentTimeMillis()));
+            order2.setDate(new java.sql.Date(System.currentTimeMillis()));
+            order1.setStatus(Order.OrderStatus.QUEUED);
+            order2.setStatus(Order.OrderStatus.IN_PROGRESS);
 
             orders.add(order1);
             orders.add(order2);
+            System.out.println("Created sample orders: " + orders);
         } catch (Exception e) {
             showAlert(AlertType.ERROR, "Sample Orders Error", "Failed to create sample orders: " + e.getMessage());
             e.printStackTrace();
@@ -164,12 +192,15 @@ public class KitchenDashboardController implements Initializable {
             while (!Thread.currentThread().isInterrupted()) {
                 try {
                     Thread.sleep(30000);
-                    Platform.runLater(this::refreshOrdersTable);
+                    if (!isUpdating) {
+                        Platform.runLater(this::refreshOrdersTable);
+                    }
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                     break;
                 } catch (Exception e) {
-                    Platform.runLater(() -> showAlert(AlertType.ERROR, "Refresh Error", "Failed to refresh orders: " + e.getMessage()));
+                    Platform.runLater(() -> showAlert(AlertType.ERROR, "Refresh Error",
+                            "Failed to refresh orders: " + e.getMessage()));
                 }
             }
         });
@@ -184,13 +215,25 @@ public class KitchenDashboardController implements Initializable {
                 showAlert(AlertType.WARNING, "No Selection", "Please select an order to update.");
                 return;
             }
-            selectedOrder.setStatus(statusComboBox.getValue());
-            orderDAO.updateOrderStatus(selectedOrder.getOrderId(), selectedOrder.getStatus());
-            ordersTable.refresh();
-            showAlert(AlertType.INFORMATION, "Success", "Order updated successfully.");
+            isUpdating = true;
+            Order.OrderStatus newStatus = statusComboBox.getValue();
+            if (newStatus == null || newStatus == Order.OrderStatus.ALL) {
+                showAlert(AlertType.WARNING, "Invalid Status", "Please select a valid status.");
+                return;
+            }
+            selectedOrder.setStatus(newStatus);
+            if (orderDAO.updateOrderStatus(selectedOrder.getOrderId(), newStatus)) {
+                System.out.println("Updated order " + selectedOrder.getOrderId() + " to status: " + newStatus);
+                refreshOrdersTable();
+                showAlert(AlertType.INFORMATION, "Success", "Order updated successfully.");
+            } else {
+                showAlert(AlertType.ERROR, "Update Failed", "Failed to update order status in database.");
+            }
         } catch (Exception e) {
             showAlert(AlertType.ERROR, "Update Order Error", "Failed to update order: " + e.getMessage());
             e.printStackTrace();
+        } finally {
+            isUpdating = false;
         }
     }
 
@@ -226,6 +269,22 @@ public class KitchenDashboardController implements Initializable {
         }
     }
 
+    @FXML
+    private void handleBackToCustomerViewFromKitchen() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/customer_view.fxml"));
+            Parent root = loader.load();
+            Scene scene = new Scene(root);
+            Stage stage = (Stage) ordersTable.getScene().getWindow();
+            stage.setScene(scene);
+            stage.setTitle("Restaurant Customer View");
+            stage.show();
+        } catch (IOException e) {
+            showAlert(AlertType.ERROR, "Navigation Error", "Error returning to customer view: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
     private void showAlert(AlertType alertType, String title, String message) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);
@@ -236,12 +295,19 @@ public class KitchenDashboardController implements Initializable {
 
     private void updateOrderStatus(Order order, Order.OrderStatus newStatus) {
         try {
+            isUpdating = true;
             order.setStatus(newStatus);
-            orderDAO.updateOrderStatus(order.getOrderId(), newStatus);
-            refreshOrdersTable();
+            if (orderDAO.updateOrderStatus(order.getOrderId(), newStatus)) {
+                System.out.println("Updated order " + order.getOrderId() + " to status: " + newStatus);
+                refreshOrdersTable();
+            } else {
+                showAlert(AlertType.ERROR, "Update Failed", "Failed to update order status in database.");
+            }
         } catch (Exception e) {
             showAlert(AlertType.ERROR, "Update Status Error", "Failed to update order status: " + e.getMessage());
             e.printStackTrace();
+        } finally {
+            isUpdating = false;
         }
     }
 
@@ -252,7 +318,7 @@ public class KitchenDashboardController implements Initializable {
             alert.setTitle("Item Details");
             alert.setHeaderText(menuItem.getTitle());
             alert.setContentText(String.format(
-                    "Price: $%.2f\nQuantity: %d\nCategory: %s\nKitchen: %d",
+                    "Price: $%.2f\nQuantity: %d\nCategory: %s",
                     menuItem.getPrice(),
                     cartItem.getQuantity(),
                     menuItem.getCategoryTitle()));
@@ -265,30 +331,50 @@ public class KitchenDashboardController implements Initializable {
 
     private void refreshOrdersTable() {
         try {
-            List<Order> orders = orderDAO.getOrdersByStatus(Order.OrderStatus.QUEUED);
-            orders.addAll(orderDAO.getOrdersByStatus(Order.OrderStatus.IN_PROGRESS));
-            orders.addAll(orderDAO.getOrdersByStatus(Order.OrderStatus.READY));
-            System.out.println("Refreshing orders table with " + orders.size() + " orders");
-            this.orders.setAll(orders);
-            ordersTable.setItems(this.orders);
+            List<Order> dbOrders = new ArrayList<>();
+            Order.OrderStatus filterStatus = statusComboBox.getValue();
+
+            if (filterStatus == null || filterStatus == Order.OrderStatus.ALL) {
+                dbOrders.addAll(orderDAO.getAllOrders());
+                System.out.println("Fetched all orders: " + dbOrders.size() + " orders - " + dbOrders);
+            } else {
+                dbOrders.addAll(orderDAO.getOrdersByStatus(filterStatus));
+                System.out.println("Fetched orders by status " + filterStatus + ": " + dbOrders.size() + " orders - " + dbOrders);
+            }
+
+            // Clear and set only the filtered orders
+            orders.clear();
+            orders.addAll(dbOrders);
+            System.out.println("After filter, table has " + orders.size() + " orders: " + orders);
+            ordersTable.setItems(orders);
             ordersTable.refresh();
         } catch (Exception e) {
             showAlert(AlertType.ERROR, "Refresh Orders Error", "Failed to refresh orders table: " + e.getMessage());
             e.printStackTrace();
+            System.out.println("Refresh failed, retaining current orders: " + orders);
+            ordersTable.refresh();
         }
     }
 
     private void handleOrderStatusChange(Order order) {
         try {
+            Order.OrderStatus newStatus = null;
             switch (order.getStatus()) {
                 case QUEUED:
-                    updateOrderStatus(order, Order.OrderStatus.IN_PROGRESS);
+                    newStatus = Order.OrderStatus.IN_PROGRESS;
                     break;
                 case IN_PROGRESS:
-                    updateOrderStatus(order, Order.OrderStatus.READY);
+                    newStatus = Order.OrderStatus.READY;
                     break;
                 default:
-                    break;
+                    return;
+            }
+            updateOrderStatus(order, newStatus);
+
+            Order.OrderStatus filterStatus = statusComboBox.getValue();
+            if (filterStatus != null && filterStatus != Order.OrderStatus.ALL && filterStatus != newStatus) {
+                showAlert(AlertType.INFORMATION, "Order Updated",
+                        "Order status changed to " + newStatus + ". It may no longer appear due to the current filter.");
             }
         } catch (Exception e) {
             showAlert(AlertType.ERROR, "Status Change Error", "Failed to change order status: " + e.getMessage());
@@ -299,22 +385,7 @@ public class KitchenDashboardController implements Initializable {
     @FXML
     private void handleStatusFilter() {
         Order.OrderStatus selectedStatus = statusComboBox.getValue();
-        if (selectedStatus != null) {
-            try {
-                List<Order> filteredOrders;
-                if (selectedStatus == Order.OrderStatus.ALL) {
-                    filteredOrders = orderDAO.getAllOrders(); // Fetch all orders when "All" is selected
-                } else {
-                    filteredOrders = orderDAO.getOrdersByStatus(selectedStatus);
-                }
-                this.orders.setAll(filteredOrders);
-                ordersTable.setItems(this.orders);
-            } catch (Exception e) {
-                showAlert(AlertType.ERROR, "Filter Error", "Failed to filter orders: " + e.getMessage());
-                e.printStackTrace();
-            }
-        } else {
-            refreshOrdersTable(); // Show all orders if no status is selected
-        }
+        System.out.println("Applying filter: " + selectedStatus);
+        refreshOrdersTable();
     }
 }

@@ -28,7 +28,6 @@
             </ScrollPane>
             <VBox prefHeight="179.0" prefWidth="300.0" spacing="10.0">
                <children>
-
                   <HBox alignment="CENTER" prefWidth="300.0">
                      <children>
                         <Label text="Total" textFill="#3498db">
@@ -89,24 +88,16 @@
                         <Insets left="20.0" />
                      </HBox.margin>
                   </TextField>
-                  <HBox alignment="CENTER_RIGHT" prefHeight="71.0" prefWidth="155.0" style="-fx-background-color: #F9F9FB;" HBox.hgrow="ALWAYS">
+                  <HBox alignment="CENTER_RIGHT" prefHeight="71.0" prefWidth="200.0" style="-fx-background-color: #F9F9FB;" HBox.hgrow="ALWAYS">
                      <children>
-                        <Button mnemonicParsing="false" onAction="#goToAdminLogin" style="-fx-background-color: transparent; -fx-text-fill: #FB9400; -fx-border-color: #FB9400; -fx-border-radius: 4;" text="Admin ">
-                           <HBox.margin>
-                              <Insets right="5.0" />
-                           </HBox.margin>
-                           <font>
-                              <Font size="10.0" />
-                           </font>
-                        </Button>
-                        <Button mnemonicParsing="false" onAction="#goToWelcomePage" style="-fx-background-color: transparent; -fx-text-fill: blue; -fx-border-color: blue; -fx-border-radius: 4;" text="Welcome Page">
-                           <HBox.margin>
-                              <Insets right="5.0" />
-                           </HBox.margin>
-                           <font>
-                              <Font size="10.0" />
-                           </font>
-                        </Button>
+                        <Button fx:id="adminBtn" onAction="#goToAdminLogin"
+                                prefHeight="45.0" prefWidth="100.0"
+                                text="Admin"
+                                styleClass="admin-button" />
+                        <Button fx:id="welcomeBtn" onAction="#goToWelcomePage"
+                                prefHeight="45.0" prefWidth="120.0"
+                                text="Welcome Page"
+                                styleClass="welcome-button" />
                      </children>
                   </HBox>
                </children>

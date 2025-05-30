@@ -7,16 +7,27 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class OrderDAO {
     private Connection connection;
 
     public OrderDAO() {
         try {
             this.connection = DatabaseConnection.getConnection();
+            validateConnection();
         } catch (SQLException e) {
             System.err.println("Error establishing database connection: " + e.getMessage());
             throw new RuntimeException("Failed to initialize OrderDAO", e);
+        }
+    }
+
+    private void validateConnection() throws SQLException {
+        if (connection == null || connection.isClosed()) {
+            System.out.println("Connection is invalid, attempting to reconnect...");
+            this.connection = DatabaseConnection.getConnection();
+            if (connection == null || connection.isClosed()) {
+                throw new SQLException("Failed to re-establish database connection");
+            }
+            System.out.println("Connection re-established successfully.");
         }
     }
 
@@ -24,13 +35,12 @@ public class OrderDAO {
         String sql = "INSERT INTO `order` (status, date) VALUES (?, ?)";
 
         try {
-            // Start transaction
+            validateConnection();
             connection.setAutoCommit(false);
 
-            // Insert the order first
             try (PreparedStatement pstmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
                 pstmt.setString(1, order.getStatus().toString());
-                pstmt.setDate(2, new Date(System.currentTimeMillis())); // Current date
+                pstmt.setDate(2, new Date(System.currentTimeMillis()));
 
                 int affectedRows = pstmt.executeUpdate();
 
@@ -39,25 +49,24 @@ public class OrderDAO {
                         if (generatedKeys.next()) {
                             int orderId = generatedKeys.getInt(1);
 
-                            //  insert the items
                             if (insertOrderItems(connection, orderId, order.getItems())) {
-                                connection.commit(); // Commit transaction
+                                connection.commit();
+                                System.out.println("Inserted order with ID: " + orderId);
                                 return orderId;
                             } else {
-                                connection.rollback(); // Rollback on failure
+                                connection.rollback();
                                 return -1;
                             }
                         }
                     }
                 }
-                connection.rollback(); // Rollback on failure
+                connection.rollback();
                 return -1;
             }
         } catch (SQLException e) {
             System.err.println("Error inserting order: " + e.getMessage());
             try {
-                if (connection != null)
-                    connection.rollback();
+                if (connection != null) connection.rollback();
             } catch (SQLException ex) {
                 System.err.println("Error rolling back transaction: " + ex.getMessage());
             }
@@ -73,10 +82,6 @@ public class OrderDAO {
         }
     }
 
-    /*
-     * Insert order items for an order
-      
-     */
     private boolean insertOrderItems(Connection conn, int orderId, List<CartItem> items) throws SQLException {
         String sql = "INSERT INTO order_items (order_id, item_id, quantity) VALUES (?, ?, ?)";
 
@@ -98,60 +103,54 @@ public class OrderDAO {
         }
     }
 
-    /**
-     update an order's status
- 
-     */
     public boolean updateOrderStatus(int orderId, Order.OrderStatus status) {
         String sql = "UPDATE `order` SET status = ? WHERE order_id = ?";
 
-        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+        try {
+            validateConnection();
+            try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+                pstmt.setString(1, status.toString());
+                pstmt.setInt(2, orderId);
 
-            pstmt.setString(1, status.toString());
-            pstmt.setInt(2, orderId);
-
-            int affectedRows = pstmt.executeUpdate();
-            return affectedRows > 0;
+                int affectedRows = pstmt.executeUpdate();
+                System.out.println("Updated " + affectedRows + " rows for order ID " + orderId + " to status " + status);
+                return affectedRows > 0;
+            }
         } catch (SQLException e) {
             System.err.println("Error updating order status: " + e.getMessage());
             return false;
         }
     }
 
-
-     //check this it has staff manager ans stuff
     public Order getOrderById(int orderId) {
         String sql = "SELECT * FROM `order` WHERE order_id = ?";
 
-        try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try {
+            validateConnection();
+            try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+                pstmt.setInt(1, orderId);
 
-            pstmt.setInt(1, orderId);
-
-            try (ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next()) {
-                    Order order = new Order();
-                    order.setOrderId(rs.getInt("order_id"));
-                    order.setStatus(Order.OrderStatus.valueOf(rs.getString("status")));
-                    order.setDate(new java.sql.Date(rs.getTimestamp("date").getTime()));
-                  //  order.setNotes(rs.getString("notes"));
-
-                    order.setItems(getOrderItems(conn, orderId));
-                    return order;
+                try (ResultSet rs = pstmt.executeQuery()) {
+                    if (rs.next()) {
+                        Order order = new Order();
+                        order.setOrderId(rs.getInt("order_id"));
+                        order.setStatus(Order.OrderStatus.valueOf(rs.getString("status")));
+                        order.setDate(new java.sql.Date(rs.getTimestamp("date").getTime()));
+                        order.setItems(getOrderItems(connection, orderId));
+                        System.out.println("Retrieved order ID " + orderId + ": " + order);
+                        return order;
+                    }
                 }
             }
         } catch (SQLException e) {
             System.err.println("Error getting order: " + e.getMessage());
         }
+        System.out.println("No order found for ID " + orderId);
         return null;
     }
 
-    /*
-      Get items for a specific order
-   
-     */
     private List<CartItem> getOrderItems(Connection conn, int orderId) throws SQLException {
-        String sql = "SELECT m.item_id, m.title, m.price, m.category_title, m.image_path,  om.quantity " +
+        String sql = "SELECT m.item_id, m.title, m.price, m.category_title, m.image_path, om.quantity " +
                 "FROM order_items om " +
                 "JOIN menuitem m ON om.item_id = m.item_id " +
                 "WHERE om.order_id = ?";
@@ -169,7 +168,7 @@ public class OrderDAO {
                             rs.getDouble("price"),
                             rs.getString("category_title"),
                             rs.getString("image_path")
-                            );
+                    );
                     items.add(new CartItem(menuItem, rs.getInt("quantity")));
                 }
                 System.out.println("Found " + itemCount + " items for orderId: " + orderId);
@@ -182,48 +181,56 @@ public class OrderDAO {
         List<Order> orders = new ArrayList<>();
         String sql = "SELECT * FROM `order`";
 
-        try (Statement stmt = connection.createStatement();
-                ResultSet rs = stmt.executeQuery(sql)) {
-
-            while (rs.next()) {
-                int orderId = rs.getInt("order_id");
-                Order order = new Order();
-                order.setOrderId(orderId);
-                order.setStatus(Order.OrderStatus.valueOf(rs.getString("status")));
-                order.setDate(rs.getDate("date"));
-
-
-
-
-                // Get order items
-                order.setItems(getOrderItems(connection, orderId));
-                orders.add(order);
+        try {
+            validateConnection();
+            try (Statement stmt = connection.createStatement();
+                 ResultSet rs = stmt.executeQuery(sql)) {
+                System.out.println("Executing getAllOrders query...");
+                while (rs.next()) {
+                    int orderId = rs.getInt("order_id");
+                    Order order = new Order();
+                    order.setOrderId(orderId);
+                    order.setStatus(Order.OrderStatus.valueOf(rs.getString("status")));
+                    order.setDate(rs.getDate("date"));
+                    order.setItems(getOrderItems(connection, orderId));
+                    orders.add(order);
+                }
+                System.out.println("getAllOrders returned " + orders.size() + " orders: " + orders);
             }
         } catch (SQLException e) {
             System.err.println("Error getting all orders: " + e.getMessage());
+            e.printStackTrace();
         }
         return orders;
     }
 
     public List<Order> getOrdersByStatus(Order.OrderStatus status) {
+        if (status == null || status == Order.OrderStatus.ALL) {
+            return getAllOrders(); // Fallback to all orders if status is invalid or ALL
+        }
+
         List<Order> orders = new ArrayList<>();
         String query = "SELECT * FROM `order` WHERE status = ?";
         System.out.println("Executing getOrdersByStatus with status: " + status.name());
-        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
-            pstmt.setString(1, status.name());
-            ResultSet rs = pstmt.executeQuery();
-            System.out.println("Query executed, fetching results...");
-            int count = 0;
-            while (rs.next()) {
-                count++;
-                Order order = new Order();
-                order.setOrderId(rs.getInt("order_id"));
-                order.setStatus(Order.OrderStatus.valueOf(rs.getString("status")));
-                order.setDate(new java.sql.Date(rs.getTimestamp("date").getTime()));
-                order.setItems(getOrderItems(connection, order.getOrderId()));
-                orders.add(order);
+        try {
+            validateConnection();
+            try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+                pstmt.setString(1, status.name());
+                try (ResultSet rs = pstmt.executeQuery()) {
+                    System.out.println("Query executed, fetching results...");
+                    int count = 0;
+                    while (rs.next()) {
+                        count++;
+                        Order order = new Order();
+                        order.setOrderId(rs.getInt("order_id"));
+                        order.setStatus(Order.OrderStatus.valueOf(rs.getString("status")));
+                        order.setDate(new java.sql.Date(rs.getTimestamp("date").getTime()));
+                        order.setItems(getOrderItems(connection, order.getOrderId()));
+                        orders.add(order);
+                    }
+                    System.out.println("Found " + count + " orders with status " + status.name());
+                }
             }
-            System.out.println("Found " + count + " orders with status " + status.name());
         } catch (SQLException e) {
             System.err.println("SQL Error in getOrdersByStatus: " + e.getMessage());
             e.printStackTrace();
@@ -234,35 +241,38 @@ public class OrderDAO {
     public int createOrder(Order order) {
         String sql = "INSERT INTO `order` (status, date) VALUES (?, ?)";
 
-        try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try {
+            validateConnection();
+            try (Connection conn = DatabaseConnection.getConnection();
+                 PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                conn.setAutoCommit(false);
 
-            conn.setAutoCommit(false);
+                pstmt.setString(1, order.getStatus().name());
+                pstmt.setTimestamp(2, new java.sql.Timestamp(order.getDate().getTime()));
 
-            pstmt.setString(1, order.getStatus().name());
-            pstmt.setTimestamp(2, new java.sql.Timestamp(order.getDate().getTime()));
+                int affectedRows = pstmt.executeUpdate();
+                if (affectedRows == 0) {
+                    conn.rollback();
+                    return -1;
+                }
 
-            int affectedRows = pstmt.executeUpdate();
-            if (affectedRows == 0) {
-                conn.rollback();
-                return -1;
-            }
+                try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        int orderId = generatedKeys.getInt(1);
+                        order.setOrderId(orderId);
 
-            try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    int orderId = generatedKeys.getInt(1);
-                    order.setOrderId(orderId);
-
-                    if (insertOrderItemsBatch(conn, orderId, order.getItems())) {
-                        conn.commit();
-                        return orderId;
+                        if (insertOrderItemsBatch(conn, orderId, order.getItems())) {
+                            conn.commit();
+                            System.out.println("Created order with ID: " + orderId);
+                            return orderId;
+                        } else {
+                            conn.rollback();
+                            return -1;
+                        }
                     } else {
                         conn.rollback();
                         return -1;
                     }
-                } else {
-                    conn.rollback();
-                    return -1;
                 }
             }
         } catch (SQLException e) {
@@ -292,5 +302,4 @@ public class OrderDAO {
             return true;
         }
     }
-
 }

@@ -930,3 +930,33 @@
 #adminBtn .label, #welcomePageBtn .label {
     -fx-text-fill: white; /* Ensures text/icon visibility against gradient background */
 }
+
+.admin-button {
+    -fx-background-color: #e74c3c;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 10px;
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 4, 0.3, 0, 1);
+}
+
+.admin-button:hover {
+    -fx-background-color: #c0392b;
+}
+
+.welcome-button {
+    -fx-background-color: #27ae60;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 10px;
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 4, 0.3, 0, 1);
+}
+
+.welcome-button:hover {
+    -fx-background-color: #1e8449;
+}
