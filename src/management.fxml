@@ -30,7 +30,7 @@
         <VBox spacing="5">
             <Label text="Role:" />
             <HBox spacing="10">
-                <CheckBox fx:id="managerCheckBox" text="Manager" />
+                <CheckBox fx:id="managerCheckBox" text="sub-Manager" />
                 <CheckBox fx:id="kitchenCheckBox" text="Kitchen" />
             </HBox>
         </VBox>
