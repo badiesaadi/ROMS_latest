@@ -1,107 +1,184 @@
--- Create the database
-CREATE DATABASE restaurant_db;
-USE restaurant_db;
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
+--
+-- Hôte : 127.0.0.1
+-- Version du serveur : 10.4.32-MariaDB
+-- Version de PHP : 8.2.12
 
--- Create the Staff table (combines Manager and Kitchen staff)
-CREATE TABLE Staff (
-    staff_id VARCHAR(50) PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    role ENUM('manager', 'kitchen_staff') NOT NULL,
-    kitchen_id INT UNIQUE
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+--
+-- Base de données : `restaurant_db`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `category`
+--
+
+CREATE TABLE `category` (
+  `title` varchar(50) NOT NULL
 );
 
--- Create the Category table
-CREATE TABLE Category (
-    title VARCHAR(50) PRIMARY KEY
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `feedback`
+--
+
+CREATE TABLE `feedback` (
+  `id` int(11) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `phone` varchar(20) NOT NULL,
+  `comment` text NOT NULL,
+  `rating` int(11) NOT NULL CHECK (`rating` between 1 and 5),
+  `submission_date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 );
 
--- Create the MenuItem table
-CREATE TABLE MenuItem (
-    item_id INT PRIMARY KEY AUTO_INCREMENT,
-    title VARCHAR(100) NOT NULL,
-    price DOUBLE NOT NULL,
-    quantity INT DEFAULT 1,
-    category_title VARCHAR(50),
-    image_path VARCHAR(255),
-    kitchen_id INT,
-    FOREIGN KEY (category_title) REFERENCES Category(title),
-    FOREIGN KEY (kitchen_id) REFERENCES Staff(kitchen_id)
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `menuitem`
+--
+
+CREATE TABLE `menuitem` (
+  `item_id` int(11) NOT NULL,
+  `title` varchar(100) NOT NULL,
+  `price` double NOT NULL,
+  `category_title` varchar(50) DEFAULT NULL,
+  `image_path` varchar(255) DEFAULT NULL
 );
 
--- Create the Ingredient table
-CREATE TABLE Ingredient (
-    title VARCHAR(100) PRIMARY KEY,
-    current_quantity DECIMAL(10,2) NOT NULL,
-    unit_of_measure VARCHAR(20) NOT NULL,
-    min_threshold DECIMAL(10,2) NOT NULL,
-    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `order`
+--
+
+CREATE TABLE `order` (
+  `order_id` int(11) NOT NULL,
+  `status` varchar(50) NOT NULL,
+  `date` date NOT NULL
 );
 
--- Create the Supplier table
-CREATE TABLE Supplier (
-    supplier_id INT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(100) NOT NULL,
-    contact_person VARCHAR(100),
-    phone VARCHAR(20),
-    email VARCHAR(100),
-    address VARCHAR(255)
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `order_items`
+--
+
+CREATE TABLE `order_items` (
+  `order_id` int(11) NOT NULL,
+  `item_id` int(11) NOT NULL,
+  `quantity` int(11) DEFAULT 1
 );
 
--- Create the Purchase_Order table (simplified)
-CREATE TABLE Purchase_Order (
-    po_id INT PRIMARY KEY AUTO_INCREMENT,
-    supplier_id INT NOT NULL,
-    order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    status ENUM('draft', 'ordered', 'completed', 'cancelled') DEFAULT 'draft',
-    total_amount DECIMAL(10,2),
-    created_by VARCHAR(50),
-    FOREIGN KEY (supplier_id) REFERENCES Supplier(supplier_id),
-    FOREIGN KEY (created_by) REFERENCES Staff(staff_id)
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `users`
+--
+
+CREATE TABLE `users` (
+  `user_id` int(11) NOT NULL,
+  `mot_de_pass` varchar(100) NOT NULL,
+  `role` enum('manager','kitchen','sub_manager') NOT NULL,
+  `username` varchar(255) NOT NULL
 );
 
--- Create the Customer table
-CREATE TABLE Customer (
-    customer_id INT PRIMARY KEY AUTO_INCREMENT,
-    address VARCHAR(255),
-    table_number INT,
-    to_deliver BOOLEAN DEFAULT FALSE
-);
 
--- Create the Orders table (renamed from Order)
-CREATE TABLE Order (
-    order_id INT PRIMARY KEY AUTO_INCREMENT,
-    status VARCHAR(50) NOT NULL,
-    date DATE NOT NULL,
-    customer_id INT,
-    staff_id VARCHAR(50),
-    FOREIGN KEY (customer_id) REFERENCES Customer(customer_id),
-    FOREIGN KEY (staff_id) REFERENCES Staff(staff_id)
-);
+--
+-- Index pour les tables déchargées
+--
 
--- Create the Order_Items table (simplified)
-CREATE TABLE Order_Items (
-    order_id INT,
-    item_id INT,
-    quantity INT DEFAULT 1,
-    PRIMARY KEY (order_id, item_id),
-    FOREIGN KEY (order_id) REFERENCES Order(order_id),
-    FOREIGN KEY (item_id) REFERENCES MenuItem(item_id)
-);
+--
+-- Index pour la table `category`
+--
+ALTER TABLE `category`
+  ADD PRIMARY KEY (`title`);
 
--- Create the Feedback table
-CREATE TABLE feedback (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    phone VARCHAR(20) NOT NULL,
-    comment TEXT NOT NULL,
-    rating INT NOT NULL CHECK (rating BETWEEN 1 AND 5),
-    submission_date TIMESTAMP NOT NULL
-);
+--
+-- Index pour la table `feedback`
+--
+ALTER TABLE `feedback`
+  ADD PRIMARY KEY (`id`);
 
--- Create the Users table
-CREATE TABLE Users (
-    user_id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(225) NOT NULL,
-    role ENUM('manager', 'kitchen', 'sub_manager') NOT NULL,
-    mot_de_pass VARCHAR(100) NOT NULL
-);
+--
+-- Index pour la table `menuitem`
+--
+ALTER TABLE `menuitem`
+  ADD PRIMARY KEY (`item_id`),
+  ADD KEY `category_title` (`category_title`);
+
+--
+-- Index pour la table `order`
+--
+ALTER TABLE `order`
+  ADD PRIMARY KEY (`order_id`);
+
+--
+-- Index pour la table `order_items`
+--
+ALTER TABLE `order_items`
+  ADD PRIMARY KEY (`order_id`,`item_id`),
+  ADD KEY `order_items_ibfk_2` (`item_id`);
+
+--
+-- Index pour la table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`user_id`);
+
+--
+-- AUTO_INCREMENT pour les tables déchargées
+--
+
+--
+-- AUTO_INCREMENT pour la table `feedback`
+--
+ALTER TABLE `feedback`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
+-- AUTO_INCREMENT pour la table `menuitem`
+--
+ALTER TABLE `menuitem`
+  MODIFY `item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+
+--
+-- AUTO_INCREMENT pour la table `order`
+--
+ALTER TABLE `order`
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+
+--
+-- AUTO_INCREMENT pour la table `users`
+--
+ALTER TABLE `users`
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+
+--
+-- Contraintes pour les tables déchargées
+--
+
+--
+-- Contraintes pour la table `menuitem`
+--
+ALTER TABLE `menuitem`
+  ADD CONSTRAINT `menuitem_ibfk_1` FOREIGN KEY (`category_title`) REFERENCES `category` (`title`);
+
+--
+-- Contraintes pour la table `order_items`
+--
+ALTER TABLE `order_items`
+  ADD CONSTRAINT `order_items_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `order` (`order_id`),
+  ADD CONSTRAINT `order_items_ibfk_2` FOREIGN KEY (`item_id`) REFERENCES `menuitem` (`item_id`) ON DELETE CASCADE;
+COMMIT;
+
