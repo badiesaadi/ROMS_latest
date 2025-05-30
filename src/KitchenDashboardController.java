@@ -106,7 +106,7 @@ public class KitchenDashboardController implements Initializable {
     // Data
     private ObservableList<Order> orders = FXCollections.observableArrayList();
     private ObservableList<Ingredient> ingredients = FXCollections.observableArrayList();
-    private List<MenuItemIngredient> menuItemIngredients = new ArrayList<>();
+    // private List<MenuItemIngredient> menuItemIngredients = new ArrayList<>();
     private Order selectedOrder;
     private Ingredient selectedIngredient;
     private int nextIngredientId = 1;
@@ -115,6 +115,7 @@ public class KitchenDashboardController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
+            //check the methods below
             orderDAO = new OrderDAO();
             setupOrdersTable();
             setupInventoryTable();
@@ -122,7 +123,7 @@ public class KitchenDashboardController implements Initializable {
             setupIngredientCategoryComboBox();
             loadOrders();
             loadSampleIngredients();
-            setupIngredientMappings();
+           // setupIngredientMappings();
             checkLowStockIngredients();
 
             // Start a thread to periodically refresh orders
@@ -308,23 +309,23 @@ public class KitchenDashboardController implements Initializable {
         }
     }
 
-    private void setupIngredientMappings() {
-        try {
-            for (Ingredient ingredient : ingredients) {
-                for (Order order : orders) {
-                    for (CartItem orderItem : order.getItems()) {
-                        MenuItem menuItem = orderItem.getMenuItem();
-                        if (menuItem.getTitle().toLowerCase().contains(ingredient.getName().toLowerCase())) {
-                            menuItemIngredients.add(new MenuItemIngredient(menuItem, ingredient, 0.1));
-                        }
-                    }
-                }
-            }
-        } catch (Exception e) {
-            showAlert(AlertType.ERROR, "Ingredient Mapping Error", "Failed to setup ingredient mappings: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
+    // private void setupIngredientMappings() {
+    //     try {
+    //         for (Ingredient ingredient : ingredients) {
+    //             for (Order order : orders) {
+    //                 for (CartItem orderItem : order.getItems()) {
+    //                     MenuItem menuItem = orderItem.getMenuItem();
+    //                     if (menuItem.getTitle().toLowerCase().contains(ingredient.getName().toLowerCase())) {
+    //                         menuItemIngredients.add(new MenuItemIngredient(menuItem, ingredient, 0.1));
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     } catch (Exception e) {
+    //         showAlert(AlertType.ERROR, "Ingredient Mapping Error", "Failed to setup ingredient mappings: " + e.getMessage());
+    //         e.printStackTrace();
+    //     }
+    // }
 
     private void checkLowStockIngredients() {
         try {
