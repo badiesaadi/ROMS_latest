@@ -76,6 +76,7 @@ public class AdminLoginController {
             Parent root = loader.load();
 
             // Pass the current user role to the AdminDashboardController
+            //check this is causing problem with 
             AdminDashboardController controller = loader.getController();
             controller.setCurrentUserRole(currentUserRole);
 

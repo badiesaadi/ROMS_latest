@@ -32,12 +32,7 @@ public class Order {
     private int orderId;
     private OrderStatus status;
     private Date date;
-    private int customerId;
-    private int staffId;
     private List<CartItem> items;
-    //check this
-    private int kitchenId;
-    private String managerId;
 
     public Order() {
         this.date = new Date(System.currentTimeMillis());
@@ -74,21 +69,6 @@ public class Order {
         this.date = date;
     }
 
-    public int getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(int customerId) {
-        this.customerId = customerId;
-    }
-
-    public int getStaffId() {
-        return staffId;
-    }
-
-    public void setStaffId(int staffId) {
-        this.staffId = staffId;
-    }
 
     public List<CartItem> getItems() {
         return items;
@@ -96,23 +76,6 @@ public class Order {
 
     public void setItems(List<CartItem> items) {
         this.items = items;
-    }
-
-    //check this
-    public int getKitchenId() {
-        return kitchenId;
-    }
-
-    public void setKitchenId(int kitchenId) {
-        this.kitchenId = kitchenId;
-    }
-
-    public String getManagerId() {
-        return managerId;
-    }
-
-    public void setManagerId(String managerId) {
-        this.managerId = managerId;
     }
 
     public double getTotal() {

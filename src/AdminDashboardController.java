@@ -487,7 +487,6 @@ public class AdminDashboardController implements Initializable {
                 newItem.setPrice(price);
                 newItem.setCategoryTitle(categoryTitle);
                 newItem.setImagePath(imagePath);
-                newItem.setKitchenId(0); // Default to 0, will be set to NULL if invalid
 
                 MenuItemDAO menuItemDAO = new MenuItemDAO();
                 int newId = menuItemDAO.insertMenuItem(newItem);
@@ -551,10 +550,7 @@ public class AdminDashboardController implements Initializable {
                 selectedItem.setPrice(price);
                 selectedItem.setCategoryTitle(categoryTitle);
                 selectedItem.setImagePath(imagePath);
-                // Keep existing kitchenId, or set to 0 if not set
-                if (selectedItem.getKitchenId() == 0) {
-                    selectedItem.setKitchenId(0);
-                }
+                
 
                 MenuItemDAO menuItemDAO = new MenuItemDAO();
                 boolean updated = menuItemDAO.updateMenuItem(selectedItem);
@@ -786,8 +782,8 @@ public class AdminDashboardController implements Initializable {
                 "Price: $%.2f\nQuantity: %d\nCategory: %s\nKitchen: %d",
                 menuItem.getPrice(),
                 cartItem.getQuantity(),
-                menuItem.getCategoryTitle(),
-                menuItem.getKitchenId()));
+                menuItem.getCategoryTitle()
+                ));
         alert.showAndWait();
     }
 

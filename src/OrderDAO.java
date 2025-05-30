@@ -21,7 +21,7 @@ public class OrderDAO {
     }
 
     public int insertOrder(Order order) {
-        String sql = "INSERT INTO `order` (status, date, customer_id, staff_id) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO `order` (status, date) VALUES (?, ?)";
 
         try {
             // Start transaction
@@ -31,16 +31,6 @@ public class OrderDAO {
             try (PreparedStatement pstmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
                 pstmt.setString(1, order.getStatus().toString());
                 pstmt.setDate(2, new Date(System.currentTimeMillis())); // Current date
-                //check this I set it to Null because it is not needed to add a customer id
-               // pstmt.setInt(3, order.getCustomerId());
-                pstmt.setNull(3, java.sql.Types.INTEGER);
-
-
-
-                // Kitchen ID and Manager ID are optional
-                //check this I set staff_id to null
-
-                pstmt.setNull(4, java.sql.Types.INTEGER);
 
                 int affectedRows = pstmt.executeUpdate();
 
@@ -144,10 +134,6 @@ public class OrderDAO {
                     order.setOrderId(rs.getInt("order_id"));
                     order.setStatus(Order.OrderStatus.valueOf(rs.getString("status")));
                     order.setDate(new java.sql.Date(rs.getTimestamp("date").getTime()));
-                    order.setCustomerId(rs.getInt("customer_id"));
-                    order.setStaffId(rs.getInt("staff_id"));
-                    order.setKitchenId(rs.getInt("kitchen_id"));
-                    order.setManagerId(rs.getString("manager_id"));
                   //  order.setNotes(rs.getString("notes"));
 
                     order.setItems(getOrderItems(conn, orderId));
@@ -165,7 +151,7 @@ public class OrderDAO {
    
      */
     private List<CartItem> getOrderItems(Connection conn, int orderId) throws SQLException {
-        String sql = "SELECT m.item_id, m.title, m.price, m.category_title, m.image_path, m.kitchen_id, om.quantity " +
+        String sql = "SELECT m.item_id, m.title, m.price, m.category_title, m.image_path,  om.quantity " +
                 "FROM order_items om " +
                 "JOIN menuitem m ON om.item_id = m.item_id " +
                 "WHERE om.order_id = ?";
@@ -182,8 +168,8 @@ public class OrderDAO {
                             rs.getString("title"),
                             rs.getDouble("price"),
                             rs.getString("category_title"),
-                            rs.getString("image_path"),
-                            rs.getInt("kitchen_id"));
+                            rs.getString("image_path")
+                            );
                     items.add(new CartItem(menuItem, rs.getInt("quantity")));
                 }
                 System.out.println("Found " + itemCount + " items for orderId: " + orderId);
@@ -205,12 +191,8 @@ public class OrderDAO {
                 order.setOrderId(orderId);
                 order.setStatus(Order.OrderStatus.valueOf(rs.getString("status")));
                 order.setDate(rs.getDate("date"));
-                order.setCustomerId(rs.getInt("customer_id"));
 
-                // Kitchen ID is optional
-                if (rs.getObject("staff_id") != null) {
-                    order.setKitchenId(rs.getInt("staff_id"));
-                }
+
 
 
                 // Get order items
@@ -238,8 +220,6 @@ public class OrderDAO {
                 order.setOrderId(rs.getInt("order_id"));
                 order.setStatus(Order.OrderStatus.valueOf(rs.getString("status")));
                 order.setDate(new java.sql.Date(rs.getTimestamp("date").getTime()));
-                order.setCustomerId(rs.getInt("customer_id"));
-                order.setStaffId(rs.getInt("staff_id"));
                 order.setItems(getOrderItems(connection, order.getOrderId()));
                 orders.add(order);
             }
@@ -252,7 +232,7 @@ public class OrderDAO {
     }
 
     public int createOrder(Order order) {
-        String sql = "INSERT INTO `order` (status, date, customer_id, staff_id) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO `order` (status, date) VALUES (?, ?)";
 
         try (Connection conn = DatabaseConnection.getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -261,8 +241,6 @@ public class OrderDAO {
 
             pstmt.setString(1, order.getStatus().name());
             pstmt.setTimestamp(2, new java.sql.Timestamp(order.getDate().getTime()));
-            pstmt.setNull(3, java.sql.Types.INTEGER);
-            pstmt.setNull(4, java.sql.Types.INTEGER);
 
             int affectedRows = pstmt.executeUpdate();
             if (affectedRows == 0) {
