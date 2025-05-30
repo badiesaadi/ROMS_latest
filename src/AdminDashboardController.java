@@ -90,7 +90,7 @@ public class AdminDashboardController implements Initializable {
     // Data
     private ObservableList<MenuItem> menuItems = FXCollections.observableArrayList();
     private MenuItem selectedMenuItem;
-    private int nextId = 13; // Start from 13 as existing items are 1-12
+    private int nextId = 13; //check
 
     // Orders Table
     @FXML
@@ -119,8 +119,6 @@ public class AdminDashboardController implements Initializable {
     private TableColumn<Feedback, String> commentColumn;
     @FXML
     private TableColumn<Feedback, String> dateColumn;
-    @FXML
-    private Button deleteFeedbackButton;
 
     @FXML
     private Button managementButton;
@@ -133,7 +131,6 @@ public class AdminDashboardController implements Initializable {
 
     public void setCurrentUserRole(String role) {
         this.currentUserRole = role;
-        //System.out.println("\n\n\n\n\n\n\n" + currentUserRole + "In admin dashboard" + "\n\n\n\n\n\n\n");         
                 // Hide management button for sub_manager role
                 if ("sub_manager".equals(currentUserRole)) {
 
@@ -861,39 +858,6 @@ public class AdminDashboardController implements Initializable {
         alert.showAndWait();
     }
 
-    @FXML
-    private void handleDeleteFeedback(ActionEvent event) {
-        Feedback selectedFeedback = feedbackTable.getSelectionModel().getSelectedItem();
-        if (selectedFeedback != null) {
-            Alert confirmAlert = new Alert(AlertType.CONFIRMATION);
-            confirmAlert.setTitle("Confirm Delete");
-            confirmAlert.setHeaderText("Delete Feedback");
-            confirmAlert.setContentText(
-                    "Are you sure you want to delete this feedback from " + selectedFeedback.getCustomerName() + "?");
-
-            Optional<ButtonType> result = confirmAlert.showAndWait();
-            if (result.isPresent() && result.get() == ButtonType.OK) {
-                try {
-                    boolean deleted = feedbackDAO.deleteFeedback(selectedFeedback.getId());
-                    if (deleted) {
-                        loadFeedback();
-                        statusLabel.setText("Feedback deleted successfully");
-                        statusLabel.setTextFill(Color.GREEN);
-                    } else {
-                        statusLabel.setText("Failed to delete feedback");
-                        statusLabel.setTextFill(Color.RED);
-                    }
-                } catch (SQLException e) {
-                    statusLabel.setText("Error deleting feedback: " + e.getMessage());
-                    statusLabel.setTextFill(Color.RED);
-                    e.printStackTrace();
-                }
-            }
-        } else {
-            statusLabel.setText("Please select a feedback to delete");
-            statusLabel.setTextFill(Color.ORANGE);
-        }
-    }
 
     @FXML
     public void handleManagementNavigation() {

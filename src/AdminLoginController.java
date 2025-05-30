@@ -45,7 +45,7 @@ public class AdminLoginController {
 
                 if (rs.next()) {
                     currentUserRole = rs.getString("role"); // Save the role   
-        System.out.println("\n\n\n\n\n\n\n" + currentUserRole + "\n\n\n\n\n\n\n");         
+
                     if ("manager".equals(currentUserRole)) {
                         loadDashboard("admin_dashboard.fxml", "Restaurant Admin Dashboard");
                     } 

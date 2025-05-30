@@ -116,7 +116,6 @@
                         <HBox alignment="CENTER" spacing="10.0">
                            <children>
                               <Button fx:id="refreshFeedbackButton" mnemonicParsing="false" onAction="#handleRefreshFeedback" text="Refresh Feedback" />
-                              <Button fx:id="deleteFeedbackButton" mnemonicParsing="false" visible="false" onAction="#handleDeleteFeedback" text="Delete Feedback" />
                            </children>
                         </HBox>
                      </children>
