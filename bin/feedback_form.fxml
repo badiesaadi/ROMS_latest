@@ -1,78 +1,68 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
-<?import javafx.scene.shape.*?>
-<?import javafx.geometry.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.SVGPath?>
 
-<StackPane prefHeight="500.0" prefWidth="600.0" xmlns="http://javafx.com/javafx"
-           xmlns:fx="http://javafx.com/fxml" fx:controller="FeedbackFormController"
-           style="-fx-font-family: 'Montserrat'; -fx-font-size: 14px; -fx-background-color: #f5f5f5;"
-           stylesheets="@styles.css">
+<StackPane prefHeight="500.0" prefWidth="600.0" style="-fx-font-family: 'Montserrat'; -fx-font-size: 14px; -fx-background-color: #f5f5f5;" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="FeedbackFormController">
     
     <VBox alignment="CENTER" spacing="30" style="-fx-padding: 30;">
-        <Label text="Share Your Experience"
-               style="-fx-text-fill: #333333; -fx-font-size: 28px; -fx-font-weight: bold;" />
+        <Label style="-fx-text-fill: #333333; -fx-font-size: 28px; -fx-font-weight: bold;" text="Share Your Experience" />
 
         <VBox spacing="20" style="-fx-padding: 25; -fx-background-color: white; -fx-background-radius: 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 2);">
-            <VBox spacing="5">
-                <Label text="Full Name" style="-fx-font-weight: bold;-fx-background-color: #f9f9f9; -fx-text-fill: #3498db;" />
-                <TextField fx:id="nameField" promptText="Enter your full name"
-                           style="-fx-background-radius: 8; -fx-background-color: #f9f9f9; -fx-border-color: #ddd; -fx-border-radius: 8;" />
+            <VBox spacing="5" style="-fx-background-color: white;">
+                <Label style="-fx-font-weight: bold;-fx-background-color: #f9f9f9; -fx-text-fill: #3498db;" text="Full Name" />
+                <TextField fx:id="nameField" promptText="Enter your full name" style="-fx-background-radius: 8; -fx-background-color: #f9f9f9; -fx-border-color: #ddd; -fx-border-radius: 8;" />
             </VBox>
 
-            <VBox spacing="5">
-                <Label text="Phone Number" style="-fx-font-weight: bold; -fx-text-fill: #3498db;" />
-                <TextField fx:id="phoneField" promptText="Enter your phone number"
-                           style="-fx-background-radius: 8; -fx-background-color: #f9f9f9; -fx-border-color: #ddd; -fx-border-radius: 8;" />
+            <VBox spacing="5" style="-fx-background-color: white;">
+                <Label style="-fx-font-weight: bold; -fx-text-fill: #3498db;" text="Phone Number" />
+                <TextField fx:id="phoneField" promptText="Enter your phone number" style="-fx-background-radius: 8; -fx-background-color: #f9f9f9; -fx-border-color: #ddd; -fx-border-radius: 8;" />
             </VBox>
 
-            <VBox spacing="5">
-                <Label text="Your Rating" style="-fx-font-weight: bold; -fx-text-fill: #3498db;" />
-                <HBox spacing="5" alignment="CENTER">
-                    <ToggleButton fx:id="star1" styleClass="star-button" onAction="#handleStarClick">
+            <VBox spacing="5" style="-fx-background-color: white;">
+                <Label style="-fx-font-weight: bold; -fx-text-fill: #3498db;" text="Your Rating" />
+                <HBox alignment="CENTER" spacing="5">
+                    <ToggleButton fx:id="star1" onAction="#handleStarClick" styleClass="star-button">
                         <graphic>
-                            <SVGPath fx:id="starPath1" content="M12 2 L15.09 8.26 L22 9.27 L17 14.14 L18.18 21.02 L12 17.77 L5.82 21.02 L7 14.14 L2 9.27 L8.91 8.26 L12 2" 
-                                    style="-fx-fill: #FFD700; -fx-stroke: #FFD700; -fx-stroke-width: 0.5;" />
+                            <SVGPath fx:id="starPath1" content="M12 2 L15.09 8.26 L22 9.27 L17 14.14 L18.18 21.02 L12 17.77 L5.82 21.02 L7 14.14 L2 9.27 L8.91 8.26 L12 2" style="-fx-fill: #FFD700; -fx-stroke: #FFD700; -fx-stroke-width: 0.5;" />
                         </graphic>
                     </ToggleButton>
-                    <ToggleButton fx:id="star2" styleClass="star-button" onAction="#handleStarClick">
+                    <ToggleButton fx:id="star2" onAction="#handleStarClick" styleClass="star-button">
                         <graphic>
-                            <SVGPath fx:id="starPath2" content="M12 2 L15.09 8.26 L22 9.27 L17 14.14 L18.18 21.02 L12 17.77 L5.82 21.02 L7 14.14 L2 9.27 L8.91 8.26 L12 2" 
-                                    style="-fx-fill: #FFD700; -fx-stroke: #FFD700; -fx-stroke-width: 0.5;" />
+                            <SVGPath fx:id="starPath2" content="M12 2 L15.09 8.26 L22 9.27 L17 14.14 L18.18 21.02 L12 17.77 L5.82 21.02 L7 14.14 L2 9.27 L8.91 8.26 L12 2" style="-fx-fill: #FFD700; -fx-stroke: #FFD700; -fx-stroke-width: 0.5;" />
                         </graphic>
                     </ToggleButton>
-                    <ToggleButton fx:id="star3" styleClass="star-button" onAction="#handleStarClick">
+                    <ToggleButton fx:id="star3" onAction="#handleStarClick" styleClass="star-button">
                         <graphic>
-                            <SVGPath fx:id="starPath3" content="M12 2 L15.09 8.26 L22 9.27 L17 14.14 L18.18 21.02 L12 17.77 L5.82 21.02 L7 14.14 L2 9.27 L8.91 8.26 L12 2" 
-                                    style="-fx-fill: #FFD700; -fx-stroke: #FFD700; -fx-stroke-width: 0.5;" />
+                            <SVGPath fx:id="starPath3" content="M12 2 L15.09 8.26 L22 9.27 L17 14.14 L18.18 21.02 L12 17.77 L5.82 21.02 L7 14.14 L2 9.27 L8.91 8.26 L12 2" style="-fx-fill: #FFD700; -fx-stroke: #FFD700; -fx-stroke-width: 0.5;" />
                         </graphic>
                     </ToggleButton>
-                    <ToggleButton fx:id="star4" styleClass="star-button" onAction="#handleStarClick">
+                    <ToggleButton fx:id="star4" onAction="#handleStarClick" styleClass="star-button">
                         <graphic>
-                            <SVGPath fx:id="starPath4" content="M12 2 L15.09 8.26 L22 9.27 L17 14.14 L18.18 21.02 L12 17.77 L5.82 21.02 L7 14.14 L2 9.27 L8.91 8.26 L12 2" 
-                                    style="-fx-fill: #FFD700; -fx-stroke: #FFD700; -fx-stroke-width: 0.5;" />
+                            <SVGPath fx:id="starPath4" content="M12 2 L15.09 8.26 L22 9.27 L17 14.14 L18.18 21.02 L12 17.77 L5.82 21.02 L7 14.14 L2 9.27 L8.91 8.26 L12 2" style="-fx-fill: #FFD700; -fx-stroke: #FFD700; -fx-stroke-width: 0.5;" />
                         </graphic>
                     </ToggleButton>
-                    <ToggleButton fx:id="star5" styleClass="star-button" onAction="#handleStarClick">
+                    <ToggleButton fx:id="star5" onAction="#handleStarClick" styleClass="star-button">
                         <graphic>
-                            <SVGPath fx:id="starPath5" content="M12 2 L15.09 8.26 L22 9.27 L17 14.14 L18.18 21.02 L12 17.77 L5.82 21.02 L7 14.14 L2 9.27 L8.91 8.26 L12 2" 
-                                    style="-fx-fill: #FFD700; -fx-stroke: #FFD700; -fx-stroke-width: 0.5;" />
+                            <SVGPath fx:id="starPath5" content="M12 2 L15.09 8.26 L22 9.27 L17 14.14 L18.18 21.02 L12 17.77 L5.82 21.02 L7 14.14 L2 9.27 L8.91 8.26 L12 2" style="-fx-fill: #FFD700; -fx-stroke: #FFD700; -fx-stroke-width: 0.5;" />
                         </graphic>
                     </ToggleButton>
                 </HBox>
             </VBox>
 
-            <VBox spacing="5">
-                <Label text="Your Feedback" style="-fx-font-weight: bold; -fx-text-fill: #3498db;" />
-                <TextArea fx:id="commentField" promptText="Share your experience with us..."
-                          wrapText="true"
-                          style="-fx-background-radius: 8; -fx-background-color: #f9f9f9; -fx-border-color: #ddd; -fx-border-radius: 8;" />
+            <VBox spacing="5" style="-fx-background-color: white;">
+                <Label style="-fx-font-weight: bold; -fx-text-fill: #3498db;" text="Your Feedback" />
+                <TextArea fx:id="commentField" promptText="Share your experience with us..." style="-fx-background-radius: 8; -fx-background-color: #f9f9f9; -fx-border-color: #ddd; -fx-border-radius: 8;" wrapText="true" />
             </VBox>
 
-            <Button text="Submit Feedback" onAction="#handleSubmit"
-                    style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 10; -fx-padding: 10 20;" />
+            <Button onAction="#handleSubmit" style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 10; -fx-padding: 10 20;" text="Submit Feedback" />
         </VBox>
     </VBox>
 </StackPane>
