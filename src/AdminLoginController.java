@@ -77,8 +77,12 @@ public class AdminLoginController {
 
             // Pass the current user role to the AdminDashboardController
             //check this is causing problem with 
-            AdminDashboardController controller = loader.getController();
-            controller.setCurrentUserRole(currentUserRole);
+            // AdminDashboardController controller = loader.getController();
+            // controller.setCurrentUserRole(currentUserRole);
+                        Object controller = loader.getController();
+            if (controller instanceof AdminDashboardController) {
+                ((AdminDashboardController) controller).setCurrentUserRole(currentUserRole);
+            } 
 
             Scene scene = new Scene(root);
             Stage stage = (Stage) loginButton.getScene().getWindow();
