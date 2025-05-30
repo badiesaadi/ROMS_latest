@@ -32,8 +32,6 @@ public class Order {
     private int orderId;
     private OrderStatus status;
     private Date date;
-    private int customerId;
-    private int staffId;
     private List<CartItem> items;
     //check this
     private int kitchenId;
@@ -74,21 +72,6 @@ public class Order {
         this.date = date;
     }
 
-    public int getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(int customerId) {
-        this.customerId = customerId;
-    }
-
-    public int getStaffId() {
-        return staffId;
-    }
-
-    public void setStaffId(int staffId) {
-        this.staffId = staffId;
-    }
 
     public List<CartItem> getItems() {
         return items;
