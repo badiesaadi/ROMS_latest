@@ -9,7 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Alert;
 import javafx.stage.Modality;
 import java.io.IOException;
-import javafx.scene.text.Font; // Import Font class
+import javafx.scene.text.Font; 
 
 public class WelcomeController {
     @FXML
