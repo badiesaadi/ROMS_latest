@@ -33,7 +33,7 @@
                   </Label>
                   <PasswordField fx:id="passwordField" prefWidth="300.0" promptText="Enter password" styleClass="input-field" />
                     <Label fx:id="statusLabel" textFill="RED" visible="false" />
-                    <Button onAction="#handleSignup" text="Sign Up">
+                    <Button fx:id="signupButton"  onAction="#handleSignup" text="Sign Up">
                      <font>
                         <Font name="MADE Tommy Soft" size="16.0" />
                      </font>

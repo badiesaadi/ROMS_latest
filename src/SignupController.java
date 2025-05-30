@@ -27,6 +27,9 @@ public class SignupController {
     @FXML 
     private Button loginButton;
 
+    @FXML 
+    private Button signupButton;
+
     @FXML
     private void handleSignup() {
         String username = usernameField.getText().trim();
@@ -46,6 +49,7 @@ public class SignupController {
             statusLabel.setText("Account created successfully.");
             statusLabel.setTextFill(Color.GREEN);
             statusLabel.setVisible(true);
+            signupButton.setDisable(true);
         } else {
             statusLabel.setText("Error: Unable to create account.");
             statusLabel.setVisible(true);
