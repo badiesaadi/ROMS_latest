@@ -10,35 +10,35 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" spacing="10" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ManagementController">
+<VBox alignment="CENTER" spacing="10" xmlns="http://javafx.com/javafx/23.0.1" stylesheets="@styles.css" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ManagementController" styleClass="root">
     <Label styleClass="title-label" text="Management Page" />
-    <TableView fx:id="userTable" onMouseClicked="#populateFields" prefHeight="200" prefWidth="400">
+    <TableView fx:id="userTable" onMouseClicked="#populateFields" prefHeight="200" prefWidth="400" styleClass="table-view">
         <columns>
-            <TableColumn fx:id="usernameColumn" text="Username" />
-            <TableColumn fx:id="roleColumn" text="Role" />
+            <TableColumn fx:id="usernameColumn" text="Username" styleClass="table-column" />
+            <TableColumn fx:id="roleColumn" text="Role" styleClass="table-column" />
         </columns>
     </TableView>
-    <HBox spacing="10">
-        <VBox spacing="5">
-            <Label text="Username:" />
-            <TextField fx:id="usernameField" promptText="Enter username" />
+    <HBox spacing="10" styleClass="form-section">
+        <VBox spacing="5" styleClass="form-group">
+            <Label text="Username:" styleClass="form-label" />
+            <TextField fx:id="usernameField" promptText="Enter username" styleClass="form-field" />
         </VBox>
-        <VBox spacing="5">
-            <Label text="Password:" />
-            <TextField fx:id="passwordField" promptText="Enter password" />
+        <VBox spacing="5" styleClass="form-group">
+            <Label text="Password:" styleClass="form-label" />
+            <TextField fx:id="passwordField" promptText="Enter password" styleClass="form-field" />
         </VBox>
-        <VBox spacing="5">
-            <Label text="Role:" />
-            <HBox spacing="10">
-                <CheckBox fx:id="managerCheckBox" text="sub-Manager" />
-                <CheckBox fx:id="kitchenCheckBox" text="Kitchen" />
+        <VBox spacing="5" styleClass="form-group">
+            <Label text="Role:" styleClass="form-label" />
+            <HBox spacing="10" styleClass="checkbox-group">
+                <CheckBox fx:id="managerCheckBox" text="sub-Manager" styleClass="checkbox" />
+                <CheckBox fx:id="kitchenCheckBox" text="Kitchen" styleClass="checkbox" />
             </HBox>
         </VBox>
     </HBox>
-    <HBox spacing="10">
-        <Button onAction="#handleAddUser" text="Add User" />
-        <Button onAction="#handleUpdateUser" text="Update User" />
-        <Button onAction="#handleDeleteUser" text="Delete User" />
+    <HBox spacing="10" styleClass="button-group">
+        <Button onAction="#handleAddUser" text="Add User" styleClass="button" />
+        <Button onAction="#handleUpdateUser" text="Update User" styleClass="button" />
+        <Button onAction="#handleDeleteUser" text="Delete User" styleClass="button" />
     </HBox>
    <padding>
       <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />

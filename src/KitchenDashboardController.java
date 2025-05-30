@@ -252,7 +252,7 @@ public class KitchenDashboardController implements Initializable {
             alert.setTitle("Item Details");
             alert.setHeaderText(menuItem.getTitle());
             alert.setContentText(String.format(
-                    "Price: $%.2f\nQuantity: %d\nCategory: %s\nKitchen: %d",
+                    "Price: %.2f\nQuantity: %d\nCategory: %s\nKitchen: %d",
                     menuItem.getPrice(),
                     cartItem.getQuantity(),
                     menuItem.getCategoryTitle()));

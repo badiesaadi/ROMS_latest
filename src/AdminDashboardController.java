@@ -742,7 +742,7 @@ public class AdminDashboardController implements Initializable {
         orderItemsColumn
                 .setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getItemsSummary()));
         orderTotalColumn.setCellValueFactory(
-                cellData -> new SimpleStringProperty(String.format("$%.2f", cellData.getValue().getTotal())));
+                cellData -> new SimpleStringProperty(String.format("%.2f", cellData.getValue().getTotal())));
 
         refreshOrdersTable();
     }
@@ -779,7 +779,7 @@ public class AdminDashboardController implements Initializable {
         alert.setTitle("Item Details");
         alert.setHeaderText(menuItem.getTitle());
         alert.setContentText(String.format(
-                "Price: $%.2f\nQuantity: %d\nCategory: %s\nKitchen: %d",
+                "Price: %.2f\nQuantity: %d\nCategory: %s\nKitchen: %d",
                 menuItem.getPrice(),
                 cartItem.getQuantity(),
                 menuItem.getCategoryTitle()

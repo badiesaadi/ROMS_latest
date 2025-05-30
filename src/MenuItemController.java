@@ -49,7 +49,7 @@ public class MenuItemController {
     private void initializeUI() {
         if (menuItem != null) {
             menuName.setText(menuItem.getTitle());
-            menuPrice.setText(String.format("$%.2f", menuItem.getPrice()));
+            menuPrice.setText(String.format("%.2f", menuItem.getPrice()));
             addToOrder.getValueFactory().setValue(0);
             if (menuItem.getImagePath() != null && !menuItem.getImagePath().isEmpty()) {
                 menuImage.setImage(new Image(menuItem.getImagePath()));
