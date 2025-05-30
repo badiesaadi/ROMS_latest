@@ -61,7 +61,6 @@ public class MenuItem {
         this.imagePath = imagePath;
     }
 
-    // Legacy getters for backward compatibility
     public int getId() {
         return getItemId();
     }

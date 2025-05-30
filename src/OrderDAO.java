@@ -134,8 +134,6 @@ public class OrderDAO {
                     order.setOrderId(rs.getInt("order_id"));
                     order.setStatus(Order.OrderStatus.valueOf(rs.getString("status")));
                     order.setDate(new java.sql.Date(rs.getTimestamp("date").getTime()));
-                    order.setKitchenId(rs.getInt("kitchen_id"));
-                    order.setManagerId(rs.getString("manager_id"));
                   //  order.setNotes(rs.getString("notes"));
 
                     order.setItems(getOrderItems(conn, orderId));
