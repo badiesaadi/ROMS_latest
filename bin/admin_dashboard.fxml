@@ -1,131 +1,157 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Tab?>
-<?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="AdminDashboardController">
-   <top>
-      <VBox prefHeight="99.0" prefWidth="1100.0" BorderPane.alignment="CENTER">
-         <children>
-            <Label alignment="CENTER" prefWidth="Infinity" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Admin Dashboard">
-               <VBox.margin>
-                  <Insets bottom="10.0" top="10.0" />
-               </VBox.margin>
-            </Label>
-            <HBox alignment="CENTER" spacing="10.0">
-               <children>
-                  <Button fx:id="logoutButton" mnemonicParsing="false" onAction="#handleLogout" text="Logout" />
-                  <Button fx:id="customerViewButton" mnemonicParsing="false" onAction="#handleBackToCustomerView" text="Back to Customer View" />
-                  <Button fx:id="kitchenDashboardButton" mnemonicParsing="false" onAction="#handleKitchenDashboard" text="Kitchen Dashboard" />
-                  <Button fx:id="managementButton" mnemonicParsing="false" onAction="#handleManagementNavigation" styleClass="management-button" text="Management">
-            </Button>
-               </children>
-               <VBox.margin>
-                  <Insets bottom="10.0" />
-               </VBox.margin>
-            </HBox>
-         </children>
-      </VBox>
-   </top>
-   <center>
-      <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
-         <tabs>
-            <Tab text="Menu Item Management">
-               <content>
-                  <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0">
-                     <children>
-                        <TableView fx:id="menuItemsTable" prefHeight="200.0" prefWidth="200.0">
-                           <columns>
-                              <TableColumn fx:id="idColumn" prefWidth="75.0" text="ID" />
-                              <TableColumn fx:id="nameColumn" prefWidth="200.0" text="Name" />
-                              <TableColumn fx:id="priceColumn" prefWidth="100.0" text="Price" />
-                              <TableColumn fx:id="categoryColumn" prefWidth="150.0" text="Category" />
-                              <TableColumn fx:id="imagePathColumn" prefWidth="200.0" text="Image Path" />
-                           </columns>
-                        </TableView>
-                        <HBox spacing="10.0">
-                           <children>
-                              <VBox prefHeight="386.0" prefWidth="351.0" spacing="5.0">
-                                 <children>
-                                    <Label text="Menu Name" />
-                                    <TextField fx:id="menuNameField" />
-                                    <Label text="Price" />
-                                    <TextField fx:id="menuPriceField" />
-                                    <Label text="Category" />
-                                    <ComboBox fx:id="categoryComboBox" prefWidth="150.0" />
-                                    <Label text="Category Name" />
-                                    <TextField fx:id="categoryNameField" />
-                                    <HBox spacing="5.0">
-                                       <children>
-                                          <Button fx:id="addCategoryButton" mnemonicParsing="false" onAction="#handleAddCategory" text="Add " />
-                                          <Button fx:id="updateCategoryButton" mnemonicParsing="false" onAction="#handleUpdateCategory" text="Update " />
-                                          <Button fx:id="deleteCategoryButton" mnemonicParsing="false" onAction="#handleDeleteCategory" text="Delete " />
-                                       </children>
-                                    </HBox>
-                                    <Label text="Image Path" />
-                                    <TextField fx:id="imagePathField" />
-                                    <Button fx:id="browseImageButton" mnemonicParsing="false" text="Browse Image" />
-                                    <Label fx:id="statusLabel" prefHeight="17.0" prefWidth="200.0" />
-                                    <HBox prefHeight="25.0" prefWidth="245.0" spacing="10.0">
-                                       <children>
-                                          <Button fx:id="addButton" mnemonicParsing="false" onAction="#handleAddItem" prefHeight="25.0" prefWidth="51.0" text="Add" />
-                                          <Button fx:id="updateButton" mnemonicParsing="false" onAction="#handleUpdateItem" text="Update" />
-                                          <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#handleDeleteItem" text="Delete" />
-                                          <Button fx:id="clearButton" mnemonicParsing="false" onAction="#handleClearForm" text="Clear" />
-                                       </children>
-                                    </HBox>
-                                 </children>
-                                 <padding>
-                                    <Insets left="10.0" right="10.0" top="10.0" />
-                                 </padding>
-                              </VBox>
-                           </children>
+<ScrollPane fx:controller="AdminDashboardController" xmlns:fx="http://javafx.com/fxml"
+            stylesheets="@styles.css" fitToWidth="true" fitToHeight="true"
+            hbarPolicy="NEVER" vbarPolicy="AS_NEEDED">
+   <VBox spacing="10" alignment="TOP_CENTER" minHeight="0">
+      <!-- Header -->
+      <HBox styleClass="header" alignment="CENTER" spacing="10" VBox.vgrow="NEVER">
+         <Label fx:id="dashboardTitle" text="Admin Dashboard" styleClass="dashboard-title"/>
+         <Region HBox.hgrow="ALWAYS"/>
+         <Button fx:id="managementButton" text="Management" styleClass="nav-button" onAction="#handleManagementNavigation"/>
+         <Button fx:id="kitchenDashboardButton" text="Kitchen Dashboard" styleClass="nav-button" onAction="#handleKitchenDashboard"/>
+         <Button fx:id="customerViewButton" text="Customer View" styleClass="nav-button" onAction="#handleBackToCustomerView"/>
+         <Button fx:id="logoutButton" text="Logout" styleClass="nav-button" onAction="#handleLogout"/>
+      </HBox>
+
+      <!-- Status Label -->
+      <Label fx:id="statusLabel" styleClass="status-label" text=""/>
+
+      <!-- Tab Pane -->
+      <TabPane fx:id="tabPane" styleClass="tab-pane" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS" minHeight="0">
+         <!-- Menu Items Tab -->
+         <Tab text="Menu Items">
+            <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED">
+               <VBox styleClass="tab-content" spacing="15" minHeight="0">
+                  <Label text="Manage Menu Items" styleClass="section-title"/>
+
+                  <!-- Table with improved height and growth -->
+                  <TableView fx:id="menuItemsTable" styleClass="table-view"
+                             prefHeight="500" minHeight="400" maxHeight="600">
+                     <columns>
+                        <TableColumn fx:id="idColumn" text="ID" prefWidth="80" minWidth="60"/>
+                        <TableColumn fx:id="nameColumn" text="Name" prefWidth="180" minWidth="150"/>
+                        <TableColumn fx:id="priceColumn" text="Price" prefWidth="100" minWidth="80"/>
+                        <TableColumn fx:id="categoryColumn" text="Category" prefWidth="130" minWidth="100"/>
+                        <TableColumn fx:id="imagePathColumn" text="Image Path" prefWidth="280" minWidth="200"/>
+                     </columns>
+                  </TableView>
+
+                  <!-- Form section -->
+                  <VBox styleClass="form-vbox" spacing="15">
+                     <GridPane hgap="15" vgap="12">
+                        <columnConstraints>
+                           <ColumnConstraints minWidth="100" prefWidth="120"/>
+                           <ColumnConstraints hgrow="ALWAYS"/>
+                        </columnConstraints>
+
+                        <Label text="Name:" GridPane.columnIndex="0" GridPane.rowIndex="0"
+                               style="-fx-font-weight: 600;"/>
+                        <TextField fx:id="menuNameField" GridPane.columnIndex="1" GridPane.rowIndex="0"
+                                   promptText="Enter item name"/>
+
+                        <Label text="Price:" GridPane.columnIndex="0" GridPane.rowIndex="1"
+                               style="-fx-font-weight: 600;"/>
+                        <TextField fx:id="menuPriceField" GridPane.columnIndex="1" GridPane.rowIndex="1"
+                                   promptText="0.00"/>
+
+                        <Label text="Category:" GridPane.columnIndex="0" GridPane.rowIndex="2"
+                               style="-fx-font-weight: 600;"/>
+                        <ComboBox fx:id="categoryComboBox" GridPane.columnIndex="1" GridPane.rowIndex="2"
+                                  maxWidth="Infinity" promptText="Select category"/>
+
+                        <Label text="Image Path:" GridPane.columnIndex="0" GridPane.rowIndex="3"
+                               style="-fx-font-weight: 600;"/>
+                        <HBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                           <TextField fx:id="imagePathField" HBox.hgrow="ALWAYS"
+                                      promptText="Select image file"/>
+                           <Button fx:id="browseImageButton" text="Browse"
+                                   style="-fx-background-color: -fx-secondary;"/>
                         </HBox>
-                     </children>
-                     <padding>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                     </padding>
+                     </GridPane>
+
+                     <!-- Action buttons -->
+                     <HBox spacing="12" alignment="CENTER" style="-fx-padding: 10 0 0 0;">
+                        <Button fx:id="addButton" text="Add Item" onAction="#handleAddItem"/>
+                        <Button fx:id="updateButton" text="Update Item" onAction="#handleUpdateItem"/>
+                        <Button fx:id="deleteButton" text="Delete Item" onAction="#handleDeleteItem"
+                                style="-fx-background-color: -fx-error;"/>
+                        <Button fx:id="clearButton" text="Clear Form" onAction="#handleClearForm"
+                                style="-fx-background-color: -fx-secondary;"/>
+                     </HBox>
+
+                     <!-- Category management section -->
+                     <Separator style="-fx-background-color: -fx-secondary;"/>
+
+                     <Label text="Manage Categories" styleClass="section-title"/>
+                     <GridPane hgap="15" vgap="12">
+                        <columnConstraints>
+                           <ColumnConstraints minWidth="100" prefWidth="120"/>
+                           <ColumnConstraints hgrow="ALWAYS"/>
+                        </columnConstraints>
+
+                        <Label text="Category Name:" GridPane.columnIndex="0" GridPane.rowIndex="0"
+                               style="-fx-font-weight: 600;"/>
+                        <TextField fx:id="categoryNameField" GridPane.columnIndex="1" GridPane.rowIndex="0"
+                                   promptText="Enter category name"/>
+                     </GridPane>
+
+                     <HBox spacing="12" alignment="CENTER" style="-fx-padding: 10 0 0 0;">
+                        <Button fx:id="addCategoryButton" text="Add Category" onAction="#handleAddCategory"/>
+                        <Button fx:id="updateCategoryButton" text="Update Category" onAction="#handleUpdateCategory"/>
+                        <Button fx:id="deleteCategoryButton" text="Delete Category" onAction="#handleDeleteCategory"
+                                style="-fx-background-color: -fx-error;"/>
+                     </HBox>
                   </VBox>
-               </content>
-            </Tab>
-            <Tab text="Feedback">
-               <content>
-                  <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0">
-                     <children>
-                       
-                        <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Feedback" />
-                        <TableView fx:id="feedbackTable" prefHeight="200.0" prefWidth="200.0">
-                           <columns>
-                              <TableColumn fx:id="feedbackIdColumn" prefWidth="75.0" text="ID" />
-                              <TableColumn fx:id="customerNameColumn" prefWidth="150.0" text="Customer" />
-                              <TableColumn fx:id="ratingColumn" prefWidth="100.0" text="Rating" />
-                              <TableColumn fx:id="commentColumn" prefWidth="200.0" text="Comment" />
-                              <TableColumn fx:id="dateColumn" prefWidth="150.0" text="Date" />
-                           </columns>
-                        </TableView>
-                        <HBox alignment="CENTER" spacing="10.0">
-                           <children>
-                              <Button fx:id="refreshFeedbackButton" mnemonicParsing="false" onAction="#handleRefreshFeedback" text="Refresh Feedback" />
-                           </children>
-                        </HBox>
-                     </children>
-                     <padding>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                     </padding>
-                  </VBox>
-               </content>
-            </Tab>
-         </tabs>
+               </VBox>
+            </ScrollPane>
+         </Tab>
+
+         <!-- Orders Tab -->
+         <Tab text="Orders">
+            <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED">
+               <VBox styleClass="tab-content" spacing="10" minHeight="0">
+                  <Label text="Manage Orders" styleClass="section-title"/>
+                  <TableView fx:id="ordersTable" styleClass="table-view" prefHeight="600" minHeight="400">
+                     <columns>
+                        <TableColumn fx:id="orderIdColumn" text="Order ID" prefWidth="100"/>
+                        <TableColumn fx:id="orderTimeColumn" text="Time" prefWidth="200"/>
+                        <TableColumn fx:id="orderStatusColumn" text="Status" prefWidth="150"/>
+                        <TableColumn fx:id="orderItemsColumn" text="Items" prefWidth="300"/>
+                        <TableColumn fx:id="orderTotalColumn" text="Total" prefWidth="100"/>
+                     </columns>
+                  </TableView>
+               </VBox>
+            </ScrollPane>
+         </Tab>
+
+         <!-- Feedback Tab -->
+         <Tab text="Feedback">
+            <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED">
+               <VBox styleClass="tab-content" spacing="10" minHeight="0">
+                  <Label text="Customer Feedback" styleClass="section-title"/>
+                  <HBox spacing="10" alignment="CENTER">
+                     <Button fx:id="refreshFeedbackButton" text="Refresh Feedback" onAction="#handleRefreshFeedback"/>
+                  </HBox>
+                  <TableView fx:id="feedbackTable" styleClass="table-view" prefHeight="600" minHeight="400">
+                     <columns>
+                        <TableColumn fx:id="feedbackIdColumn" text="ID" prefWidth="100"/>
+                        <TableColumn fx:id="customerNameColumn" text="Customer" prefWidth="200"/>
+                        <TableColumn fx:id="ratingColumn" text="Rating" prefWidth="150"/>
+                        <TableColumn fx:id="commentColumn" text="Comment" prefWidth="300"/>
+                        <TableColumn fx:id="dateColumn" text="Date" prefWidth="150"/>
+                     </columns>
+                  </TableView>
+               </VBox>
+            </ScrollPane>
+         </Tab>
       </TabPane>
-   </center>
-</BorderPane>
+
+      <padding>
+         <Insets top="10" right="10" bottom="10" left="10"/>
+      </padding>
+   </VBox>
+</ScrollPane>

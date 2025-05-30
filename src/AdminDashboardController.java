@@ -86,7 +86,7 @@ public class AdminDashboardController implements Initializable {
     private Button clearButton;
     @FXML
     private Button refreshFeedbackButton;
-    
+
     // Data
     private ObservableList<MenuItem> menuItems = FXCollections.observableArrayList();
     private MenuItem selectedMenuItem;
@@ -128,21 +128,16 @@ public class AdminDashboardController implements Initializable {
 
     private String currentUserRole;
 
-
     public void setCurrentUserRole(String role) {
         this.currentUserRole = role;
-                // Hide management button for sub_manager role
-                if ("sub_manager".equals(currentUserRole)) {
-
-                    managementButton.setVisible(false);
-                }
+        // Hide management button for sub_manager role
+        if ("sub_manager".equals(currentUserRole)) {
+            managementButton.setVisible(false);
+        }
     }
-
-
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
         setupTable();
         loadCategories();
         loadMenuItems();
@@ -172,7 +167,6 @@ public class AdminDashboardController implements Initializable {
         // Initialize category buttons
         updateCategoryButton.setDisable(true);
         deleteCategoryButton.setDisable(true);
-
     }
 
     private void setupTable() {
@@ -419,11 +413,58 @@ public class AdminDashboardController implements Initializable {
         }
     }
 
+    // Helper method to sort menu items by title using insertion sort
+    private List<MenuItem> insertionSortByTitle(List<MenuItem> items) {
+        List<MenuItem> sortedItems = new ArrayList<>(items);
+        for (int i = 1; i < sortedItems.size(); i++) {
+            MenuItem key = sortedItems.get(i);
+            int j = i - 1;
+            while (j >= 0 && sortedItems.get(j).getTitle().compareTo(key.getTitle()) > 0) {
+                sortedItems.set(j + 1, sortedItems.get(j));
+                j--;
+            }
+            sortedItems.set(j + 1, key);
+        }
+        return sortedItems;
+    }
+
+    // Helper method to check for duplicate items using binary search
+    private boolean isDuplicateItem(String title) {
+        // Create a sorted copy of menuItems using insertion sort
+        List<MenuItem> sortedItems = insertionSortByTitle(new ArrayList<>(menuItems));
+
+        // Binary search
+        int left = 0;
+        int right = sortedItems.size() - 1;
+
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            int comparison = sortedItems.get(mid).getTitle().compareTo(title);
+
+            if (comparison == 0) {
+                return true; // Duplicate found
+            } else if (comparison < 0) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        return false; // No duplicate found
+    }
+
     @FXML
     private void handleAddItem(ActionEvent event) {
         if (validateInputs()) {
+            String title = menuNameField.getText().trim();
+
+            // Check for duplicate item name
+            if (isDuplicateItem(title)) {
+                statusLabel.setText("Error: Item with name '" + title + "' already exists");
+                statusLabel.setTextFill(Color.RED);
+                return;
+            }
+
             try {
-                String title = menuNameField.getText();
                 double price = Double.parseDouble(menuPriceField.getText());
                 String categoryTitle = categoryComboBox.getValue();
                 String imagePath = imagePathField.getText();
@@ -478,10 +519,19 @@ public class AdminDashboardController implements Initializable {
         MenuItem selectedItem = menuItemsTable.getSelectionModel().getSelectedItem();
         if (selectedItem != null && validateInputs()) {
             try {
-                String title = menuNameField.getText();
+                String title = menuNameField.getText().trim();
                 double price = Double.parseDouble(menuPriceField.getText());
                 String categoryTitle = categoryComboBox.getValue();
                 String imagePath = imagePathField.getText();
+
+                // Check for duplicate item name (excluding the item being updated)
+                if (!selectedItem.getTitle().equals(title)) {
+                    if (isDuplicateItem(title)) {
+                        statusLabel.setText("Error: Item with name '" + title + "' already exists");
+                        statusLabel.setTextFill(Color.RED);
+                        return;
+                    }
+                }
 
                 // Ensure category exists
                 try {
@@ -705,7 +755,6 @@ public class AdminDashboardController implements Initializable {
         List<Order> orders = orderDAO.getOrdersByStatus(Order.OrderStatus.QUEUED);
         orders.addAll(orderDAO.getOrdersByStatus(Order.OrderStatus.IN_PROGRESS));
         orders.addAll(orderDAO.getOrdersByStatus(Order.OrderStatus.READY));
-       // orders.addAll(orderDAO.getOrdersByStatus(Order.OrderStatus.DELIVERED));
         ordersTable.setItems(FXCollections.observableArrayList(orders));
     }
 
@@ -717,12 +766,6 @@ public class AdminDashboardController implements Initializable {
             case IN_PROGRESS:
                 updateOrderStatus(order, Order.OrderStatus.READY);
                 break;
-            // case READY:
-            //     updateOrderStatus(order, Order.OrderStatus.DELIVERED);
-            //     break;
-            // case DELIVERED:
-            //     updateOrderStatus(order, Order.OrderStatus.CANCELLED);
-            //     break;
             default:
                 break;
         }
@@ -858,7 +901,6 @@ public class AdminDashboardController implements Initializable {
         alert.showAndWait();
     }
 
-
     @FXML
     public void handleManagementNavigation() {
         try {
@@ -873,4 +915,3 @@ public class AdminDashboardController implements Initializable {
         }
     }
 }
-
