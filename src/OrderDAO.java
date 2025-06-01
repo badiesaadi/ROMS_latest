@@ -119,7 +119,7 @@ public class OrderDAO {
     }
 
 
-     //check this it has staff manager ans stuff
+     //check this
     public Order getOrderById(int orderId) {
         String sql = "SELECT * FROM `order` WHERE order_id = ?";
 
@@ -134,7 +134,6 @@ public class OrderDAO {
                     order.setOrderId(rs.getInt("order_id"));
                     order.setStatus(Order.OrderStatus.valueOf(rs.getString("status")));
                     order.setDate(new java.sql.Date(rs.getTimestamp("date").getTime()));
-                  //  order.setNotes(rs.getString("notes"));
 
                     order.setItems(getOrderItems(conn, orderId));
                     return order;

@@ -9,6 +9,10 @@ import java.util.stream.Collectors;
 public class UsersTableDAO {
 
     public boolean addUser(String username, String password, String role) {
+        if (!isUsernamePasswordUnique(username, password)) {
+            System.out.println("Duplicate username and password detected.");
+            return false;
+        }
         String sql = "INSERT INTO users (username, mot_de_pass, role) VALUES (?, ?, ?)";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -24,6 +28,10 @@ public class UsersTableDAO {
     }
 
     public boolean updateUser(int userId, String username, String password, String role) {
+        if (!isUsernamePasswordUnique(username, password)) {
+            System.out.println("Duplicate username and password detected.");
+            return false;
+        }
         String sql = "UPDATE users SET username = ?, mot_de_pass = ?, role = ? WHERE user_id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -84,5 +92,21 @@ public class UsersTableDAO {
             e.printStackTrace();
         }
         return null; //   if password is not found or an error occurs
+    }
+
+    public boolean isUsernamePasswordUnique(String username, String password) {
+        String sql = "SELECT COUNT(*) FROM users WHERE username = ? AND mot_de_pass = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, username);
+            pstmt.setString(2, password);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) == 0; 
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false; // Return false if an error occurs
     }
 }

@@ -12,11 +12,7 @@ public class Order {
         QUEUED("Queued"),
         ALL("All"),
         IN_PROGRESS("In Progress"),
-        READY("Ready"),
-
-        //chech this
-        DELIVERED("Delivered"),
-        CANCELLED("Cancelled");
+        READY("Ready");
 
         private final String displayName;
 

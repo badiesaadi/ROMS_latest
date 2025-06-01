@@ -47,9 +47,6 @@ public class ManagementController {
     private void loadUsers() {
         userList.clear();
         usersTableDAO.getAllUsers().forEach(user -> {
-            if ("manager".equals(user.getRole()) && userList.stream().anyMatch(u -> "manager".equals(u.getRole()))) {
-                return; // Skip adding additional managers
-            }
             userList.add(new User(user.getId(), user.getUsername(), user.getRole()));
         });
         userTable.setItems(userList);
@@ -66,13 +63,13 @@ public class ManagementController {
             return;
         }
 
-        boolean success = usersTableDAO.addUser(username, password, role);
-        if (success) {
-            showAlert(AlertType.INFORMATION, "User added successfully.");
-            loadUsers();
-        } else {
-            showAlert(AlertType.ERROR, "Failed to add user.");
+        if (!usersTableDAO.addUser(username, password, role)) {
+            showAlert(AlertType.ERROR, "Duplicate username and password detected. User not added.");
+            return;
         }
+
+        showAlert(AlertType.INFORMATION, "User added successfully.");
+        loadUsers();
     }
 
     @FXML
