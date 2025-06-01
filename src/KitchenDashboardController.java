@@ -120,6 +120,7 @@ public class KitchenDashboardController implements Initializable {
     private void setupStatusComboBox() {
         statusComboBox.getItems().clear(); // Clear existing items
         statusComboBox.getItems().addAll(Order.OrderStatus.ALL, Order.OrderStatus.QUEUED, Order.OrderStatus.IN_PROGRESS, Order.OrderStatus.READY); // Add "All" and other statuses
+        statusComboBox.setValue(Order.OrderStatus.ALL);
     }
 
     private void loadOrders() {

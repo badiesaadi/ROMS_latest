@@ -69,7 +69,7 @@ public class ManagementController {
 
 
         if (!usersTableDAO.addUser(username, password, role)) {
-            showAlert(AlertType.ERROR, "Duplicate username and password detected. User not added.");
+            showAlert(AlertType.ERROR, "Duplicate username detected. User not added.");
             return;
         }
 
