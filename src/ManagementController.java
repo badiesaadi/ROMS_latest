@@ -58,10 +58,15 @@ public class ManagementController {
         String password = passwordField.getText().trim();
         String role = getSelectedRole(); // Determine role based on checkboxes
 
-        if (username.isEmpty() || password.isEmpty() || role == null) {
+        if (username.isEmpty() || password.isEmpty()  || role == null) {
             showAlert(AlertType.WARNING, "Please fill in all fields and select a role.");
             return;
         }
+        if (password.length() < 8) {
+            showAlert(AlertType.WARNING, "The length of password must be at least 8 characters.");
+            return;
+        }
+
 
         if (!usersTableDAO.addUser(username, password, role)) {
             showAlert(AlertType.ERROR, "Duplicate username and password detected. User not added.");
@@ -91,6 +96,10 @@ public class ManagementController {
 
         if (username.isEmpty() || password.isEmpty() || role == null) {
             showAlert(AlertType.WARNING, "Please fill in all fields.");
+            return;
+        }
+        if (password.length() < 8) {
+            showAlert(AlertType.WARNING, "The length of password must be at least 8 characters.");
             return;
         }
 
