@@ -1,4 +1,7 @@
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -25,6 +28,17 @@ public class AdminLoginController {
 
     private String currentUserRole; //  to store the role of the logged-in user
 
+    private String hashPassword(String password) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] hashedBytes = md.digest(password.getBytes());
+            return Base64.getEncoder().encodeToString(hashedBytes);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     @FXML
     private void handleLogin(ActionEvent event) {
         String username = usernameField.getText().trim();
@@ -37,25 +51,32 @@ public class AdminLoginController {
         }
 
         try (Connection conn = DatabaseConnection.getConnection()) {
-            String sql = "SELECT role FROM users WHERE username = ? AND mot_de_pass = ?";
+            String sql = "SELECT mot_de_pass, role FROM users WHERE username = ?";
             try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
                 pstmt.setString(1, username);
-                pstmt.setString(2, password);
                 ResultSet rs = pstmt.executeQuery();
 
                 if (rs.next()) {
-                    currentUserRole = rs.getString("role"); // Save the role   
+                    String storedHashedPassword = rs.getString("mot_de_pass");
+                    String enteredHashedPassword = hashPassword(password);
 
-                    if ("manager".equals(currentUserRole)) {
-                        loadDashboard("admin_dashboard.fxml", "Restaurant Admin Dashboard");
-                    } 
-                    else if("sub_manager".equals(currentUserRole)){
-                        loadDashboard("admin_dashboard.fxml", "Restaurant Admin Dashboard");
-                    }
-                    else if ("kitchen".equals(currentUserRole)) {
-                        loadDashboard("kitchen_dashboard.fxml", "Kitchen Dashboard");
+                    if (storedHashedPassword != null && storedHashedPassword.equals(enteredHashedPassword)) {
+                        currentUserRole = rs.getString("role"); // Save the role   
+
+                        if ("manager".equals(currentUserRole)) {
+                            loadDashboard("admin_dashboard.fxml", "Restaurant Admin Dashboard");
+                        } 
+                        else if("sub_manager".equals(currentUserRole)){
+                            loadDashboard("admin_dashboard.fxml", "Restaurant Admin Dashboard");
+                        }
+                        else if ("kitchen".equals(currentUserRole)) {
+                            loadDashboard("kitchen_dashboard.fxml", "Kitchen Dashboard");
+                        } else {
+                            errorLabel.setText("Invalid role.");
+                            errorLabel.setVisible(true);
+                        }
                     } else {
-                        errorLabel.setText("Invalid role.");
+                        errorLabel.setText("Invalid username or password.");
                         errorLabel.setVisible(true);
                     }
                 } else {

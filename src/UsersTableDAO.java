@@ -1,3 +1,6 @@
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -8,7 +11,23 @@ import java.util.stream.Collectors;
 
 public class UsersTableDAO {
 
+    private String hashPassword(String password) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] hashedBytes = md.digest(password.getBytes());
+            return Base64.getEncoder().encodeToString(hashedBytes);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public boolean addUser(String username, String password, String role) {
+        String hashedPassword = hashPassword(password);
+        if (hashedPassword == null) {
+            System.out.println("Error hashing password.");
+            return false;
+        }
         if (!isUsernameUnique(username)) {
             System.out.println("Duplicate username detected.");
             return false;
@@ -17,7 +36,7 @@ public class UsersTableDAO {
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, username);
-            pstmt.setString(2, password);
+            pstmt.setString(2, hashedPassword);
             pstmt.setString(3, role);
             pstmt.executeUpdate();
             return true;
@@ -28,7 +47,12 @@ public class UsersTableDAO {
     }
 
     public boolean updateUser(int userId, String username, String password, String role) {
-        if (!isUsernameUnique(username)) {
+        String hashedPassword = hashPassword(password);
+        if (hashedPassword == null) {
+            System.out.println("Error hashing password.");
+            return false;
+        }
+        if (!isUsernameUnique(username, userId)) {
             System.out.println("Duplicate username detected.");
             return false;
         }
@@ -36,7 +60,7 @@ public class UsersTableDAO {
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, username);
-            pstmt.setString(2, password);
+            pstmt.setString(2, hashedPassword);
             pstmt.setString(3, role);
             pstmt.setInt(4, userId);
             pstmt.executeUpdate();
@@ -86,7 +110,8 @@ public class UsersTableDAO {
             pstmt.setInt(1, userId);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
-                return rs.getString("mot_de_pass");
+                String hashedPassword = rs.getString("mot_de_pass");
+                return hashedPassword; // Return hashed password directly
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -99,6 +124,22 @@ public class UsersTableDAO {
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, username);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) == 0; 
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false; // Return false if an error occurs
+    }
+
+    public boolean isUsernameUnique(String username, int userId) {
+        String sql = "SELECT COUNT(*) FROM users WHERE username = ? AND user_id != ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, username);
+            pstmt.setInt(2, userId);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
                 return rs.getInt(1) == 0; 

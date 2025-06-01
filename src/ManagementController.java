@@ -69,7 +69,7 @@ public class ManagementController {
 
 
         if (!usersTableDAO.addUser(username, password, role)) {
-            showAlert(AlertType.ERROR, "Duplicate username detected. User not added.");
+            showAlert(AlertType.ERROR, "Duplicate username detected or error hashing password. User not added.");
             return;
         }
 
@@ -104,11 +104,11 @@ public class ManagementController {
         }
 
         boolean success = usersTableDAO.updateUser(selectedUser.getId(), username, password, role);
-        if (success) {
+        if (!success) {
+            showAlert(AlertType.ERROR, "Failed to update user or error hashing password.");
+        } else {
             showAlert(AlertType.INFORMATION, "User updated successfully.");
             loadUsers();
-        } else {
-            showAlert(AlertType.ERROR, "Failed to update user.");
         }
     }
 
@@ -138,7 +138,7 @@ public class ManagementController {
         User selectedUser = userTable.getSelectionModel().getSelectedItem();
         if (selectedUser != null) {
             usernameField.setText(selectedUser.getUsername());
-            passwordField.setText(usersTableDAO.getPasswordById(selectedUser.getId())); // Display password
+            passwordField.setText("********"); // Mask password in UI
             if ("manager".equals(selectedUser.getRole()) || "sub_manager".equals(selectedUser.getRole())) {
                 managerCheckBox.setSelected(true);
                 kitchenCheckBox.setSelected(false);
