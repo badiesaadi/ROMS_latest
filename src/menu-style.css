@@ -391,7 +391,8 @@
 .action-button {
   -fx-background-color: -restaurant-primary;
   -fx-text-fill: white;
-  -fx-padding: 5 10;
+  -fx-font-size: 20px;
+  -fx-padding: 15 30;
   -fx-background-radius: 20;
   -fx-cursor: hand;
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0, 0, 2);
