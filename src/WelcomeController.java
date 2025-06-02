@@ -41,8 +41,6 @@ public class WelcomeController {
 
             Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             currentStage.setScene(nextScene);
-            currentStage.setWidth(1100);
-            currentStage.setHeight(800);
             StageManager.applyStageSettings(currentStage);
             currentStage.centerOnScreen();
         } catch (Exception e) {
